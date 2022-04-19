@@ -5,34 +5,39 @@ const app = express();
 const cors = require('cors');
 const helmet = require('helmet');
 const mysql = require('mysql2');
-const db = require("./models/Sequelize");
+const db = require("./config/sequelize.config");
 require('dotenv').config();
 
 
 // Import routes
-const userRoute = require('./routes/user');
-const postsRoute = require('./routes/posts');
+const userRoute = require('./routes/users.route');
+const postsRoute = require('./routes/posts.route');
 
 // Sequelize
-db.sequelize.sync({ force: true }).then(() => {
-    console.log("Drop and re-sync db.");
-});
+// db.sequelize.sync({ force: true }).then(() => {
+//     console.log("Drop and re-sync db.");
+// });
 // Connexion à la BDD
-var connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: process.env.BDD_PWD,
-    database: process.env.BDD_NAME
-});
+db.sequelize.authenticate()
+    .then(() => console.log('Connexion OK'))
+    .catch(err => console.log("Error: " + err));
 
-connection.connect();
+// var connection = mysql.createConnection({
+//     host: process.env.DB_HOST,
+//     user: process.env.DB_USER,
+//     password: process.env.DB_PWD,
+//     database: process.env.DB_DB
+// });
 
-connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
-    if (error) throw error;
-    console.log('The solution is: ', results[0].solution);
-});
+// TEST DB
+// connection.connect();
 
-connection.end();
+// connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
+//     if (error) throw error;
+//     console.log('The solution is: ', results[0].solution);
+// });
+
+// connection.end();
 
 
 
