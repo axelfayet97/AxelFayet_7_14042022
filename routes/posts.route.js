@@ -2,11 +2,15 @@
 const express = require('express');
 const router = express.Router();
 const postCtrl = require('../controllers/posts.controller');
-const auth = require('../middlewares/auth.middleware');
+// const auth = require('../middlewares/auth.middleware');
 // const multer = require('../middleware/multer-config');
-const { route } = require('./user.route');
 
-router.post('/', auth, postCtrl.createPost);
+router.post('/', postCtrl.createPost);
+router.put('/:id', postCtrl.updatePost);
+router.get('/', postCtrl.findAllPosts);
+router.get('/:id', postCtrl.findOnePost);
+router.delete('/:id', postCtrl.deletePost);
+router.post('/:id/like', postCtrl.postLike)
 
 // Modifier une sauce + image avec Multer
 // router.put('/:id', auth, multer, sauceCtrl.modifySauce);
@@ -18,9 +22,6 @@ router.post('/', auth, postCtrl.createPost);
 // router.delete('/:id', auth, sauceCtrl.deleteSauce);
 // Gestion de like/dislike
 // router.post('/:id/like', auth, sauceCtrl.LikeOrDislikeSauce);
-
-
-
 
 
 module.exports = router;
