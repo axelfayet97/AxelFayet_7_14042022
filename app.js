@@ -4,24 +4,11 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const helmet = require('helmet');
-<<<<<<< HEAD
-const db = require("./models/sequelize.model");
-=======
 const mysql = require('mysql2');
 const db = require("./config/sequelize.config");
->>>>>>> 285ec9276c70563f9e3e8eaa0c69237458546bb2
 require('dotenv').config();
 
 // Import routes
-<<<<<<< HEAD
-// const userRoute = require('./routes/user');
-// const postsRoute = require('./routes/posts');
-
-// Sequelize BDD
-db.sequelize.sync({ force: true }).then(() => {
-    console.log("Drop and re-sync db.");
-});
-=======
 const userRoute = require('./routes/users.route');
 const postsRoute = require('./routes/posts.route');
 
@@ -50,10 +37,6 @@ db.sequelize.authenticate()
 // });
 
 // connection.end();
-
-
-
->>>>>>> 285ec9276c70563f9e3e8eaa0c69237458546bb2
 
 console.log("App started");
 // Export de l'application express
