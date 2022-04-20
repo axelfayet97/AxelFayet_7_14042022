@@ -5,12 +5,20 @@ const app = express();
 const cors = require('cors');
 const helmet = require('helmet');
 const mysql = require('mysql2');
+const bodyParser = require('body-parser');
 const db = require("./config/sequelize.config");
 require('dotenv').config();
 
 // Import routes
 const userRoute = require('./routes/users.route');
 const postsRoute = require('./routes/posts.route');
+
+// CORS
+var corsOptions = {
+    origin: 'http://localhost:4200',
+    optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 
 // Sequelize
 // db.sequelize.sync({ force: true }).then(() => {
@@ -43,6 +51,16 @@ catch (error) {
 
 // connection.end();
 
-console.log("App started");
+// Analyse Corps de la requête
+app.use(express.json());
+app.use(bodyParser.json());
+
+// Sécurité helmet et désactivation du cache
+app.use(helmet({ crossOriginResourcePolicy: false }));
+// app.use(nocache());
+
+
+app.use('/routes', postsRoute);
+
 // Export de l'application express
 module.exports = app;
