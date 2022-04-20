@@ -15,7 +15,7 @@ const postsRoute = require('./routes/posts.route');
 
 // CORS
 var corsOptions = {
-    origin: 'http://localhost:4200',
+    origin: '*',
     optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
@@ -27,8 +27,8 @@ app.use(cors(corsOptions));
 // Connexion à la BDD
 try {
     db.sequelize.authenticate()
-    .then(() => console.log('Connexion OK'))
-    .catch(err => console.log("Error: " + err));
+        .then(() => console.log('Connexion OK'))
+        .catch(err => console.log("Error: " + err));
 }
 catch (error) {
     console.log("Unable to connect to the database: ", error);
