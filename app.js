@@ -17,9 +17,14 @@ const postsRoute = require('./routes/posts.route');
 //     console.log("Drop and re-sync db.");
 // });
 // Connexion à la BDD
-db.sequelize.authenticate()
+try {
+    db.sequelize.authenticate()
     .then(() => console.log('Connexion OK'))
     .catch(err => console.log("Error: " + err));
+}
+catch (error) {
+    console.log("Unable to connect to the database: ", error);
+}
 
 // var connection = mysql.createConnection({
 //     host: process.env.DB_HOST,
