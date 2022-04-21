@@ -4,13 +4,14 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const helmet = require('helmet');
+const nocache = require('nocache');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const db = require("./config/sequelize.config");
 require('dotenv').config();
 
 // Import routes
-const userRoute = require('./routes/users.route');
+const userRoute = require('./routes/user.route');
 const postsRoute = require('./routes/posts.route');
 
 // CORS
@@ -57,10 +58,11 @@ app.use(bodyParser.json());
 
 // Sécurité helmet et désactivation du cache
 app.use(helmet({ crossOriginResourcePolicy: false }));
-// app.use(nocache());
+app.use(nocache());
 
 
-app.use('/routes', postsRoute);
+app.use('/api/auth', userRoute);
+app.use('/api/posts', postsRoute);
 
 // Export de l'application express
 module.exports = app;
