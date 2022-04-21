@@ -35,23 +35,6 @@ catch (error) {
     console.log("Unable to connect to the database: ", error);
 }
 
-// var connection = mysql.createConnection({
-//     host: process.env.DB_HOST,
-//     user: process.env.DB_USER,
-//     password: process.env.DB_PWD,
-//     database: process.env.DB_DB
-// });
-
-// TEST DB
-// connection.connect();
-
-// connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
-//     if (error) throw error;
-//     console.log('The solution is: ', results[0].solution);
-// });
-
-// connection.end();
-
 // Analyse Corps de la requête
 app.use(express.json());
 app.use(bodyParser.json());
