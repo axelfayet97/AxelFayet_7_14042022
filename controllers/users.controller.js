@@ -1,22 +1,22 @@
+const db = require('../models/user.model');
+const User = db.user;
 const bcrypt = require('bcryptjs');
-const User = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const secretToken = process.env.ACCESS_TOKEN_SECRET;
 
 // Inscription
 exports.signup = (req, res) => {
+    const { body } = req;
     // Cryptage du mot de passe reçu dans le corps de la requête
-    bcrypt.hash(req.body.password, 10)
+    bcrypt.hash(body.password, 10)
         .then(hash => {
-            console.log(hash)
             // Création d'un nouvel utilisateur
-            const user = User.build({
-                email: req.body.email,
+            User.create({
+                email: body.email,
                 password: hash
             })
-            // Sauvegarde de cet utilisateur dans la BDD
-            user.save()
+                // Sauvegarde de cet utilisateur dans la BDD
                 .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
                 .catch(error => res.status(400).json({ error }));
         })

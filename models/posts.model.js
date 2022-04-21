@@ -1,7 +1,8 @@
 module.exports = (sequelize, Sequelize) => {
-    const Posts = sequelize.define("posts", {
-        userId: {
-            type: Sequelize.STRING
+    const Posts = sequelize.define('posts', {
+        id: {
+            type: Sequelize.STRING,
+            primaryKey: true
         },
         content: {
             type: Sequelize.STRING
@@ -11,4 +12,4 @@ module.exports = (sequelize, Sequelize) => {
         },
     });
     return Posts;
-};
+}
