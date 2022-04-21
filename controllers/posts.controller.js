@@ -1,4 +1,3 @@
-const express = require('express');
 const db = require('../models/posts.model');
 // const Op = db.Sequelize.Op;
 const Posts = db.posts;
@@ -6,33 +5,37 @@ const Posts = db.posts;
 // Create and save Post
 exports.createPost = (req, res) => {
     // Validation
-    // if (!req.body) {
-    //     res.status(400).json({ message: 'Content cannot be empty' })
-    //     return
-    // }
+    if (!req.body) {
+        res.status(400).json({ message: 'Content cannot be empty' })
+        return
+    }
     // Create post
     const post = {
-        userId: req.body.userId,
+        id: req.body.id,
         content: req.body.content,
         imageUrl: req.body.imageUrl
     }
-    // Save post
+    // // Save post
+    // Posts.create(post)
+    //     .then(data => {
+    //         console.log("post created");
+    //         res.send(data);
+    //     })
+    //     .catch(err => {
+    //         res.status(500).send({
+    //             message: err.message || 'Something went wrong, try again later'
+    //         })
+    //     });
+    console.log(post);
     Posts.create(post)
-        .then(data => {
-            console.log("post created");
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || 'Something went wrong, try again later'
-            })
-        });
+        .then(res.send(data).json({ message: "Post created successfully !" }))
+        .catch(err => { res.status(500).send({ error }) })
 }
 // Retrieve all Posts from the database.
 exports.findAllPosts = (req, res) => {
-    Posts.findAll({ where: condition })
-        .then(data => {
-            res.send(data);
+    Posts.findAll()
+        .then(posts => {
+            res.status(200).json({ posts })
         })
         .catch(err => {
             res.status(500).send({
