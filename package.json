@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -27,7 +27,6 @@
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
     "nocache": "^3.0.3",
-    "nodemon": "^2.0.15",
     "sequelize": "^6.19.0"
   }
 }
