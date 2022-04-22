@@ -1,35 +1,23 @@
 const db = require('../models/posts.model');
 // const Op = db.Sequelize.Op;
-const Posts = db.posts;
+const Posts = db;
 
 // Create and save Post
 exports.createPost = (req, res) => {
     // Validation
-    if (!req.body) {
-        res.status(400).json({ message: 'Content cannot be empty' })
-        return
-    }
+    // if (!req.body) {
+    //     res.status(400).json({ message: 'Content cannot be empty' })
+    //     return
+    // }
     // Create post
     const post = {
-        id: req.body.id,
-        content: req.body.content,
-        imageUrl: req.body.imageUrl
+        ...req.body
     }
-    // // Save post
-    // Posts.create(post)
-    //     .then(data => {
-    //         console.log("post created");
-    //         res.send(data);
-    //     })
-    //     .catch(err => {
-    //         res.status(500).send({
-    //             message: err.message || 'Something went wrong, try again later'
-    //         })
-    //     });
-    console.log(post);
     Posts.create(post)
-        .then(res.send(data).json({ message: "Post created successfully !" }))
-        .catch(err => { res.status(500).send({ error }) })
+        .then(data => {
+            res.send(data)
+        })
+        .catch(err => res.status(500).send({ err }));
 }
 // Retrieve all Posts from the database.
 exports.findAllPosts = (req, res) => {
