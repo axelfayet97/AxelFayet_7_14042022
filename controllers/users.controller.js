@@ -7,20 +7,19 @@ const secretToken = process.env.ACCESS_TOKEN_SECRET;
 
 // Inscription
 exports.signup = (req, res) => {
-    const { body } = req;
     // Cryptage du mot de passe reçu dans le corps de la requête
-    bcrypt.hash(body.password, 10)
-        .then(hash => {
-            // Création d'un nouvel utilisateur
-            User.create({
-                email: body.email,
-                password: hash
-            })
-                // Sauvegarde de cet utilisateur dans la BDD
-                .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-                .catch(error => res.status(400).json({ error }));
-        })
-        .catch(error => res.status(500).json({ error }));
+    // bcrypt.hash(req.body.password, 10)
+    // .then(hash => {
+    // Création d'un nouvel utilisateur
+    // Sauvegarde de cet utilisateur dans la BDD
+    User.create({
+        email: req.body.email,
+        password: req.body.password
+    })
+        .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+        .catch(error => res.status(400).json({ error }));
+    // })
+    //     .catch(error => res.status(500).json({ error }));
 };
 
 // Connexion
