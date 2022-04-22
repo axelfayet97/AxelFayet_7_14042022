@@ -22,9 +22,9 @@ var corsOptions = {
 app.use(cors(corsOptions));
 
 // Sequelize
-// db.sequelize.sync({ force: true }).then(() => {
-//     console.log("Drop and re-sync db.");
-// });
+db.sequelize.sync({ force: true }).then(() => {
+    console.log("Drop and re-sync db.");
+});
 // Connexion à la BDD
 try {
     db.sequelize.authenticate()
