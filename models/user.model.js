@@ -1,12 +1,18 @@
-module.exports = (sequelize, Sequelize) => {
-    const User = sequelize.define("user", {
-        email: {
-            type: Sequelize.STRING,
-            primaryKey: true
-        },
-        password: {
-            type: Sequelize.STRING
-        }
-    });
-    return User;
-};
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = new Sequelize('mysql::memory:');
+
+const User = sequelize.define('User', {
+    // Model attributes are defined here
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        primaryKey: true
+    },
+    password: {
+        type: DataTypes.STRING
+        // allowNull defaults to true
+    }
+}
+);
+
+module.exports = User;
