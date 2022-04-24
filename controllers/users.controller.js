@@ -1,5 +1,4 @@
-const db = require('../models/user.model');
-const User = db.user;
+const userModel = require('../models/user.model');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -8,25 +7,27 @@ const secretToken = process.env.ACCESS_TOKEN_SECRET;
 // Inscription
 exports.signup = (req, res) => {
     // Cryptage du mot de passe reçu dans le corps de la requête
-    // bcrypt.hash(req.body.password, 10)
-    // .then(hash => {
+    bcrypt.hash(req.body.password, 10)
+    .then(hash => {
     // Création d'un nouvel utilisateur
     // Sauvegarde de cet utilisateur dans la BDD
-    User.create({
+
+    userModel.create({
         email: req.body.email,
         password: req.body.password
     })
         .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
         .catch(error => res.status(400).json({ error }));
-    // })
-    //     .catch(error => res.status(500).json({ error }));
+    console.log(userModel.email);
+    })
+        .catch(error => res.status(500).json({ error }));
 };
 
 // Connexion
 exports.login = (req, res) => {
     // Recherche de l'utilisateur en fonction de son email dans la BDD
     const id = req.params.id;
-    User.findByPk(id)
+    userModel.findByPk(id)
         .then(user => {
             if (!user) {
                 return res.status(401).json({ error: 'Utilisateur non trouvé !' })

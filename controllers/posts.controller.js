@@ -1,27 +1,26 @@
-const db = require('../models/posts.model');
-// const Op = db.Sequelize.Op;
-const Posts = db;
+const postModel = require('../models/posts.model');
 
 // Create and save Post
 exports.createPost = (req, res) => {
     // Validation
-    // if (!req.body) {
-    //     res.status(400).json({ message: 'Content cannot be empty' })
-    //     return
-    // }
+    if (!req.body) {
+        res.status(400).json({ message: 'Content cannot be empty' })
+        return
+    }
     // Create post
     const post = {
         ...req.body
     }
-    Posts.create(post)
+    postModel.create(post)
         .then(data => {
+            console.log(data);
             res.send(data)
         })
         .catch(err => res.status(500).send({ err }));
 }
 // Retrieve all Posts from the database.
 exports.findAllPosts = (req, res) => {
-    Posts.findAll()
+    postModel.findAll()
         .then(posts => {
             res.status(200).json({ posts })
         })
@@ -35,7 +34,7 @@ exports.findAllPosts = (req, res) => {
 // Find a single Post with an id
 exports.findOnePost = (req, res) => {
     const id = req.params.id;
-    Posts.findByPk(id)
+    postModel.findByPk(id)
         .then(data => {
             if (data) {
                 res.send(data);
@@ -54,7 +53,7 @@ exports.findOnePost = (req, res) => {
 // Update a Post by the id in the request
 exports.updatePost = (req, res) => {
     const id = req.params.id;
-    Posts.update(req.body, {
+    postModel.update(req.body, {
         where: { id: id }
     })
         .then(num => {
@@ -77,7 +76,7 @@ exports.updatePost = (req, res) => {
 // Delete a Post with the specified id in the request
 exports.deletePost = (req, res) => {
     const id = req.params.id;
-    Posts.destroy({
+    postModel.destroy({
         where: { id: id }
     })
         .then(num => {
