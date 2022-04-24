@@ -22,14 +22,15 @@ var corsOptions = {
 app.use(cors(corsOptions));
 
 // Sequelize
-db.sequelize.sync({ force: true }).then(() => {
-    console.log("Drop and re-sync db.");
-});
+
 // Connexion à la BDD
 try {
-    db.sequelize.authenticate()
-        .then(() => console.log('Connexion OK'))
-        .catch(err => console.log("Error: " + err));
+    db.sequelize.sync({ force: true }).then(() => {
+        console.log("Drop and re-sync db.");
+    });
+    // db.sequelize.authenticate()
+    //     .then(() => console.log('Connexion OK'))
+    //     .catch(err => console.log("Error: " + err));
 }
 catch (error) {
     console.log("Unable to connect to the database: ", error);
