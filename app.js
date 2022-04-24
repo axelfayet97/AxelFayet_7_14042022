@@ -7,11 +7,11 @@ const helmet = require('helmet');
 const nocache = require('nocache');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
-const db = require("./config/sequelize.config");
+const db = require("./models/sequelize.model");
 require('dotenv').config();
 
 // Import routes
-const userRoute = require('./routes/user.route');
+const userRoute = require('./routes/users.route');
 const postsRoute = require('./routes/posts.route');
 
 // CORS
@@ -25,7 +25,7 @@ app.use(cors(corsOptions));
 
 // Connexion à la BDD
 try {
-    db.sequelize.sync({ force: true }).then(() => {
+    db.sequelize.sync({ force: false }).then(() => {
         console.log("Drop and re-sync db.");
     });
     // db.sequelize.authenticate()
