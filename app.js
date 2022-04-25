@@ -15,9 +15,8 @@ const userRoute = require('./routes/users.route');
 const postsRoute = require('./routes/posts.route');
 
 // CORS
-var corsOptions = {
-    origin: '*',
-    optionsSuccessStatus: 200
+const corsOptions = {
+    origin: '*'
 };
 app.use(cors(corsOptions));
 
@@ -25,7 +24,7 @@ app.use(cors(corsOptions));
 
 // Connexion à la BDD
 try {
-    db.sequelize.sync({ force: false }).then(() => {
+    db.sequelize.sync({ force: true }).then(() => {
         console.log("Drop and re-sync db.");
     });
     // db.sequelize.authenticate()
