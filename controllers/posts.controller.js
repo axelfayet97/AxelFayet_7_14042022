@@ -11,16 +11,17 @@ exports.createPost = (req, res) => {
     const post = {
         ...req.body
     }
+    console.log(post);
     postModel.create(post)
         .then(data => {
-            console.log(data);
+            // console.log(data);
             res.send(data)
         })
         .catch(err => res.status(500).send({ err }));
 }
 // Retrieve all Posts from the database.
 exports.findAllPosts = (req, res) => {
-    postModel.findAll()
+    postModel.findAll({ include: ['comments'] })
         .then(posts => {
             res.status(200).json({ posts })
         })
@@ -33,20 +34,20 @@ exports.findAllPosts = (req, res) => {
 };
 // Find a single Post with an id
 exports.findOnePost = (req, res) => {
-    const id = req.params.id;
-    postModel.findByPk(id)
+    const postId = req.params.id;
+    postModel.findByPk(postId, { include: ['comments'] })
         .then(data => {
             if (data) {
                 res.send(data);
             } else {
                 res.status(404).send({
-                    message: `Cannot find Post with id=${id}.`
+                    message: `Cannot find Post with id=${postId}.`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving Post with id=" + id
+                message: "Error retrieving Post with id=" + postId
             });
         });
 };
