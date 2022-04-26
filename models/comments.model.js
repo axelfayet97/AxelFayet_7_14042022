@@ -11,6 +11,7 @@ const Comment = db.define("Comment", {
     },
     content: {
         type: Sequelize.STRING,
+        allowNull: false
 
     },
     commentLike: {
