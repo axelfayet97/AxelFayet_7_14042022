@@ -7,7 +7,7 @@ const helmet = require('helmet');
 const nocache = require('nocache');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
-const db = require("./models/sequelize.model");
+const db = require("./config/db.config");
 require('dotenv').config();
 
 // Import routes
@@ -21,15 +21,17 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Sequelize
-
 // Connexion à la BDD
 try {
-    db.sequelize.sync({ force: true }).then(() => {
+    db.sync({ force: true }).then(() => {
         console.log("Drop and re-sync db.");
     });
+    // OU
     // db.sequelize.authenticate()
-    //     .then(() => console.log('Connexion OK'))
+    //     .llthen(() => console.log('Connexion OK'))
     //     .catch(err => console.log("Error: " + err));
+    // OU
+    // db.sync()
 }
 catch (error) {
     console.log("Unable to connect to the database: ", error);
@@ -43,7 +45,10 @@ app.use(bodyParser.json());
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(nocache());
 
+// Test sur localhost:PORT
+// app.get('/', (req, res) => res.send('INDEX'));
 
+// Routes de l'api
 app.use('/api/auth', userRoute);
 app.use('/api/posts', postsRoute);
 
