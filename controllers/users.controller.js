@@ -24,8 +24,7 @@ exports.signup = (req, res) => {
 // Connexion
 exports.login = (req, res) => {
     // Recherche de l'utilisateur en fonction de son email dans la BDD
-    const id = req.params.id;
-    userModel.findByPk(id)
+    userModel.findByPk(req.body.id)
         .then(user => {
             if (!user) {
                 return res.status(401).json({ error: 'Utilisateur non trouvé !' })
