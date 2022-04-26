@@ -13,6 +13,7 @@ require('dotenv').config();
 // Import routes
 const userRoute = require('./routes/users.route');
 const postsRoute = require('./routes/posts.route');
+const commentsRoute = require('./routes/comment.route');
 
 // CORS
 const corsOptions = {
@@ -23,7 +24,7 @@ app.use(cors(corsOptions));
 // Sequelize
 // Connexion à la BDD
 try {
-    db.sync({ force: true }).then(() => {
+    db.sync({ force: false }).then(() => {
         console.log("Drop and re-sync db.");
     });
     // OU
@@ -51,6 +52,7 @@ app.use(nocache());
 // Routes de l'api
 app.use('/api/auth', userRoute);
 app.use('/api/posts', postsRoute);
+app.use('/api/posts/:id/comments', commentsRoute);
 
 // Export de l'application express
 module.exports = app;
