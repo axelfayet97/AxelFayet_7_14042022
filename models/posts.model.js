@@ -1,17 +1,18 @@
 const Sequelize = require("sequelize");
 const db = require('../config/db.config');
-
+const Comment = require('./comments.model');
 const Post = db.define('Post', {
-  userId: {
-    allowNull: false,
-    type: Sequelize.STRING,
-    // references: {
-    //   model: 'Users',
-    //   key: 'id'
-    // }
-  },
+  // userId: {
+  //   allowNull: false,
+  //   type: Sequelize.STRING,
+  //   references: {
+  //     model: 'Users',
+  //     key: 'id'
+  //   }
+  // },
   postId: {
     type: Sequelize.STRING,
+    // autoIncrement: true,
     allowNull: false,
     primaryKey: true
 
@@ -31,5 +32,5 @@ const Post = db.define('Post', {
     type: Sequelize.BOOLEAN
   }
 });
-
+Post.hasMany(Comment, { as: "comments" });
 module.exports = Post;
