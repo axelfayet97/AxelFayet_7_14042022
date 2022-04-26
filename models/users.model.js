@@ -1,12 +1,6 @@
 const Sequelize = require("sequelize");
 const db = require('../config/db.config');
 const User = db.define("User", {
-  id: {
-    allowNull: false,
-    autoIncrement: true,
-    primaryKey: true,
-    type: Sequelize.INTEGER
-  },
   email: {
     allowNull: false,
     type: Sequelize.STRING,
