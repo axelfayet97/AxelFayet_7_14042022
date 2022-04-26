@@ -24,18 +24,19 @@ app.use(cors(corsOptions));
 // Sequelize
 // Connexion à la BDD
 try {
-    db.sync({ force: false }).then(() => {
-        console.log("Drop and re-sync db.");
-    });
+    // db.sync({ force: false }).then(() => {
+    //     console.log("Drop and re-sync db.");
+    // });
     // OU
     // db.sequelize.authenticate()
-    //     .llthen(() => console.log('Connexion OK'))
+    //     .then(() => console.log('Connexion OK'))
     //     .catch(err => console.log("Error: " + err));
     // OU
-    // db.sync()
+    db.sync().then(() => console.log('Connected to database'))
+    .catch(err => console.log('An error occured: ' + err))
 }
-catch (error) {
-    console.log("Unable to connect to the database: ", error);
+catch (err) {
+    console.log("Unable to connect to the database: ", err);
 }
 
 // Analyse Corps de la requête
@@ -52,7 +53,7 @@ app.use(nocache());
 // Routes de l'api
 app.use('/api/auth', userRoute);
 app.use('/api/posts', postsRoute);
-app.use('/api/posts/:id/comments', commentsRoute);
+app.use('/api/comments', commentsRoute);
 
 // Export de l'application express
 module.exports = app;
