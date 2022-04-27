@@ -1,3 +1,4 @@
+const { posts } = require('../config/db');
 const db = require('../config/db');
 const Post = db.posts;
 // const Op = db.Sequelize.Op;
@@ -6,7 +7,7 @@ const Comment = db.comments;
 exports.createPost = (post, userId) => {
     return Post.create({
         ...post.body,
-        userId: userId
+        userId: userId.user
     })
         .then(data => { post.res.status(201).send({ message: 'Post successfully created !', data }) })
         .catch((err) => { post.res.status(400).send(err) });
@@ -36,15 +37,13 @@ exports.findCommentById = (id) => {
         .catch((err) => { post.res.status(400).send({ err: 'Error while finding this comment', err }) });
 };
 // Retrieve all Posts from the database.
-exports.findAll = () => {
-    return Post.findAll({
-        include: ['comments'],
-    }).then((posts) => {
-        return posts;
-    });
+exports.findAllPosts = (posts) => {
+    return Post.findAll().then(data => {
+        posts.res.send(data);
+    }).catch(err => posts.res.send(err));
 };
 // Find a single Post with an id
-exports.findOne = (req, res) => {
+exports.findOnePost = (req, res) => {
     const id = req.params.id;
     Post.findByPk(id)
         .then(data => {
@@ -63,7 +62,7 @@ exports.findOne = (req, res) => {
         });
 };
 // Update a Post by the id in the request
-exports.update = (req, res) => {
+exports.updatePost = (req, res) => {
     const id = req.params.id;
     Post.update(req.body, {
         where: { id: id }
@@ -86,7 +85,7 @@ exports.update = (req, res) => {
         });
 };
 // Delete a Post with the specified id in the request
-exports.delete = (req, res) => {
+exports.deletePost = (req, res) => {
     const id = req.params.id;
     Post.destroy({
         where: { id: id }
