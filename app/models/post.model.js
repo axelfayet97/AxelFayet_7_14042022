@@ -1,7 +1,8 @@
 module.exports = (sequelize, Sequelize) => {
     const Post = sequelize.define('post', {
         content: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false
         },
         imageUrl: {
             type: Sequelize.STRING,
