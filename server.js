@@ -5,31 +5,34 @@ const helmet = require('helmet');
 const nocache = require('nocache');
 const bodyParser = require('body-parser');
 const app = express();
-const db = require('./app/config');
+const db = require('./app/config/db');
 const controller = require('./app/controllers/post.controller');
-// Use to test raw JSON implementation with run() when syncyng to db
+// À utiliser pour envoyer des données en dur avec la fonction run() lors de la synchro à la bdd
 // const run = async () => {
 // };
 var corsOptions = {
     origin: '*'
 };
 app.use(cors(corsOptions));
-// parse requests of content-type - application/json
+// Parse les requêtes de application/json
 app.use(bodyParser.json());
 app.use(express.json());
-// parse requests of content-type - application/x-www-form-urlencoded
+// Parse les requêtes de application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
-// test route
+// Sécurité helmet et désactivation du cache
+app.use(helmet({ crossOriginResourcePolicy: false }));
+app.use(nocache());
+// Route test
 app.get('/', (req, res) => {
     res.json({ message: 'API connected' });
 });
-db.sequelize.sync({ force: true }).then(() => {
+db.sequelize.sync({ force: false }).then(() => {
     console.log('Drop and re-sync db.');
     // run();
 });
+// Import des routes
 require('./app/routes/post.routes')(app);
 require('./app/routes/user.routes')(app);
-// set port, listen for requests
 // Paramétrage du port
 const normalizePort = val => {
     const port = parseInt(val, 10);
@@ -41,10 +44,9 @@ const normalizePort = val => {
     }
     return false;
 };
-
+// Paramétrage du port
 const port = normalizePort(process.env.PORT || 3000);
 app.set('port', port);
-
 // Gestion des erreurs
 const errorHandler = error => {
     if (error.syscall !== 'listen') {
@@ -64,15 +66,12 @@ const errorHandler = error => {
             throw error;
     }
 };
-
 // Création du serveur Express
 const server = http.createServer(app);
-
 server.on('error', errorHandler);
 server.on('listening', () => {
     const address = server.address();
     const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
     console.log('Listening on ' + bind);
 });
-
 server.listen(port);
