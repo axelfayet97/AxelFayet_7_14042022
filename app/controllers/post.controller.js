@@ -3,43 +3,29 @@ const Post = db.posts;
 // const Op = db.Sequelize.Op;
 const Comment = db.comments;
 // Create and Save a new Post
-exports.createPost = (post) => {
+exports.createPost = (post, userId) => {
     return Post.create({
-        title: post.title,
-        description: post.description,
+        ...post.body,
+        userId: userId
     })
-        .then((post) => {
-            console.log('>> Created post: ' + JSON.stringify(post, null, 4));
-            return post;
-        })
-        .catch((err) => {
-            console.log('>> Error while creating post: ', err);
-        });
-};
+        .then(data => { post.res.status(201).send({ message: 'Post successfully created !', data }) })
+        .catch((err) => { post.res.status(400).send(err) });
+}
 // Create & save comments
 exports.createComment = (postId, comment) => {
     return Comment.create({
         name: comment.name,
         text: comment.text,
-        postId: postId,
+        postId
     })
-        .then((comment) => {
-            console.log('>> Created comment: ' + JSON.stringify(comment, null, 4));
-            return comment;
-        })
-        .catch((err) => {
-            console.log('>> Error while creating comment: ', err);
-        });
+        .then(data => { post.res.status(201).send({ message: 'Comment successfully added !', data }) })
+        .catch((err) => { post.res.status(400).send(err) });
 };
 // Get comments for a given post
 exports.findPostById = (postId) => {
     return Post.findByPk(postId, { include: ['comments'] })
-        .then((post) => {
-            return post;
-        })
-        .catch((err) => {
-            console.log('>> Error while finding post: ', err);
-        });
+        .then(data => { post.res.status(201).send({ data }) })
+        .catch((err) => { post.res.status(400).send({err: 'Error while finding this post', err}) });
 };
 // Get comments for given post id
 exports.findCommentById = (id) => {
@@ -47,9 +33,7 @@ exports.findCommentById = (id) => {
         .then((comment) => {
             return comment;
         })
-        .catch((err) => {
-            console.log('>> Error while finding comment: ', err);
-        });
+        .catch((err) => { post.res.status(400).send({ err: 'Error while finding this comment', err }) });
 };
 // Retrieve all Posts from the database.
 exports.findAll = () => {
