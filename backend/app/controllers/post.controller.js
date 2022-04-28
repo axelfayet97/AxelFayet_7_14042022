@@ -4,7 +4,6 @@ const Post = db.posts;
 // const Op = db.Sequelize.Op;
 // Create and Save a new Post
 exports.createPost = (req, res) => {
-    console.log(request, req.auth);
     return Post.create({
         ...req.body,
         userId: req.auth.userId
@@ -14,7 +13,7 @@ exports.createPost = (req, res) => {
 }
 // Retrieve all Posts from the database.
 exports.findAllPosts = (req, res) => {
-    return Post.findAll({ include: ['user', 'comments', { model: Comment, as: 'comments', include: 'user' }] }).then(data => {
+    return Post.findAll({ include: ['user', 'comments'/*, { model: db.comments, as: 'comments', include: 'user' }*/] }).then(data => {
         res.send(data);
     }).catch(err => res.send(err));
 };
@@ -40,9 +39,10 @@ exports.findOnePost = (req, res) => {
 // Update a Post by the id in the request
 exports.updatePost = (req, res) => {
     const id = req.params.id;
+    console.log(id);
     // if (req.auth.userId == id) {
     Post.update(req.body, {
-        where: { id: id }
+        where: { id }
     })
         .then(num => {
             if (num == 1) {
@@ -66,11 +66,13 @@ exports.updatePost = (req, res) => {
 };
 // Delete a Post with the specified id in the request
 exports.deletePost = (req, res) => {
-    const id = req.params.id;
-    console.log(id, req.auth);
-    if (req.auth.userId == id) {
+    const postId = req.params.id;
+    // if (req.auth.userId == postUserId) {
         Post.destroy({
-            where: { id }
+            where: {
+                id: postId,
+                userId: req.auth.userId
+            }
         })
             .then(num => {
                 if (num == 1) {
@@ -79,16 +81,16 @@ exports.deletePost = (req, res) => {
                     });
                 } else {
                     res.send({
-                        message: `Cannot delete Post with id=${id}. Maybe Post was not found!`
+                        message: `Cannot delete Post with id=${postId}. Maybe Post was not found!`
                     });
                 }
             })
             .catch(err => {
                 res.status(500).send({
-                    message: 'Could not delete Post with id=' + id, err
+                    message: 'Could not delete Post with id=' + postId, err
                 });
             });
-    } else {
-        return res.status(403).send({ message: 'Forbidden' })
-    }
+    // } else {
+        // return res.status(403).send({ message: 'Forbidden' })
+    // }
 };
