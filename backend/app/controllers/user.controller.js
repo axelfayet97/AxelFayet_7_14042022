@@ -5,7 +5,6 @@ const User = db.users;
 // const Comment = db.comments;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 const secretToken = process.env.ACCESS_TOKEN_SECRET;
 
 // Inscription
@@ -28,31 +27,32 @@ exports.signup = (signup) => {
 };
 
 // Connexion
-exports.login = (login) => {
+exports.login = (req, res) => {
     // Recherche de l'utilisateur en fonction de son email dans la BDD
-    return User.findByPk(login.body.id)
+    return User.findByPk(req.body.id)
         .then(user => {
             if (!user) {
-                return login.res.status(401).send({ error: 'User not found !' })
+                return res.status(401).send({ error: 'User not found !' })
             }
             // On compare les hash des mots de passe de la requête et de la BDD
-            bcrypt.compare(login.body.password, user.password)
+            bcrypt.compare(req.body.password, user.password)
                 .then(valid => {
                     // Mot de passe erroné
                     if (!valid) {
-                        return login.res.status(401).send({ error: 'Wrong email or password' })
+                        return res.status(401).send({ error: 'Wrong email or password' })
                     }
+                    console.log(user.id);
                     // Mot de passe OK, génération d'un token d'authentification
-                    login.res.status(200).send({
-                        userId: user._id,
+                    res.status(200).send({
+                        userId: user.id,
                         token: jwt.sign(
-                            { userId: user._id },
+                            { userId: user.id },
                             secretToken,
                             { expiresIn: '24h' }
                         )
                     })
                 })
-                .catch(err => login.res.status(500).send(err));
+                .catch(err => res.status(500).send(err));
         })
-        .catch(err => login.res.status(500).send(err));
+        .catch(err => res.status(500).send(err));
 };
