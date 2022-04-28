@@ -5,45 +5,45 @@ const User = db.users;
 // const Comment = db.comments;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const secretToken = process.env.ACCESS_TOKEN_SECRET;
 
 // Inscription
-exports.signup = (signup) => {
+exports.signup = (req, res) => {
     // Cryptage du mot de passe reçu dans le corps de la requête
-    bcrypt.hash(signup.body.password, 10)
+    bcrypt.hash(req.body.password, 10)
         .then(hash => {
             // Création d'un nouvel utilisateur
             // Sauvegarde de cet utilisateur dans la BDD
             return User.create({
-                ...signup.body,
+                ...req.body,
                 password: hash
             })
-                .then(data => { signup.res.status(201).send({ message: 'User successfully created !', data }) })
-                .catch((err) => { signup.res.status(400).send(err) });
+                .then(data => { res.status(201).send({ message: 'User successfully created !', data }) })
+                .catch((err) => { res.status(400).send(err) });
         })
         .catch((err) => {
-            signup.res.status(500).send(err)
+            res.status(500).send(err)
         });
 };
 
 // Connexion
 exports.login = (req, res) => {
     // Recherche de l'utilisateur en fonction de son email dans la BDD
-    return User.findByPk(req.body.id)
+    User.findOne({ email: req.body.email })
         .then(user => {
             if (!user) {
-                return res.status(401).send({ error: 'User not found !' })
+                return res.status(401).json({ error: 'Utilisateur non trouvé !' })
             }
             // On compare les hash des mots de passe de la requête et de la BDD
             bcrypt.compare(req.body.password, user.password)
                 .then(valid => {
                     // Mot de passe erroné
                     if (!valid) {
-                        return res.status(401).send({ error: 'Wrong email or password' })
+                        return res.status(401).json({ error: 'Mot de passe incorrect !' })
                     }
-                    console.log(user.id);
                     // Mot de passe OK, génération d'un token d'authentification
-                    res.status(200).send({
+                    res.status(200).json({
                         userId: user.id,
                         token: jwt.sign(
                             { userId: user.id },
@@ -52,7 +52,7 @@ exports.login = (req, res) => {
                         )
                     })
                 })
-                .catch(err => res.status(500).send(err));
+                .catch(error => res.status(500).json({ error }));
         })
-        .catch(err => res.status(500).send(err));
+        .catch(error => res.status(500).json({ error }));
 };
