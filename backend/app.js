@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -22,12 +23,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(nocache());
 // Route test
-app.get('/', (req, res) => {
-    res.json({ message: 'API connected' });
-});
+// app.get('/', (req, res) => {
+//     res.json({ message: 'API connected' });
+// });
 db.sequelize.sync({ force: false }).then(() => {
     console.log('Drop and re-sync db.');
     // run();
 });
-
 module.exports = app;
