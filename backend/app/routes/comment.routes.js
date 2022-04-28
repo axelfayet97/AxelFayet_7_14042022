@@ -1,14 +1,15 @@
 module.exports = app => {
-    const posts = require('../controllers/post.controller.js');
-    const auth = require('../middlewares/auth.middleware');
+    const comments = require('../controllers/comment.controller');
+    // const auth = require('../middlewares/auth.middleware');
     var router = require('express').Router();
 
-    // Create a new Post
-    router.post('/', /*auth,*/ posts.createComment);
+    // Create a new Comment
+    router.post('/:id', auth, comments.createComment);
     // Retrieve a single Post with id
-    router.get('/:id', posts.findCommentById);
+    router.get('/:id', comments.findCommentById);
     // Update a Post with id
-    router.put('/:id', posts.updatePost);
+    router.put('/:id', auth, comments.updateComment);
     // Delete a Post with id
-    app.use('/api/posts', router);
+    router.delete('/:id', auth, comments.deleteComment)
+    app.use('/api/posts/comments', router);
 };
