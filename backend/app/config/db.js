@@ -28,7 +28,8 @@ db.users.hasMany(db.likes, { as: 'likes' });
 // Posts relations
 db.posts.belongsTo(db.users, {
     foreignKey: 'userId',
-    as: 'user'
+    as: 'user',
+    onDelete: 'CASCADE'
 });
 db.posts.hasMany(db.comments, { as: 'comments' });
 db.posts.hasMany(db.likes, { as: 'likes' });
