@@ -30,7 +30,10 @@ exports.signup = (req, res) => {
 // Connexion
 exports.login = (req, res) => {
     // Recherche de l'utilisateur en fonction de son email dans la BDD
-    User.findOne({ email: req.body.email })
+    User.findOne({
+        where: {
+        email: req.body.email
+    }})
         .then(user => {
             if (!user) {
                 return res.status(401).json({ error: 'Utilisateur non trouvé !' })
