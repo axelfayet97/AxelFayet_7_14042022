@@ -12,7 +12,7 @@ exports.signup = (req, res) => {
     // const firstName = req.body.firstName;
     // const lastName = req.body.lastName;
     // Vérification des champs renseignés, TO DO REGEXP SUR CHAMPS
-    if (email == null || password == null) {
+    if (email == null || password == null/*,firstName == null, lastName == null*/) {
         return res.status(400).send({ error: 'Missing signup field.' })
     };
     // Vérification de la présence de l'utilisateur dans la BDD
@@ -29,7 +29,7 @@ exports.signup = (req, res) => {
                         ...req.body,
                         password: hash
                     })
-                        .then(data => { res.status(201).send({ message: 'User successfully created !', data }) })
+                        .then(data => { res.status(201).send({ message: 'User successfully created !' }) })
                         .catch((err) => { res.status(400).send(err) });
                 })
                 .catch((err) => {
@@ -75,4 +75,11 @@ exports.login = (req, res) => {
                 .catch(error => res.status(500).json({ error }));
         })
         .catch(error => res.status(500).json({ error }));
+};
+
+exports.modifyAccount = (req, res) => {
+    // Modification du MDP
+    // Modification du Nom / Prénom
+    // Modification de la bio,
+    // Ajout et modification de la photo de profil => Installation FS
 };
