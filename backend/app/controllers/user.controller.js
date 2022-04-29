@@ -1,8 +1,5 @@
 const db = require('../config/db');
 const User = db.users;
-// const Post = db.posts;
-// const Op = db.Sequelize.Op;
-// const Comment = db.comments;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -10,21 +7,40 @@ const secretToken = process.env.ACCESS_TOKEN_SECRET;
 
 // Inscription
 exports.signup = (req, res) => {
-    // Cryptage du mot de passe reçu dans le corps de la requête
-    bcrypt.hash(req.body.password, 10)
-        .then(hash => {
-            // Création d'un nouvel utilisateur
-            // Sauvegarde de cet utilisateur dans la BDD
-            return User.create({
-                ...req.body,
-                password: hash
-            })
-                .then(data => { res.status(201).send({ message: 'User successfully created !', data }) })
-                .catch((err) => { res.status(400).send(err) });
-        })
-        .catch((err) => {
-            res.status(500).send(err)
-        });
+    const email = req.body.email;
+    const password = req.body.password;
+    // const firstName = req.body.firstName;
+    // const lastName = req.body.lastName;
+    // Vérification des champs renseignés, TO DO REGEXP SUR CHAMPS
+    if (email == null || password == null) {
+        return res.status(400).send({ error: 'Missing signup field.' })
+    };
+    // Vérification de la présence de l'utilisateur dans la BDD
+    User.findOne({
+        attribute: ['email'],
+        where: { email: email }
+    }).then(userFound => {
+        if (!userFound) {
+            // Cryptage du mot de passe reçu dans le corps de la requête
+            bcrypt.hash(req.body.password, 10)
+                .then(hash => {
+                    // Création et sauvegarde dans la base de données d'un nouvel utilisateur
+                    return User.create({
+                        ...req.body,
+                        password: hash
+                    })
+                        .then(data => { res.status(201).send({ message: 'User successfully created !', data }) })
+                        .catch((err) => { res.status(400).send(err) });
+                })
+                .catch((err) => {
+                    res.status(500).send(err)
+                });
+        } else {
+            return res.status(409).send({ error: 'User already exists !' });
+        };
+    })
+        .catch(err => res.status(500).send({ err, message: 'Something went wrong, please try again later...' }))
+
 };
 
 // Connexion
@@ -32,8 +48,9 @@ exports.login = (req, res) => {
     // Recherche de l'utilisateur en fonction de son email dans la BDD
     User.findOne({
         where: {
-        email: req.body.email
-    }})
+            email: req.body.email
+        }
+    })
         .then(user => {
             if (!user) {
                 return res.status(401).json({ error: 'Utilisateur non trouvé !' })
