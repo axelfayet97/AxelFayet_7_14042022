@@ -38,11 +38,12 @@ exports.findOnePost = (req, res) => {
 };
 // Update a Post by the id in the request
 exports.updatePost = (req, res) => {
-    const id = req.params.id;
-    console.log(id);
-    // if (req.auth.userId == id) {
+    const postId = req.params.id;
     Post.update(req.body, {
-        where: { id }
+        where: {
+            id: postId,
+            userId: req.auth.userId
+        }
     })
         .then(num => {
             if (num == 1) {
@@ -51,23 +52,19 @@ exports.updatePost = (req, res) => {
                 });
             } else {
                 res.send({
-                    message: `Cannot update Post with id=${id}. Maybe Post was not found or req.body is empty!`
+                    message: `Cannot update Post with id=${postId}. Maybe Post was not found or req.body is empty!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: 'Error updating Post with id=' + id, err
+                message: 'Error updating Post with id=' + postId, err
             });
         });
-    // } else {
-    //     return res.status(403).send({ message: 'Forbidden' })
-    // }
 };
 // Delete a Post with the specified id in the request
 exports.deletePost = (req, res) => {
     const postId = req.params.id;
-    // if (req.auth.userId == postUserId) {
         Post.destroy({
             where: {
                 id: postId,
@@ -90,7 +87,4 @@ exports.deletePost = (req, res) => {
                     message: 'Could not delete Post with id=' + postId, err
                 });
             });
-    // } else {
-        // return res.status(403).send({ message: 'Forbidden' })
-    // }
 };
