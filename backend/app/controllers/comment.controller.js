@@ -3,10 +3,10 @@ const db = require('../config/db');
 const Comment = db.comments;
 // Create & save comments
 exports.createComment = (req, res) => {
-    return Comment.create({
-        ...req.body,
-        userId: req.auth.userId
-    })
+    return Comment.update(
+        { 'comments': sequelize.fn('array_append', sequelize.col('comments'), ...req.body) },
+        { 'where': { post: postId  } }
+    )
         .then(data => { res.status(201).send({ message: 'Comment successfully added !', data }) })
         .catch((err) => { res.status(400).send(err) });
 };
