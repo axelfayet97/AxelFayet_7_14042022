@@ -1,3 +1,4 @@
+// MODELE COMMENTAIRES
 module.exports = (sequelize, Sequelize) => {
     const Comment = sequelize.define('comment', {
         content: {

@@ -1,3 +1,4 @@
+// ROUTE POUR LES UTILISATEURS
 module.exports = app => {
     const userCtrl = require('../controllers/user.controller');
     var router = require('express').Router();

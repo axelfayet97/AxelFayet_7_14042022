@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const secretToken = process.env.ACCESS_TOKEN_SECRET;
 
-// Middleware d'authentification
+// MIDDLEWARE D'AUTHENTIFICATION
 module.exports = (req, res, next) => {
     try {
         // On récupère la valeur du token située après le Bearer
@@ -20,6 +20,7 @@ module.exports = (req, res, next) => {
             next();
         }
     } catch (error) {
+        // Si une erreur survient...
         res.status(401).json({ error: error || 'Requête non authentifiée !' });
     };
 }; 

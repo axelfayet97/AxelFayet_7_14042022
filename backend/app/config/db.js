@@ -1,6 +1,6 @@
 const dbConfig = require('./db.config.js');
 const Sequelize = require('sequelize');
-// DATABASE CONNECTION
+// CONNEXION A LA BASE DE DONNEES
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     host: dbConfig.HOST,
     dialect: dbConfig.dialect,
@@ -16,16 +16,17 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
-// MODELS
+// MODELES
 db.users = require('../models/user.model')(sequelize, Sequelize);
 db.posts = require('../models/post.model')(sequelize, Sequelize);
 db.comments = require('../models/comment.model')(sequelize, Sequelize);
 db.likes = require('../models/like.model')(sequelize, Sequelize);
 // RELATIONS
+// Relations entre les Utilisateurs
 db.users.hasMany(db.posts, { as: 'posts' });
 db.users.hasMany(db.comments, { as: 'comments' });
 db.users.hasMany(db.likes, { as: 'likes' });
-// Posts relations
+// Relations entre les Posts
 db.posts.belongsTo(db.users, {
     foreignKey: 'userId',
     as: 'user',
@@ -33,7 +34,7 @@ db.posts.belongsTo(db.users, {
 });
 db.posts.hasMany(db.comments, { as: 'comments' });
 db.posts.hasMany(db.likes, { as: 'likes' });
-// Comments relations
+// Relations entre les Commentaires
 db.comments.belongsTo(db.users, {
     foreignKey: 'userId',
     as: 'user',
@@ -44,7 +45,7 @@ db.comments.belongsTo(db.posts, {
     as: 'post',
     onDelete: 'CASCADE'
 });
-// Likes relations
+// Relations entre les Likes
 db.likes.belongsTo(db.users, {
     foreignKey: 'userId',
     as: 'user',
@@ -55,5 +56,5 @@ db.likes.belongsTo(db.posts, {
     as: 'post',
     onDelete: 'CASCADE'
 });
-// DB EXPORT
+// EXPORT DE L'OBJET DB
 module.exports = db;

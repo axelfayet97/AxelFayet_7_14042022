@@ -1,3 +1,4 @@
+// ROUTE POUR LES POSTS
 module.exports = app => {
     const posts = require('../controllers/post.controller');
     const auth = require('../middlewares/auth.middleware');

@@ -1,3 +1,4 @@
+// ROUTE POUR LES LIKES
 module.exports = app => {
     const likes = require('../controllers/like.controller');
     // const auth = require('../middlewares/auth.middleware');

@@ -1,3 +1,4 @@
+// MODELE UTILISATEUR
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define('user', {
         email: {
