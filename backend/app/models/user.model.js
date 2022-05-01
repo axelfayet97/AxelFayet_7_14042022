@@ -18,6 +18,10 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             type: Sequelize.STRING
         },
+        imageUrl: {
+            allowNull: true,
+            type: Sequelize.STRING
+        },
         bio: {
             allowNull: true,
             type: Sequelize.STRING
