@@ -9,18 +9,18 @@ exports.createPost = (req, res) => {
         userId: req.auth.userId
     })
         .then(data => { res.status(201).send({ message: 'Post successfully created !', data }) })
-        .catch((err) => { res.status(400).send(err) });
+        .catch((error) => { res.status(400).send(error) });
 }
 // Retrieve all Posts from the database.
 exports.findAllPosts = (req, res) => {
     return Post.findAll({ include: ['user', 'comments'/*, { model: db.comments, as: 'comments', include: 'user' }*/] }).then(data => {
         res.send(data);
-    }).catch(err => res.send(err));
+    }).catch(error => res.send(error));
 };
 // Find a single Post with an id
 exports.findOnePost = (req, res) => {
     const id = req.params.id;
-    Post.findByPk(id, { include: ['comments'] })
+    Post.findByPk(id, { include: ['user', 'comments'] })
         .then(data => {
             if (data) {
                 res.send(data);
@@ -30,9 +30,9 @@ exports.findOnePost = (req, res) => {
                 });
             }
         })
-        .catch(err => {
+        .catch(error => {
             res.status(500).send({
-                message: 'Error retrieving Post with id=' + id, err
+                message: 'Error retrieving Post with id=' + id, error
             });
         });
 };
@@ -56,35 +56,35 @@ exports.updatePost = (req, res) => {
                 });
             }
         })
-        .catch(err => {
+        .catch(error => {
             res.status(500).send({
-                message: 'Error updating Post with id=' + postId, err
+                message: 'Error updating Post with id=' + postId, error
             });
         });
 };
 // Delete a Post with the specified id in the request
 exports.deletePost = (req, res) => {
     const postId = req.params.id;
-        Post.destroy({
-            where: {
-                id: postId,
-                userId: req.auth.userId
+    Post.destroy({
+        where: {
+            id: postId,
+            userId: req.auth.userId
+        }
+    })
+        .then(num => {
+            if (num == 1) {
+                res.send({
+                    message: 'Post was deleted successfully!'
+                });
+            } else {
+                res.send({
+                    message: `Cannot delete Post with id=${postId}. Maybe Post was not found!`
+                });
             }
         })
-            .then(num => {
-                if (num == 1) {
-                    res.send({
-                        message: 'Post was deleted successfully!'
-                    });
-                } else {
-                    res.send({
-                        message: `Cannot delete Post with id=${postId}. Maybe Post was not found!`
-                    });
-                }
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message: 'Could not delete Post with id=' + postId, err
-                });
+        .catch(error => {
+            res.status(500).send({
+                message: 'Could not delete Post with id=' + postId, error
             });
+        });
 };
