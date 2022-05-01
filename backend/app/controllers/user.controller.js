@@ -2,6 +2,7 @@ const db = require('../config/db');
 const User = db.users;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
 require('dotenv').config();
 const secretToken = process.env.ACCESS_TOKEN_SECRET;
 
@@ -39,11 +40,11 @@ exports.signup = (req, res) => {
             return res.status(409).send({ error: 'User already exists !' });
         };
     })
-        .catch(err => res.status(500).send({ err, message: 'Something went wrong, please try again later...' }))
+        .catch(error => res.status(500).send({ error, message: 'Something went wrong, please try again later...' }))
 
 };
 
-// Connexion
+// // Connexion
 exports.login = (req, res) => {
     // Recherche de l'utilisateur en fonction de son email dans la BDD
     User.findOne({
@@ -56,30 +57,72 @@ exports.login = (req, res) => {
                 return res.status(401).json({ error: 'Utilisateur non trouvé !' })
             }
             // On compare les hash des mots de passe de la requête et de la BDD
-            bcrypt.compare(req.body.password, user.password)
-                .then(valid => {
-                    // Mot de passe erroné
-                    if (!valid) {
-                        return res.status(401).json({ error: 'Mot de passe incorrect !' })
-                    }
-                    // Mot de passe OK, génération d'un token d'authentification
-                    res.status(200).json({
-                        userId: user.id,
-                        token: jwt.sign(
-                            { userId: user.id },
-                            secretToken,
-                            { expiresIn: '24h' }
-                        )
-                    })
+            if (bcrypt.compareSync(req.body.password, user.password)) {
+                res.status(200).send({
+                    userId: user.id,
+                    token: jwt.sign(
+                        { userId: user.id },
+                        secretToken,
+                        { expiresIn: '24h' }
+                    )
                 })
-                .catch(error => res.status(500).json({ error }));
+            } else {
+                return res.status(401).json({ error: 'Mot de passe incorrect !' })
+            }
         })
-        .catch(error => res.status(500).json({ error }));
+        .catch(error => res.status(500).json(error));
 };
 
+// Get all accounts
+exports.getAccounts = (req, res) => {
+    return User.findAll().then(data => {
+        res.send(data);
+    }).catch(error => res.send(error));
+};
+// Find a single Account with an id
+exports.getOneAccount = (req, res) => {
+    const id = req.params.id;
+    User.findByPk(id)
+        .then(data => {
+            if (data) {
+                res.send({ data });
+            } else {
+                res.status(404).send({
+                    message: `Cannot find user with id=${id}.`
+                });
+            }
+        })
+        .catch(error => {
+            res.status(500).send({
+                message: 'Error retrieving user with id=' + id, error
+            });
+        });
+};
 exports.modifyAccount = (req, res) => {
     // Modification du MDP
     // Modification du Nom / Prénom
     // Modification de la bio,
-    // Ajout et modification de la photo de profil => Installation FS
+    // Ajout et modification de la photo de profil => FS 
+    const paramsId = req.params.id;
+    User.update(req.body, {
+        where: {
+            id: paramsId
+        }
+    })
+        .then(num => {
+            if (num == 1) {
+                res.send({
+                    message: 'Profile was updated successfully.'
+                });
+            } else {
+                res.send({
+                    message: `Cannot update profile with id=${paramsId}. Maybe profile was not found or req.body is empty!`
+                });
+            }
+        })
+        .catch(error => {
+            res.status(500).send({
+                message: 'Error updating profile with id=' + paramsId, error
+            });
+        });
 };
