@@ -1,7 +1,7 @@
 const { posts } = require('../config/db');
 const db = require('../config/db');
-const like = db.likes;
+const Like = db.likes;
 
-module.exports = (req, res) => {
+exports.likesControl = (req, res) => {
 
-}
+};
