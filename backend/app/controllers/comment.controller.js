@@ -5,7 +5,7 @@ const Comment = db.comments;
 exports.createComment = (req, res) => {
     return Comment.update(
         { 'comments': sequelize.fn('array_append', sequelize.col('comments'), ...req.body) },
-        { 'where': { post: postId  } }
+        { 'where': { post: postId } }
     )
         .then(data => { res.status(201).send({ message: 'Comment successfully added !', data }) })
         .catch((err) => { res.status(400).send(err) });
@@ -17,7 +17,7 @@ exports.findCommentById = (req, res) => {
         .then((comment) => {
             return comment;
         })
-        .catch((err) => { res.status(400).send({ err: 'Error while finding this comment', err }) });
+        .catch((err) => { res.status(400).send({ err: 'Error while finding this comment', error }) });
 };
 // Delete a comment
 exports.deleteComment = (req, req) => {
@@ -37,7 +37,7 @@ exports.deleteComment = (req, req) => {
                     });
                 }
             })
-            .catch(err => {
+            .catch(error => {
                 res.status(500).send({
                     message: 'Could not delete Comment with id=' + id, err
                 });
