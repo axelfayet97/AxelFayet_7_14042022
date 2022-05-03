@@ -9,6 +9,6 @@ module.exports = app => {
     router.put('/:id', auth, multer, userCtrl.modifyAccount);
     router.get('/', userCtrl.getAccounts);
     router.get('/:id', userCtrl.getOneAccount);
-    // router.delete('/:id', auth, userCtrl.deleteAccount); // DISABLE NOT DELETE
+    router.delete('/:id', auth, userCtrl.deleteAccount); // DISABLE NOT DELETE
     app.use('/api/auth', router);
 }
