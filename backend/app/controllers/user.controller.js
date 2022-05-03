@@ -19,7 +19,7 @@ exports.signup = (req, res) => {
     // Vérification de la présence de l'utilisateur dans la BDD
     User.findOne({
         attribute: ['email'],
-        where: { email: email }
+        where: { email }
     }).then(userFound => {
         if (!userFound) {
             // Cryptage du mot de passe reçu dans le corps de la requête
@@ -31,17 +31,16 @@ exports.signup = (req, res) => {
                         password: hash
                     })
                         .then(data => { res.status(201).send({ message: 'User successfully created !' }) })
-                        .catch((err) => { res.status(400).send(err) });
+                        .catch((error) => { res.status(400).send(error) });
                 })
-                .catch((err) => {
-                    res.status(500).send(err)
+                .catch((error) => {
+                    res.status(500).send(error)
                 });
         } else {
             return res.status(409).send({ error: 'User already exists !' });
         };
     })
         .catch(error => res.status(500).send({ error, message: 'Something went wrong, please try again later...' }))
-
 };
 
 // // Connexion
@@ -98,31 +97,66 @@ exports.getOneAccount = (req, res) => {
             });
         });
 };
+// exports.modifyPassword = (req, res) => {
+//     if (req.params.id != req.auth.userId) {
+//         return res.status(401).send({ message: "Unauthorized." })
+//     }
+//     // Création et sauvegarde dans la base de données d'un nouvel utilisateur
+//     // To do : methode modif mdp par bcrypt
+//     bcrypt.hash(req.body.password, 10)
+//         .then(hash => {
+//             console.log(hash);
+//             User.update({ password: hash }, {
+//                 where: {
+//                     id: req.params.id
+//                 }
+//             })
+//         })
+//         .catch(error => {
+//             res.status(500).send({
+//                 message: 'Error updating password for user with id=' + req.params.id, error
+//             });
+//         });
+// };
 exports.modifyAccount = (req, res) => {
-    // Modification du MDP
-    // Modification du Nom / Prénom
-    // Modification de la bio,
-    // Ajout et modification de la photo de profil => FS 
-    const paramsId = req.params.id;
-    User.update(req.body, {
-        where: {
-            id: paramsId
-        }
-    })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: 'Profile was updated successfully.'
-                });
-            } else {
-                res.send({
-                    message: `Cannot update profile with id=${paramsId}. Maybe profile was not found or req.body is empty!`
-                });
-            }
-        })
-        .catch(error => {
-            res.status(500).send({
-                message: 'Error updating profile with id=' + paramsId, error
-            });
-        });
+    // Vérification auth
+    if (req.params.id != req.auth.userId) {
+        return res.status(401).send({ message: "Unauthorized" });
+    }
+    const firstname = req.body.firstName;
+    const lastname = req.body.lastName;
+    // Vérification des champs
+    // TO DO : VERIF REGEXP
+    if (!firstname || !lastname) {
+        return res.status(400).send({ 'error': "Les champs 'nom' et 'prénom' doivent être remplis " });
+    }
+    // TO DO : Ajout / Modif image utilisateur
+    const userObject = req.file ?
+        {
+            ...req.body.user,
+            imageUrl: req.file.filename
+        } : { ...req.body };
+    // TO DO : Trouver un moyen de modif mdp
+    if (req.body.password) {
+        return res.status(400).send({ message: 'Le mot de passe doit être modifié par une autre méthode' })
+    }
+
+    User.update({ ...userObject, id: req.params.id }, { where: { id: req.params.id } })
+        .then(() => res.status(200).send({ message: 'Utilisateur modifié !' }))
+        .catch(error => res.status(400).send({ error }));
 };
+exports.deleteAccount = (req, res) => {
+    // Vérification auth
+    if (req.params.id != req.auth.userId) {
+        return res.status(401).send({ message: "Unauthorized" });
+    }
+    User.findOne({ where: { id: req.params.id } })
+        .then(user => {
+            const filename = user.imageUrl;
+            fs.unlink(`images/${filename}`, () => {
+                User.destroy({ where: { id: req.params.id } })
+                    .then(res.status(200).send({ message: 'User successfully deleted' }))
+            })
+        })
+        .catch(error => res.status(400).send(error))
+}
