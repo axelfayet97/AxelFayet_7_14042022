@@ -1,26 +1,44 @@
-const { posts } = require('../config/db');
 const db = require('../config/db');
 const Comment = db.comments;
 // Create & save comments
 exports.createComment = (req, res) => {
-    return Comment.update(
-        { 'comments': sequelize.fn('array_append', sequelize.col('comments'), ...req.body) },
-        { 'where': { post: postId } }
-    )
-        .then(data => { res.status(201).send({ message: 'Comment successfully added !', data }) })
-        .catch((err) => { res.status(400).send(err) });
+    // TO DO : FS MULTER
+    const commentObject = req.body;
+    // Création d'un nouvel objet commentaire
+    const comment = new Comment({
+        ...commentObject
+    });
+    console.log(commentObject);
+    // Enregistrement de l'objet commentaire dans la base de données
+    comment.save()
+        .then(() => {
+            Comment.findAll({
+                where: { postId: req.body.postId }
+            })
+                .then((comments) => {
+                    res.status(200).json(comments);
+                })
+        })
+        .catch(error => res.status(400).json({ error }));
 };
 
 // Get comments for given post id
 exports.findCommentById = (req, res) => {
-    return Comment.findByPk(req.body.id, { include: ['post'] })
+    Comment.findByPk(req.body.id, { include: ['post'], where: { postId: req.params.postId } })
         .then((comment) => {
-            return comment;
+            res.status(200).send(comment);
         })
-        .catch((err) => { res.status(400).send({ err: 'Error while finding this comment', error }) });
+        .catch((error) => { res.status(400).send({ error: 'Error while finding this comment', error }) });
 };
+exports.getAllComments = (req, res) => {
+    // Retrieve all Posts from the database.
+    Comments.findAll({ include: ['user', 'comments'/*, { model: db.comments, as: 'comments', include: 'user' }*/] }).then(comments => {
+        res.status(200).send(comments);
+    }).catch(error => res.send(error));
+}
 // Delete a comment
 exports.deleteComment = (req, req) => {
+    // TO DO : FS MULTER
     const id = req.params.id;
     if (req.auth.userId == id) {
         Comment.destroy({
