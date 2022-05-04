@@ -23,17 +23,17 @@ db.comments = require('../models/comment.model')(sequelize, Sequelize);
 db.likes = require('../models/like.model')(sequelize, Sequelize);
 // RELATIONS
 // Relations entre les Utilisateurs
-db.users.hasMany(db.posts, { as: 'posts' });
-db.users.hasMany(db.comments, { as: 'comments' });
-db.users.hasMany(db.likes, { as: 'likes' });
+db.users.hasMany(db.posts, { as: 'posts', onDelete: 'CASCADE' });
+db.users.hasMany(db.comments, { as: 'comments', onDelete: 'CASCADE' });
+db.users.hasMany(db.likes, { as: 'likes', onDelete: 'CASCADE' });
 // Relations entre les Posts
 db.posts.belongsTo(db.users, {
     foreignKey: 'userId',
     as: 'user',
     onDelete: 'CASCADE'
 });
-db.posts.hasMany(db.comments, { as: 'comments' });
-db.posts.hasMany(db.likes, { as: 'likes' });
+db.posts.hasMany(db.comments, { as: 'comments', onDelete: 'CASCADE' });
+db.posts.hasMany(db.likes, { as: 'likes', onDelete: 'CASCADE' });
 // Relations entre les Commentaires
 db.comments.belongsTo(db.users, {
     foreignKey: 'userId',
