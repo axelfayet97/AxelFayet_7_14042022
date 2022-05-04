@@ -32,7 +32,7 @@ db.posts.belongsTo(db.users, {
     as: 'user',
     onDelete: 'CASCADE'
 });
-db.posts.hasMany(db.comments, { as: 'comments', onDelete: 'CASCADE' });
+db.posts.hasMany(db.comments, { as: 'comments', foreingKey: 'postId', onDelete: 'CASCADE' });
 db.posts.hasMany(db.likes, { as: 'likes', onDelete: 'CASCADE' });
 // Relations entre les Commentaires
 db.comments.belongsTo(db.users, {
