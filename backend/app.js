@@ -6,10 +6,6 @@ const nocache = require('nocache');
 const bodyParser = require('body-parser');
 const app = express();
 const db = require('./app/config/db');
-// const controller = require('./controllers/post.controller');
-// À utiliser pour envoyer des données en dur avec la fonction run() lors de la synchro à la bdd
-// const run = async () => {
-// };
 // Définition des propriétés CORS
 var corsOptions = {
     origin: '*'
@@ -23,14 +19,9 @@ app.use(express.urlencoded({ extended: true }));
 // Sécurité helmet et désactivation du cache
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(nocache());
-// Route test
-// app.get('/', (req, res) => {
-//     res.json({ message: 'API connected' });
-// });
 // SYNCHRONISATION A LA BDD : DEFINIR FORCE SUR TRUE POUR PURGER
 db.sequelize.sync({ force: false }).then(() => {
     console.log('Drop and re-sync db.');
-    // run();
 });
 // EXPORT DE L'APPLICATION POUR LE SERVEUR
 module.exports = app;
