@@ -4,6 +4,7 @@ const Post = db.posts;
 // const Op = db.Sequelize.Op;
 // Create and Save a new Post
 exports.createPost = (req, res) => {
+    // TO DO : FS MULTER
     return Post.create({
         ...req.body,
         userId: req.auth.userId
@@ -13,14 +14,15 @@ exports.createPost = (req, res) => {
 }
 // Retrieve all Posts from the database.
 exports.findAllPosts = (req, res) => {
-    return Post.findAll({ include: ['user', 'comments'/*, { model: db.comments, as: 'comments', include: 'user' }*/] }).then(data => {
+    return Post.findAll({ include: ['user', 'comments', 'likes'/*, { model: db.comments, as: 'comments', include: 'user' }*/]/*, order:[ 'createdAt', 'descending' ] */}).then(data => {
+        console.log(data.comments);
         res.send(data);
     }).catch(error => res.send(error));
 };
 // Find a single Post with an id
 exports.findOnePost = (req, res) => {
     const id = req.params.id;
-    Post.findByPk(id, { include: ['user', 'comments'] })
+    Post.findByPk(id, { include: ['user', 'comments', 'likes'] })
         .then(data => {
             if (data) {
                 res.send(data);
@@ -64,6 +66,7 @@ exports.updatePost = (req, res) => {
 };
 // Delete a Post with the specified id in the request
 exports.deletePost = (req, res) => {
+    // TO DO : FS MULTER
     const postId = req.params.id;
     Post.destroy({
         where: {
