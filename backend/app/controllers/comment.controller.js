@@ -3,28 +3,30 @@ const Comment = db.comments;
 // Create & save comments
 exports.createComment = (req, res) => {
     // TO DO : FS MULTER
-    const commentObject = req.body;
     // Création d'un nouvel objet commentaire
+    const postId = req.body.postId;
+    if (!postId) {
+        return res.status(404).send({ message: 'Unable to get post ID' })
+    }
     const comment = new Comment({
-        ...commentObject
+        ...req.body,
+        userId: req.auth.userId
     });
-    console.log(commentObject);
     // Enregistrement de l'objet commentaire dans la base de données
-    comment.save()
+    comment.save({ include: ['user'] })
         .then(() => {
             Comment.findAll({
-                where: { postId: req.body.postId }
+                where: { postId }
             })
                 .then((comments) => {
-                    res.status(200).json(comments);
+                    res.status(200).send(comments);
                 })
         })
-        .catch(error => res.status(400).json({ error }));
+        .catch(error => res.status(400).send({ error }));
 };
-
 // Get comments for given post id
 exports.findCommentById = (req, res) => {
-    Comment.findByPk(req.body.id, { include: ['post'], where: { postId: req.params.postId } })
+    Comment.findByPk(req.params.id, { include: ['post'], where: { postId: req.params.postId } })
         .then((comment) => {
             res.status(200).send(comment);
         })
@@ -32,35 +34,34 @@ exports.findCommentById = (req, res) => {
 };
 exports.getAllComments = (req, res) => {
     // Retrieve all Posts from the database.
-    Comments.findAll({ include: ['user', 'comments'/*, { model: db.comments, as: 'comments', include: 'user' }*/] }).then(comments => {
+    Comment.findAll(/*{ include: ['user', 'comments',/*, { model: db.comments, as: 'comments', include: 'user' }], order:[ 'createdAt', 'descending' ] }*/).then(comments => {
         res.status(200).send(comments);
     }).catch(error => res.send(error));
 }
 // Delete a comment
-exports.deleteComment = (req, req) => {
+exports.deleteComment = (req, res) => {
     // TO DO : FS MULTER
     const id = req.params.id;
-    if (req.auth.userId == id) {
-        Comment.destroy({
-            where: { id }
-        })
-            .then(num => {
-                if (num == 1) {
-                    res.send({
-                        message: 'Comment was deleted successfully!'
-                    });
-                } else {
-                    res.send({
-                        message: `Cannot delete Comment with id=${id}. Maybe Comment was not found!`
-                    });
-                }
-            })
-            .catch(error => {
-                res.status(500).send({
-                    message: 'Could not delete Comment with id=' + id, err
+    Comment.destroy({
+        where: {
+            id,
+            userId: req.auth.userId
+        }
+    })
+        .then(num => {
+            if (num == 1) {
+                res.send({
+                    message: 'Comment was deleted successfully!'
                 });
+            } else {
+                res.send({
+                    message: `Cannot delete Comment with id=${id}. Maybe Comment was not found!`
+                });
+            }
+        })
+        .catch(error => {
+            res.status(500).send({
+                message: 'Could not delete Comment with id=' + id, err
             });
-    } else {
-        return res.status(403).send({ message: 'Forbidden' })
-    }
+        });
 }
