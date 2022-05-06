@@ -10,12 +10,13 @@ exports.likeState = (req, res) => {
         .then(likes => {
             if (likes.length === 0) {
                 const like = new Like({
-                    ...req.body
+                    ...req.body,
+                    userId: req.auth.userId
                 });
                 // Enregistrement de l'objet like dans la base de données
                 like.save()
-                .then(data => {
-                    res.status(200).send({ data, message: "like créé" })
+                    .then(data => {
+                        res.status(200).send({ data, message: "like créé" })
                     })
                     .catch(error => res.status(400).json({ error }));
             } else {
@@ -25,21 +26,21 @@ exports.likeState = (req, res) => {
                         userId: req.body.userId
                     }
                 })
-                .then(data => {
-                    res.status(200).send({ data, message: "like retiré" })
+                    .then(data => {
+                        res.status(200).send({ data, message: "like retiré" })
                     })
                     .catch(error => res.status(400).json({ error }));
-                }
-            })
-        };
-        exports.getLikes = (req, res) => {
-            Like.findAll({
-                where: {
-                    postId: req.params.id
-                }
-            })
-            .then(likes => {
-                res.status(200).send({ data: likes });
+            }
+        })
+};
+exports.getLikes = (req, res) => {
+    Like.findAll({
+        where: {
+            postId: req.params.id
+        }
+    })
+        .then(likes => {
+            res.status(200).send({ data: likes });
         })
         .catch(error => res.status(400).send(error));
 };
