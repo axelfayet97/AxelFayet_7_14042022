@@ -26,7 +26,7 @@ db.sequelize.sync({ force: false }).then(() => {
 // Import des routes
 require('./app/routes/post.routes')(app);
 require('./app/routes/user.routes')(app);
-require('./app/routes/like.route')(app);
+require('./app/routes/like.routes')(app);
 require('./app/routes/comment.routes')(app);
 // EXPORT DE L'APPLICATION POUR LE SERVEUR
 module.exports = app;
