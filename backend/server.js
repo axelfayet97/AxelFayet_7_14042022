@@ -1,8 +1,5 @@
 const http = require('http');
 const app = require('./app');
-// Import des routes
-require('./app/routes/post.routes')(app);
-require('./app/routes/user.routes')(app);
 // Paramétrage du port
 const normalizePort = val => {
     const port = parseInt(val, 10);
