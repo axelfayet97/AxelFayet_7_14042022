@@ -23,5 +23,10 @@ app.use(nocache());
 db.sequelize.sync({ force: false }).then(() => {
     console.log('Drop and re-sync db.');
 });
+// Import des routes
+require('./app/routes/post.routes')(app);
+require('./app/routes/user.routes')(app);
+require('./app/routes/like.route')(app);
+require('./app/routes/comment.routes')(app);
 // EXPORT DE L'APPLICATION POUR LE SERVEUR
 module.exports = app;
