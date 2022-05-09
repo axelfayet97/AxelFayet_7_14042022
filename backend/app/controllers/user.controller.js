@@ -120,6 +120,9 @@ exports.getOneAccount = (req, res) => {
 // };
 exports.modifyAccount = (req, res) => {
     // Vérification auth
+      if (req.params.id != req.auth.userId) {
+        return res.status(401).send({ message: "Unauthorized." })
+    }
     const firstname = req.body.firstName;
     const lastname = req.body.lastName;
     // Vérification des champs
@@ -138,7 +141,7 @@ exports.modifyAccount = (req, res) => {
         return res.status(400).send({ message: 'Le mot de passe doit être modifié par une autre méthode' })
     }
 
-    User.update({ ...userObject, id: req.params.id }, { where: { id: req.params.id }, userId: req.auth.userId })
+    User.update({ ...userObject, id: req.params.id }, { where: { id: req.params.id }})
         .then(() => res.status(200).send({ message: 'Utilisateur modifié !' }))
         .catch(error => res.status(400).send({ error }));
 };
