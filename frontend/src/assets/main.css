@@ -1,9 +1,10 @@
 /* color palette for Groupomania */
 :root {
-  --blanc: #ffffff;
+  --blanc: #fff;
   --noir: #101118;
   --rouge: #ff0000;
 }
+
 /* ===============
 *
 *     GENERAL
@@ -17,14 +18,16 @@
   position: relative;
   font-weight: normal;
 }
+
 .home {
   padding: 2rem;
 }
+
 body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background: var(--rouge);
+  background: var(--blanc);
   line-height: 1.4;
   font-family: "Raleway", sans-serif;
   font-size: 15px;
@@ -43,28 +46,34 @@ header {
   box-shadow: 0px -5px 30px rgba(0, 0, 0, 0.16);
   padding: 15px
 }
+
 @media (min-width: 1024px) {
   header {
     display: flex;
     place-items: center;
   }
+
   header .wrapper {
     display: flex;
     place-items: flex-start;
     flex-wrap: wrap;
   }
+
   .logo {
     margin: 0 2rem 0 0;
   }
 }
+
 header img {
   width: 200px;
 }
+
 @media all and (max-width: 1024px) {
   header img {
     width: 150px
   }
 }
+
 /* ===============
 *
 *     FOOTER
@@ -76,6 +85,7 @@ footer.footer_wrapper {
   justify-content: center;
   align-items: center;
 }
+
 footer.footer_wrapper ul li {
   display: inline-block;
   width: auto;
@@ -84,32 +94,38 @@ footer.footer_wrapper ul li {
   color: var(--blanc);
   font-size: 14px;
 }
+
 @media all and (max-width: 769px) {
   footer.footer_wrapper ul li {
     display: block;
     text-align: center;
   }
 }
+
 @media all and (min-width: 769px) {
   footer.footer_wrapper ul li::before {
     content: '-';
     display: inline-block;
     padding-right: 15px;
   }
+
   footer.footer_wrapper ul li:first-of-type::before {
     content: '';
   }
 }
+
 footer.footer_wrapper ul li a,
 footer.footer_wrapper ul li a:active {
   color: var(--blanc);
   text-decoration: none;
 }
+
 footer.footer_wrapper ul li a:hover,
 footer.footer_wrapper ul li a:focus,
 footer.footer_wrapper ul li a:active {
   text-decoration: underline;
 }
+
 /* ===============
 *
 *     FORMULAIRE
@@ -119,23 +135,85 @@ footer.footer_wrapper ul li a:active {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: auto;
-  width: 500px;
-  padding: 2rem;
-  background: var(--blanc);
+  margin: 100px auto;
+  width: 700px;
   box-shadow: 0px -5px 30px rgba(0, 0, 0, 0.16);
+  background-color: transparent;
+  border-radius: 30px !important;
 }
+
 @media all and (max-width: 768px) {
   .form_wrapper {
     width: 300px
   }
 }
+
+.form_wrapper .selection_buttons {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+}
+
+.form_wrapper .selection_buttons a,
+.form_wrapper .selection_buttons a:visited {
+  padding: 20px;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  width: 100%;
+  text-align: center;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 25px;
+  text-decoration: none;
+  color: var(--noir);
+  background-color: #F2F2F2;
+}
+
+.form_wrapper .selection_buttons a.active {
+  background-color: var(--blanc);
+}
+
+.form_wrapper_background {
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  width: 100%;
+  background-color: var(--blanc);
+  padding: 10px;
+  text-align: center;
+}
+
+.form_wrapper img {
+  max-width: 70px;
+  display: block;
+  margin: auto;
+}
+
+.form_wrapper h1 {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  text-align: center;
+}
+
+.form_wrapper h1 .span-h {
+  color: var(--rouge);
+  font-weight: bold;
+}
+
+.form_wrapper .connexion_text {
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.8em;
+}
+
 .form_wrapper .form_wrapper__field {
   margin: 10px auto;
 }
+
 .form_wrapper .form_wrapper__field label {
   display: none;
 }
+
 .form_wrapper .form_wrapper__field input {
   border: none;
   border-bottom: 1px solid var(--noir);
@@ -143,14 +221,37 @@ footer.footer_wrapper ul li a:active {
   text-align: center;
   padding: 10px;
   transition: all .2s linear;
+  width: 300px;
 }
+
+.form_wrapper .form_wrapper__field input::placeholder {
+  font-family: "Raleway", sans-serif;
+}
+
 .form_wrapper .form_wrapper__field input:hover,
 .form_wrapper .form_wrapper__field input:focus,
 .form_wrapper .form_wrapper__field input:active {
   border-color: var(--rouge);
 }
-.form_wrapper .form_wrapper__field p {
-  font-size: 12px;
+
+.form_wrapper .form_wrapper__button input[type="submit"] {
+  background: #FF0000;
+  border-radius: 40px;
+  padding: 15px 40px;
+  border: 2px solid transparent;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  transition: all .2s linear;
+}
+
+.form_wrapper .form_wrapper__button input[type="submit"]:hover,
+.form_wrapper .form_wrapper__button input[type="submit"]:focus,
+.form_wrapper .form_wrapper__button input[type="submit"]:active {
+  background-color: #fff;
   color: var(--rouge);
-  font-style: italic;
+  border: 2px solid var(--rouge);
+  cursor: pointer;
 }
