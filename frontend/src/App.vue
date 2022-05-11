@@ -1,10 +1,16 @@
 <template>
-  <header class="header__wrapper">
-    <div class="header__wrapper__col">
-      <router-link to="/">
-        <img src="./icons/icon-left-font.jpeg" />
-      </router-link>
-    </div>
-  </header>
+  <Header />
   <router-view />
+  <Footer />
 </template>
+
+<script>
+import Header from "@/components/Header.vue"
+import Footer from "@/components/Footer.vue"
+export default {
+  components: {
+    Header,
+    Footer
+  }
+}
+</script>
