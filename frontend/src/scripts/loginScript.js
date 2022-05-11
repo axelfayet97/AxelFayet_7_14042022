@@ -14,7 +14,6 @@ function checkFormInformations() {
         };
     });
 };
-
 // Fonction permettant de désactiver le bouton "Commander" si un champs est incorrect
 // function buttonIsDisabled(disabled) {
     //     let orderInput = document.getElementById("order");

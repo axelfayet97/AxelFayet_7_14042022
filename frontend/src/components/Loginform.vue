@@ -12,13 +12,11 @@
       <p v-if="fieldError == true">{{ errorMessage }}</p>
     </div>
     <div class="form_wrapper__button submit__button">
-      <input type="submit" id="submit" value="C'est parti !"  />
+      <input type="submit" id="submit" value="C'est parti !" />
     </div>
   </form>
 </template>
-
 <script>
-
 </script>
 <style>
 </style>

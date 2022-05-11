@@ -1,13 +1,10 @@
 <template>
-  <Header />
-  <Loginform />
-  <Footer />
+  <header class="header__wrapper">
+    <div class="header__wrapper__col">
+      <router-link to="/">
+        <img src="./icons/icon-left-font.jpeg" />
+      </router-link>
+    </div>
+  </header>
+  <router-view />
 </template>
-<script setup>
-import Header from "./components/Header.vue";
-import Loginform from "./components/Loginform.vue";
-import Footer from "./components/Footer.vue";
-</script>
-<style>
-@import url("./assets/base.css");
-</style>
