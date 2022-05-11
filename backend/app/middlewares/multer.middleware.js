@@ -1,5 +1,4 @@
 const multer = require('multer');
-
 // Génération de l'extension du fichier
 const MIME_TYPES = {
     'image/jpg': 'jpg',
@@ -7,7 +6,6 @@ const MIME_TYPES = {
     'image/png': 'png',
     'image/webp': 'webp'
 };
-
 // Enresitrement dans constante storage
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
@@ -24,6 +22,5 @@ const storage = multer.diskStorage({
         callback(null, fixName + Date.now() + '.' + extension);
     }
 });
-
 // Export du fichier
 module.exports = multer({ storage }).single('image');

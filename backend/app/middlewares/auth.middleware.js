@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const secretToken = process.env.ACCESS_TOKEN_SECRET;
 const db = require('../config/db');
 const User = db.users;
-
 // MIDDLEWARE D'AUTHENTIFICATION
 module.exports = (req, res, next) => {
     // TO DO : IMPLEMENTATION IS ADMIN : req.body.isAdmin ? next() : else try catch

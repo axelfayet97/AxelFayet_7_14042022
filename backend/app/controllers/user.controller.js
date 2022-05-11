@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 require('dotenv').config();
 const secretToken = process.env.ACCESS_TOKEN_SECRET;
-
 // Inscription
 exports.signup = (req, res) => {
     const email = req.body.email;
@@ -42,7 +41,6 @@ exports.signup = (req, res) => {
     })
         .catch(error => res.status(500).send({ error, message: 'Something went wrong, please try again later...' }))
 };
-
 // // Connexion
 exports.login = (req, res) => {
     // Recherche de l'utilisateur en fonction de son email dans la BDD
@@ -71,7 +69,6 @@ exports.login = (req, res) => {
         })
         .catch(error => res.status(500).json(error));
 };
-
 // Get all accounts
 exports.getAccounts = (req, res) => {
     return User.findAll().then(data => {
@@ -140,7 +137,6 @@ exports.modifyAccount = (req, res) => {
     if (req.body.password) {
         return res.status(400).send({ message: 'Le mot de passe doit être modifié par une autre méthode' })
     }
-
     User.update({ ...userObject, id: req.params.id }, { where: { id: req.params.id }})
         .then(() => res.status(200).send({ message: 'Utilisateur modifié !' }))
         .catch(error => res.status(400).send({ error }));
