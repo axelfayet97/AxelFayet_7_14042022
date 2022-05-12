@@ -44,7 +44,7 @@ body {
 header {
   background: var(--blanc);
   box-shadow: 0px -5px 30px rgba(0, 0, 0, 0.16);
-  padding: 15px
+  padding: 15px;
 }
 
 @media (min-width: 1024px) {
@@ -137,9 +137,9 @@ footer.footer_wrapper ul li a:active {
   align-items: center;
   margin: 100px auto;
   width: 700px;
-  box-shadow: 0px -5px 30px rgba(0, 0, 0, 0.16);
   background-color: transparent;
   border-radius: 30px !important;
+  
 }
 
 @media all and (max-width: 768px) {
@@ -152,10 +152,12 @@ footer.footer_wrapper ul li a:active {
   display: flex;
   width: 100%;
   justify-content: space-around;
+ 
 }
 
 .form_wrapper .selection_buttons a,
 .form_wrapper .selection_buttons a:visited {
+  box-shadow: 0px -5px 20px rgba(0, 0, 0, 0.16);
   padding: 20px;
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
@@ -171,15 +173,18 @@ footer.footer_wrapper ul li a:active {
 
 .form_wrapper .selection_buttons a.active {
   background-color: var(--blanc);
+  z-index: 2;
 }
 
 .form_wrapper_background {
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.16);
   width: 100%;
   background-color: var(--blanc);
   padding: 10px;
   text-align: center;
+  z-index: 3;
 }
 
 .form_wrapper img {
