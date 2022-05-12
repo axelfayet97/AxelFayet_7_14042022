@@ -12,7 +12,6 @@ module.exports = (req, res, next) => {
             // req.auth = {userId} ??
             next();
         } else {
-            console.log('Regular auth');
             try {
                 // On récupère la valeur du token située après le Bearer
                 const token = req.headers.authorization.split(' ')[1];
