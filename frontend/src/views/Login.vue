@@ -15,21 +15,26 @@
                 <p class="connexion_text">Votre plateforme d’entreprise connectée à tous vos collaborateurs</p>
                 <p class="connexion_text">Vous avez déjà un compte ? Connectez-vous !</p>
             </div>
-            <form method="post"
-                  action="../views/Home.vue">
+            <form method="get"
+                  class="connection_form"
+                  @submit.prevent="loginFunction">
                 <div class="form_wrapper__field email__field">
                     <label for="email">Votre adresse mail</label>
                     <input type="text"
                            id="email"
-                           placeholder="Votre adresse mail" />
-                    <p v-if="fieldError == true">{{ errorMessage }}</p>
+                           v-model="email"
+                           placeholder="Votre adresse mail"
+                           required />
+                    <!-- <p v-if="fieldError">{{ errorMessage }}a</p> -->
                 </div>
                 <div class="form_wrapper__field password__field">
                     <label for="password">Votre mot de passe</label>
                     <input type="password"
                            id="password"
-                           placeholder="Votre mot de passe" />
-                    <p v-if="fieldError == true">{{ errorMessage }}</p>
+                           v-model="password"
+                           placeholder="Votre mot de passe"
+                           required />
+                    <!-- <p v-if="fieldError">{{ errorMessage }}</p> -->
                 </div>
                 <div class="form_wrapper__button submit__button">
                     <input type="submit"
@@ -42,4 +47,24 @@
 </template>
 
 <script>
+import axios from "axios"
+export default {
+    name: 'Login',
+    data() {
+        return {
+            email: '',
+            password: ''
+        }
+    },
+    methods: {
+        async loginFunction() {
+            const response = await axios.post('auth/login', {
+                email: this.email,
+                password: this.password
+            })
+            localStorage.setItem('token', response.data.token)
+            this.$router.push('/')
+        }
+    }
+}
 </script>
