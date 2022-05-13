@@ -13,6 +13,17 @@ export default {
   components: {
     Header,
     Footer
-  }
+  },
+  data() {
+    return {
+      auth: null
+    }
+  },
+  mounted:
+    function getAuth() {
+  console.log(localStorage.getItem('token') === null);
+  localStorage.getItem('token') == null ? { auth: null } : { auth: true }
+}
+  
 }
 </script>
