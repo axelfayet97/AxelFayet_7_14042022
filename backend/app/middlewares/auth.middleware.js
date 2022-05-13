@@ -6,7 +6,6 @@ const User = db.users;
 module.exports = (req, res, next) => {
     // TO DO : IMPLEMENTATION IS ADMIN : req.body.isAdmin ? next() : else try catch
     User.findOne().then(user => {
-        console.log(user.dataValues);
         if (user.dataValues.isAdmin) {
             console.log('Admin auth');
             // req.auth = {userId} ??
