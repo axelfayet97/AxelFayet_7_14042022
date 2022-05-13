@@ -29,7 +29,7 @@ exports.signup = (req, res) => {
                         ...req.body,
                         password: hash
                     })
-                        .then(data => { res.status(201).send({ message: 'User successfully created !' }) })
+                        .then(data => { res.status(201).send({ message: 'User successfully created !', data }) })
                         .catch((error) => { res.status(400).send(error) });
                 })
                 .catch((error) => {
@@ -117,7 +117,7 @@ exports.getOneAccount = (req, res) => {
 // };
 exports.modifyAccount = (req, res) => {
     // Vérification auth
-      if (req.params.id != req.auth.userId) {
+    if (req.params.id != req.auth.userId) {
         return res.status(401).send({ message: "Unauthorized." })
     }
     const firstname = req.body.firstName;
@@ -137,7 +137,7 @@ exports.modifyAccount = (req, res) => {
     if (req.body.password) {
         return res.status(400).send({ message: 'Le mot de passe doit être modifié par une autre méthode' })
     }
-    User.update({ ...userObject, id: req.params.id }, { where: { id: req.params.id }})
+    User.update({ ...userObject, id: req.params.id }, { where: { id: req.params.id } })
         .then(() => res.status(200).send({ message: 'Utilisateur modifié !' }))
         .catch(error => res.status(400).send({ error }));
 };
