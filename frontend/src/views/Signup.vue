@@ -26,7 +26,7 @@
                            v-model="firstName"
                            placeholder="Votre prénom"
                            required />
-                    <p v-if="fieldError == true">{{ errorMessage }}</p>
+                    <!-- <p v-if="fieldError == true">{{ errorMessage }}</p> -->
                 </div>
                 <div class="form_wrapper__field lastname__field">
                     <label for="name">Votre nom</label>
@@ -35,7 +35,7 @@
                            v-model="lastName"
                            placeholder="Votre nom"
                            required />
-                    <p v-if="fieldError == true">{{ errorMessage }}</p>
+                    <!-- <p v-if="fieldError == true">{{ errorMessage }}</p> -->
                 </div>
                 <div class="form_wrapper__field email__field">
                     <label for="email">Votre adresse mail</label>
@@ -44,7 +44,7 @@
                            v-model="email"
                            placeholder="Votre adresse mail"
                            required />
-                    <p v-if="fieldError == true">{{ errorMessage }}</p>
+                    <!-- <p v-if="fieldError == true">{{ errorMessage }}</p> -->
                 </div>
                 <div class="form_wrapper__field password__field">
                     <label for="password">Votre mot de passe</label>
@@ -53,16 +53,16 @@
                            v-model="password"
                            placeholder="Votre mot de passe"
                            required />
-                    <p v-if="fieldError == true">{{ errorMessage }}</p>
+                    <!-- <p v-if="fieldError == true">{{ errorMessage }}</p> -->
                 </div>
                 <div class="form_wrapper__field password_confirmation__field">
                     <label for="password">Confirmez votre mot de passe</label>
                     <input type="password"
                            id="password-confirmation"
-                           v-model="passwordConfig"
+                           v-model="passwordConfirm"
                            placeholder="Confirmez votre mot de passe"
                            required />
-                    <p v-if="fieldError == true">{{ errorMessage }}</p>
+                    <!-- <p v-if="fieldError == true">{{ errorMessage }}</p> -->
                 </div>
                 <div class="form_wrapper__button submit__button">
                     <input type="submit"
@@ -90,13 +90,14 @@ export default {
     },
     methods: {
         async signupFunction() {
-            await axios.post('auth/signup', {
+            const response = await axios.post('auth/signup', {
                 firstName: this.firstName,
                 lastName: this.lastName,
                 email: this.email,
                 password: this.password,
-                passwordConfirm: this.passwordConfirm,
+                passwordConfirm: this.passwordConfirm
             })
+            console.log(response);
             this.$router.push('/login')
         }
     }

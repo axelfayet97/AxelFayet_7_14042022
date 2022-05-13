@@ -47,20 +47,21 @@
 </template>
 
 <script>
-import axios from "axios"
+import axios from 'axios'
+
 export default {
     name: 'Login',
     data() {
         return {
             email: '',
-            password: ''
+            password: '',
         }
     },
     methods: {
         async loginFunction() {
-            const response = await axios.post('auth/login', {
+            const response = await axios.post(`auth/login`, {
                 email: this.email,
-                password: this.password
+                password: this.password,
             })
             localStorage.setItem('token', response.data.token)
             this.$router.push('/')
