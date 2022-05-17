@@ -13,7 +13,7 @@ exports.signup = (req, res) => {
     // const lastName = req.body.lastName;
     // Vérification des champs renseignés, TO DO REGEXP SUR CHAMPS
     if (email == null || password == null/*,firstName == null, lastName == null*/) {
-        return res.status(400).send({ error: 'Missing signup field.' })
+        return res.status(400).send({ error: 'Il manque un ou plusieurs champs' })
     };
     // Vérification de la présence de l'utilisateur dans la BDD
     User.findOne({
@@ -29,17 +29,17 @@ exports.signup = (req, res) => {
                         ...req.body,
                         password: hash
                     })
-                        .then(data => { res.status(201).send({ message: 'User successfully created !', data }) })
+                        .then(data => { res.status(201).send({ message: 'Compte créé !', data }) })
                         .catch((error) => { res.status(400).send(error) });
                 })
                 .catch((error) => {
                     res.status(500).send(error)
                 });
         } else {
-            return res.status(409).send({ error: 'User already exists !' });
+            return res.status(409).send({ error: 'Cet utilisateur existe déjà !' });
         };
     })
-        .catch(error => res.status(500).send({ error, message: 'Something went wrong, please try again later...' }))
+        .catch(error => res.status(500).send({ error, message: 'Une erreur est survenue, veuillez réessayer' }))
 };
 // // Connexion
 exports.login = (req, res) => {
@@ -61,7 +61,8 @@ exports.login = (req, res) => {
                         { userId: user.id },
                         secretToken,
                         { expiresIn: '24h' }
-                    )
+                    ),
+                    message: 'Connexion réussie'
                 })
             } else {
                 return res.status(401).json({ error: 'Mot de passe incorrect !' })
@@ -84,13 +85,13 @@ exports.getOneAccount = (req, res) => {
                 res.send({ data });
             } else {
                 res.status(404).send({
-                    message: `Cannot find user with id=${id}.`
+                    message: `Impossible de trouve l'utilisateur avec l'id=${id}.`
                 });
             }
         })
         .catch(error => {
             res.status(500).send({
-                message: 'Error retrieving user with id=' + id, error
+                message: 'Impossible de récupérer les informations de l\'utilisateur possédant l\id=' + id, error
             });
         });
 };
@@ -118,7 +119,7 @@ exports.getOneAccount = (req, res) => {
 exports.modifyAccount = (req, res) => {
     // Vérification auth
     if (req.params.id != req.auth.userId) {
-        return res.status(401).send({ message: "Unauthorized." })
+        return res.status(401).send({ message: "Non autorisé." })
     }
     const firstname = req.body.firstName;
     const lastname = req.body.lastName;
@@ -148,7 +149,7 @@ exports.deleteAccount = (req, res) => {
             const filename = user.imageUrl;
             fs.unlink(`images/${filename}`, () => {
                 User.destroy({ where: { id: req.params.id } })
-                    .then(res.status(200).send({ message: 'User successfully deleted' }))
+                    .then(res.status(200).send({ message: 'Utilisateur supprimé avec succès' }))
             })
         })
         .catch(error => res.status(400).send(error))
