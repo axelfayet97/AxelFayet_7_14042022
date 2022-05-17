@@ -1,7 +1,7 @@
 <template>
   <header class="header__wrapper">
     <div class="header__wrapper__col">
-      <router-link to="/">
+      <router-link v-if="auth" to="/">
         <img src="/Groupomania_Logos/icon-left-font.jpeg" />
       </router-link>
       <router-link v-if="!auth"
@@ -18,11 +18,9 @@ export default {
     return {}
   },
   methods: {
-    async logOut() {
-      if (localStorage.getItem('token')) {
-        localStorage.removeItem('token')
-        this.$router.push('/login')
-      }
+    logOut() {
+      localStorage.removeItem('token')
+      this.$router.push('/login')
     }
   }
 }
