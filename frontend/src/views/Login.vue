@@ -22,19 +22,19 @@
                     <label for="email">Votre adresse mail</label>
                     <input type="text"
                            id="email"
-                           v-model="email"
+                           v-model.trim="email"
                            placeholder="Votre adresse mail"
                            required />
-                    <!-- <p v-if="fieldError">{{ errorMessage }}a</p> -->
+                    <p>{{ errorMessage }}</p>
                 </div>
                 <div class="form_wrapper__field password__field">
                     <label for="password">Votre mot de passe</label>
                     <input type="password"
                            id="password"
-                           v-model="password"
+                           v-model.trim="password"
                            placeholder="Votre mot de passe"
                            required />
-                    <!-- <p v-if="fieldError">{{ errorMessage }}</p> -->
+                    <p>{{ errorMessage }}</p>
                 </div>
                 <div class="form_wrapper__button submit__button">
                     <input type="submit"
@@ -42,6 +42,10 @@
                            value="C'est parti !" />
                 </div>
             </form>
+            <div id="to-signup">
+                <p>C'est votre première visite ? <router-link to="/signup">Inscrivez-vous !</router-link>
+                </p>
+            </div>
         </div>
     </div>
 </template>
@@ -55,6 +59,8 @@ export default {
         return {
             email: '',
             password: '',
+            errorMessage: '',
+            auth: false,
         }
     },
     methods: {
@@ -62,6 +68,7 @@ export default {
             const response = await axios.post(`auth/login`, {
                 email: this.email,
                 password: this.password,
+                auth: true
             })
             localStorage.setItem('token', response.data.token)
             this.$router.push('/')
