@@ -18,48 +18,53 @@
             </div>
             <form method="get"
                   class="connection_form"
-                  @submit.prevent="signupFunction">
+                  @submit.prevent="signupFunction, checkForm">
                 <div class="form_wrapper__field firstname__field">
                     <label for="firstname">Votre prénom</label>
                     <input type="text"
                            id="firstname"
-                           v-model="firstName"
+                           v-model.trim="firstName"
                            placeholder="Votre prénom"
                            required />
-                    <!-- <p v-if="fieldError == true">{{ errorMessage }}</p> -->
+                    <p class="field-alert"
+                       v-if="!firstName">Ce champs est requis !</p>
                 </div>
                 <div class="form_wrapper__field lastname__field">
                     <label for="name">Votre nom</label>
                     <input type="text"
                            id="lastname"
-                           v-model="lastName"
+                           v-model.trim="lastName"
                            placeholder="Votre nom"
                            required />
-                    <!-- <p v-if="fieldError == true">{{ errorMessage }}</p> -->
+                    <p class="field-alert"
+                       v-if="!lastName">Ce champs est requis !</p>
                 </div>
                 <div class="form_wrapper__field email__field">
                     <label for="email">Votre adresse mail</label>
                     <input type="email"
                            id="email"
-                           v-model="email"
+                           v-model.trim="email"
                            placeholder="Votre adresse mail"
                            required />
-                    <!-- <p v-if="fieldError == true">{{ errorMessage }}</p> -->
+                    <p class="field-alert"
+                       v-if="!email">Ce champs est requis !</p>
                 </div>
                 <div class="form_wrapper__field password__field">
                     <label for="password">Votre mot de passe</label>
                     <input type="password"
                            id="password"
-                           v-model="password"
+                           v-model.trim="password"
                            placeholder="Votre mot de passe"
                            required />
-                    <!-- <p v-if="fieldError == true">{{ errorMessage }}</p> -->
+                    <p class="field-alert"
+                       v-if="!password">Ce champs est requis !</p>
                 </div>
                 <div class="form_wrapper__field password_confirmation__field">
                     <label for="password">Confirmez votre mot de passe</label>
                     <input type="password"
                            id="password-confirmation"
-                           v-model="passwordConfirm"
+                           v-on:blur="validate"
+                           v-model.trim="passwordConfirm"
                            placeholder="Confirmez votre mot de passe"
                            required />
                     <!-- <p v-if="fieldError == true">{{ errorMessage }}</p> -->
@@ -70,6 +75,10 @@
                            value="C'est parti !" />
                 </div>
             </form>
+            <div id="to-login">
+                <p>Vous avez déjà un compte ? <router-link to="/login">Connectez-vous !</router-link>
+                </p>
+            </div>
         </div>
     </div>
 </template>
@@ -99,7 +108,29 @@ export default {
             })
             console.log(response);
             this.$router.push('/login')
-        }
+        },
+        validate: function () {
+            this.password === this.passwordConfirm ? true : false
+            console.log(this.password === this.passwordConfirm);
+        },
+        checkForm: function () {
+            this.errors = [];
+            if (!this.firstName) {
+                this.errors.push("Name required.")
+            }
+            if (!this.lastName) {
+                this.errors.push("Name required.")
+            }
+            if (!this.lastName) {
+                this.errors.push("Name required.")
+            }
+            if (!this.email) {
+                this.errors.push('Email required.')
+            }
+            if (!this.errors.length) {
+                return true
+            }
+        },
     }
 }
 </script>
