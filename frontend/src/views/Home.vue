@@ -13,7 +13,7 @@
                    name="text"
                    id="text"
                    placeholder="À quoi pensez vous ?"
-                   :v-model="content"
+                   v-model="content"
                    required />
           </div>
           <div id="textarea">
@@ -21,7 +21,7 @@
             <input type="file"
                    name="file"
                    id="file"
-                   :v-model="imageUrl" />
+                   v-on:change="imageUrl" />
           </div>
           <div class="form_wrapper__button submit__button">
             <input type="submit"
@@ -32,13 +32,11 @@
       </div>
     </div>
   </section>
-  <!-- <section class="posts"
+  <section class="posts"
            id="all-posts">
-    <p v-if="!isPosts"
-       id="no-post">There's no post for the moment !</p>
-    <Post v-else
-          class="single-post" />
-  </section> -->
+    <Post />
+   
+  </section>
 </template>
 
 <script>
@@ -46,31 +44,32 @@ import Post from '../components/Post.vue'
 import axios from 'axios'
 
 export default {
-  name: 'Home',
+  name: 'PostForm',
   data() {
     return {
-      email: '',
-      password: '',
-      content: '',
-      imageUrl: ''
+      content: "",
+      imageUrl: "",
+      posts: []
+    }
+  },
+  methods: {
+    async sendPost() {
+      const response = await axios.post('posts', {
+        content: this.content,
+        imageUrl: this.imageUrl
+      })
+      console.log(response);
+      this.$router.push('/')
     }
   },
   components: {
     Post
   },
-  methods: {
-    async sendPost() {
-      await axios.post('posts',
-        {
-          content: this.content,
-          imageUrl: this.imageUrl
-        })
-      this.$router.push('/')
-    }
-  },
-  // mounted:
-  //   async function getAllPosts() {
-  //     await axios.get('posts')
-  //   }
+  async mounted() {
+    const response = await axios.get('posts')
+    const posts = await response.data
+    console.log(posts);
+    this.posts = posts
+  }
 }
 </script>
