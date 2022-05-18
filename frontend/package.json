@@ -2,9 +2,9 @@
   "name": "groupomania-project",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 8080",
     "build": "vite build",
-    "preview": "vite preview --port 5050",
+    "preview": "vite preview",
     "start": "npm run dev"
   },
   "dependencies": {
