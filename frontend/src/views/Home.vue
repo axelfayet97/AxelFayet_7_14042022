@@ -19,7 +19,7 @@
           <div id="textarea">
             <label for="file">Ajoutez une image</label>
             <input type="file"
-                   name="file"
+                   name="image"
                    id="file"
                    v-on:change="imageUrl" />
           </div>
@@ -35,7 +35,6 @@
   <section class="posts"
            id="all-posts">
     <Post />
-   
   </section>
 </template>
 
@@ -49,7 +48,6 @@ export default {
     return {
       content: "",
       imageUrl: "",
-      posts: []
     }
   },
   methods: {
@@ -64,12 +62,6 @@ export default {
   },
   components: {
     Post
-  },
-  async mounted() {
-    const response = await axios.get('posts')
-    const posts = await response.data
-    console.log(posts);
-    this.posts = posts
   }
 }
 </script>
