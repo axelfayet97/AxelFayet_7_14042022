@@ -18,7 +18,7 @@ exports.likeState = (req, res) => {
                     .then(data => {
                         res.status(200).send({ data, message: "like créé" })
                     })
-                    .catch(error => res.status(400).json({ error }));
+                    .catch(error => res.status(400).send(error));
             } else {
                 Like.destroy({
                     where: {
@@ -29,7 +29,7 @@ exports.likeState = (req, res) => {
                     .then(data => {
                         res.status(200).send({ data, message: "like retiré" })
                     })
-                    .catch(error => res.status(400).json({ error }));
+                    .catch(error => res.status(400).send(error));
             }
         })
 };
