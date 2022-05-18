@@ -6,6 +6,8 @@ const Post = db.posts;
 exports.createPost = (req, res) => {
     // TO DO : FS MULTER
     return Post.create({
+        // content: req.body.content,
+        // imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
         ...req.body,
         userId: req.auth.userId
     })
