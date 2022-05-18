@@ -1,12 +1,15 @@
 <template>
   <header class="header__wrapper">
-    <div class="header__wrapper__col">
-      <router-link v-if="auth" to="/">
-        <img src="/Groupomania_Logos/icon-left-font.jpeg" />
-      </router-link>
+    <router-link to="/">
+      <img src="/Groupomania_Logos/icon-left-font.jpeg" />
+    </router-link>
+    <div id="user-controls">
+      <router-link to="/profile">Mon profil</router-link>
       <router-link v-if="!auth"
                    @click="logOut"
-                   to="/login">Deconnexion</router-link>
+                   to="/login">Deconnexion
+      </router-link>
+
     </div>
   </header>
 </template>
@@ -20,6 +23,7 @@ export default {
   methods: {
     logOut() {
       localStorage.removeItem('token')
+      localStorage.removeItem('userId')
       this.$router.push('/login')
     }
   }
