@@ -6,11 +6,11 @@ const User = db.users;
 module.exports = (req, res, next) => {
     // TO DO : IMPLEMENTATION IS ADMIN : req.body.isAdmin ? next() : else try catch
     User.findOne().then(user => {
-        if (user.dataValues.isAdmin) {
-            console.log('Admin auth');
-            // req.auth = {userId} ??
-            next();
-        } else {
+        // if (user.dataValues.isAdmin) {
+        //     console.log('Admin auth');
+        //     // req.auth = {userId} ??
+        //     next();
+        // } else {
             try {
                 // On récupère la valeur du token située après le Bearer
                 const token = req.headers.authorization.split(' ')[1];
@@ -31,6 +31,6 @@ module.exports = (req, res, next) => {
                 // Si une erreur survient...
                 res.status(401).json({ error: error || 'Requête non authentifiée !' });
             };
-        }
+        // }
     })
 }
