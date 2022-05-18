@@ -72,9 +72,9 @@ exports.login = (req, res) => {
 };
 // Get all accounts
 exports.getAccounts = (req, res) => {
-    return User.findAll().then(data => {
-        res.send(data);
-    }).catch(error => res.send(error));
+    return User.findAll()
+        .then(res.send(data))
+        .catch(error => res.send(error));
 };
 // Find a single Account with an id
 exports.getOneAccount = (req, res) => {
@@ -82,7 +82,7 @@ exports.getOneAccount = (req, res) => {
     User.findByPk(id)
         .then(data => {
             if (data) {
-                res.send({ data });
+                res.send(data);
             } else {
                 res.status(404).send({
                     message: `Impossible de trouve l'utilisateur avec l'id=${id}.`
