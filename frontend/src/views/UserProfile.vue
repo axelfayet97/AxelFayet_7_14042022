@@ -86,7 +86,6 @@ export default {
     },
     async beforeMount() {
         const response = await axios.get(`auth/${this.userId}`)
-        console.log(response)
         this.email = response.data.email
         this.firstName = response.data.firstName
         this.lastName = response.data.lastName
@@ -96,7 +95,6 @@ export default {
             const data = {
                 firstName: this.firstName,
                 lastName: this.lastName,
-                email: 'a@a.fr'
             }
             await axios.put(`auth/${this.userId}`, data)
             this.$router.go()
@@ -108,9 +106,8 @@ export default {
                         Authorization: localStorage.getItem('token')
                     }
                 })
-                console.log('true');
+                console.log('true')
             } else {
-                console.log("false");
                 return
             }
 
