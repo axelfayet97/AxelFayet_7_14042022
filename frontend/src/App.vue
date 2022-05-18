@@ -21,9 +21,7 @@ export default {
   },
   mounted:
     function getAuth() {
-  console.log(localStorage.getItem('token') === null);
-  localStorage.getItem('token') == null ? { auth: null } : { auth: true }
-}
-  
+      localStorage.getItem('token') == null ? { auth: null } : { auth: true }
+    }
 }
 </script>
