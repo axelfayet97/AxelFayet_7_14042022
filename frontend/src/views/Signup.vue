@@ -18,7 +18,7 @@
             </div>
             <form method="get"
                   class="connection_form"
-                  @submit.prevent="signupFunction, checkForm">
+                  @submit.prevent="signupFunction">
                 <div class="form_wrapper__field firstname__field">
                     <label for="firstname">Votre prénom</label>
                     <input type="text"
@@ -110,27 +110,27 @@ export default {
             this.$router.push('/login')
         },
         validate: function () {
-            this.password === this.passwordConfirm ? true : false
+            // this.password === this.passwordConfirm ? true : false
             console.log(this.password === this.passwordConfirm);
         },
-        checkForm: function () {
-            this.errors = [];
-            if (!this.firstName) {
-                this.errors.push("Name required.")
-            }
-            if (!this.lastName) {
-                this.errors.push("Name required.")
-            }
-            if (!this.lastName) {
-                this.errors.push("Name required.")
-            }
-            if (!this.email) {
-                this.errors.push('Email required.')
-            }
-            if (!this.errors.length) {
-                return true
-            }
-        },
+        // checkForm: function () {
+        //     this.errors = [];
+        //     if (!this.firstName) {
+        //         this.errors.push("Champ requis.")
+        //     }
+        //     if (!this.lastName) {
+        //         this.errors.push("Champ requis.")
+        //     }
+        //     if (!this.lastName) {
+        //         this.errors.push("Champ requis.")
+        //     }
+        //     if (!this.email) {
+        //         this.errors.push('Email requis.')
+        //     }
+        //     if (!this.errors.length) {
+        //         return true
+        //     }
+        // },
     }
 }
 </script>
