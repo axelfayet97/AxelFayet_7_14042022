@@ -71,6 +71,7 @@ export default {
                 auth: true
             })
             localStorage.setItem('token', response.data.token)
+            localStorage.setItem('userId', response.data.userId)
             this.$router.push('/')
         }
     }
