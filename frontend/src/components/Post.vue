@@ -4,11 +4,14 @@
              :key="post.id">
         <div class="post-container__header">
             <div class="post-container__header__user-infos">
-                <img src=""
-                     alt="Photo de profil"
-                     id="author-img">
-                <p id="post-author"> {{ post.firstName }} {{ post.lastName }}</p>
-                <p id="created-at">{{ post.createdAt }}</p>
+                <div id="author-img">
+                    <img src="../../public/Groupomania_Logos/Daco_1182050.png"
+                         alt="Photo de profil">
+                </div>
+                <div class="author-infos">
+                    <p id="post-author"> {{ post.user.firstName }} {{ post.user.lastName }}</p>
+                    <p id="created-at">{{ post.createdAt }}</p>
+                </div>
             </div>
             <div class="post-container__header__options">...</div>
         </div>
@@ -17,9 +20,26 @@
             <p v-if="post.imageUrl != null">{{ post.imageUrl }}</p>
         </div>
         <div class="post-container__controls">
-            <span id="like-post"><a href="#"
-                   id="like-button"
-                   @click="likePost">Add Like</a> {{ post.likes.length }}</span>
+            <div id="like-post">
+                <a href="#"
+                   @click="likePost"><img src="../../public/noun-like-576529.svg"
+                         id="like-button" />
+                    {{ post.likes.length }}
+                </a>
+            </div>
+            <div id="comment-post">
+                <!-- Commentaires -->
+                <img src="../../public/Groupomania_Logos/Daco_1182050.png">
+                <input type="text"
+                       name="comment"
+                       id="comment-text"
+                       placeholder="Ajouter un commentaire">
+                <input type="submit"
+                       value="Commenter"
+                       id="comment-submit"
+                       href="#"
+                       @click="commentPost" />
+            </div>
         </div>
     </article>
 </template>
@@ -35,18 +55,19 @@ export default {
             isLiked: 0
         }
     },
-    async beforeMount() {
+    async mounted() {
         const response = await axios.get('posts')
         const posts = await response.data
-        console.log(posts);
         this.posts = posts
     },
     methods: {
         async likePost() {
             // Récupérer l'id du post à liker
-            const response = await axios.post('likes')
+            const response = await axios.post('likes', {
+                postId: this.posts,
+                isLiked: 1
+            })
             const likes = await response.data
-            console.log(likes)
             this.isLiked = likes
         }
     }
