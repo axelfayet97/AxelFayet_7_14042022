@@ -106,7 +106,6 @@ export default {
                 password: this.password,
                 passwordConfirm: this.passwordConfirm
             })
-            console.log(response);
             this.$router.push('/login')
         },
         validate: function () {
