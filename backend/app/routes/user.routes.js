@@ -7,8 +7,8 @@ module.exports = app => {
     router.post('/signup', userCtrl.signup);
     router.post('/login', userCtrl.login);
     router.put('/:id', auth, multer, userCtrl.modifyAccount);
-    router.get('/', userCtrl.getAccounts);
-    router.get('/:id', userCtrl.getOneAccount);
-    router.delete('/:id', auth, userCtrl.deleteAccount); // DISABLE NOT DELETE
+    router.get('/', auth, userCtrl.getAccounts);
+    router.get('/:id', auth, userCtrl.getOneAccount);
+    router.delete('/:id', auth, userCtrl.deleteAccount);
     app.use('/api/auth', router);
 }
