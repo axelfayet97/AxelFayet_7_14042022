@@ -69,26 +69,33 @@ exports.updatePost = (req, res) => {
 exports.deletePost = (req, res) => {
     // TO DO : FS MULTER
     const postId = req.params.id;
-    Post.destroy({
+    Post.findOne({
         where: {
             id: postId,
-            userId: req.auth.userId
         }
+    }).then(post => {
+        // Condition if user => connecté OU isAdmin == true
+        post.destroy()
+            .then(num => {
+                if (num == 1) {
+                    res.send({
+                        message: 'Post was deleted successfully!'
+                    });
+                } else {
+                    res.send({
+                        message: `Cannot delete Post with id=${postId}. Maybe Post was not found!`
+                    });
+                }
+            })
+            .catch(error => {
+                res.status(500).send({
+                    message: 'Could not delete Post with id=' + postId, error
+                });
+            });
     })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: 'Post was deleted successfully!'
-                });
-            } else {
-                res.send({
-                    message: `Cannot delete Post with id=${postId}. Maybe Post was not found!`
-                });
-            }
-        })
         .catch(error => {
             res.status(500).send({
-                message: 'Could not delete Post with id=' + postId, error
+                message: 'Could not find Post with id=' + postId, error
             });
         });
 };
