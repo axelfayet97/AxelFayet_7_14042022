@@ -37,6 +37,24 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Raleway', sans-serif;
+}
+
+h1 {
+  font-weight: 700;
+  font-size: 30px;
+  text-align: center;
+}
+
+h1 .span-h {
+  color: var(--rouge);
+  font-weight: bold;
+}
+
 a,
 a:visited {
   color: var(--noir);
@@ -144,7 +162,7 @@ footer.footer_wrapper ul li a:active {
 
 /* ===============
 *
-*     FORMULAIRE
+*     FORMULAIRE CONNEXION / INSCRIPTION
 *
 * ================*/
 .form_wrapper {
@@ -208,18 +226,6 @@ footer.footer_wrapper ul li a:active {
   margin: auto;
 }
 
-.form_wrapper h1 {
-  font-family: 'Raleway', sans-serif;
-  font-weight: 700;
-  font-size: 30px;
-  text-align: center;
-}
-
-.form_wrapper h1 .span-h {
-  color: var(--rouge);
-  font-weight: bold;
-}
-
 .form_wrapper .connection_text {
   text-align: center;
   font-size: 14px;
@@ -234,8 +240,7 @@ footer.footer_wrapper ul li a:active {
   display: none;
 }
 
-.form_wrapper .form_wrapper__field input,
-.post-container #comment-post input[type="text"] {
+.form_wrapper .form_wrapper__field input {
   border: none;
   border-bottom: 1px solid var(--noir);
   background: transparent;
@@ -246,27 +251,17 @@ footer.footer_wrapper ul li a:active {
   text-overflow: ellipsis;
 }
 
-.post-container #comment-post #comment-text {
-  text-align: left;
-  width: 100%;
-}
-
-.form_wrapper .form_wrapper__field input::placeholder,
-.post-container #comment-post #comment-text::placeholder {
+.form_wrapper .form_wrapper__field input::placeholder {
   font-family: "Raleway", sans-serif;
 }
 
 .form_wrapper .form_wrapper__field input:hover,
 .form_wrapper .form_wrapper__field input:focus,
-.form_wrapper .form_wrapper__field input:active,
-.post-container #comment-post #comment-text:hover,
-.post-container #comment-post #comment-text:focus,
-.post-container #comment-post #comment-text:active {
+.form_wrapper .form_wrapper__field input:active {
   border-color: var(--rouge);
 }
 
-.form_wrapper .form_wrapper__button input[type="submit"],
-.post-container #comment-post #comment-submit {
+.form_wrapper .form_wrapper__button input[type="submit"] {
   background: #FF0000;
   border-radius: 40px;
   margin: 30px;
@@ -280,18 +275,9 @@ footer.footer_wrapper ul li a:active {
   transition: all .2s linear;
 }
 
-.post-container #comment-post #comment-submit {
-  margin: 0 0 0 20px;
-  padding: 10px 20px;
-  font-size: 14px;
-}
-
 .form_wrapper .form_wrapper__button input[type="submit"]:hover,
 .form_wrapper .form_wrapper__button input[type="submit"]:focus,
-.form_wrapper .form_wrapper__button input[type="submit"]:active,
-.post-container #comment-post #comment-submit:hover,
-.post-container #comment-post #comment-submit:focus,
-.post-container #comment-post #comment-submit:active {
+.form_wrapper .form_wrapper__button input[type="submit"]:active {
   background-color: #fff;
   color: var(--rouge);
   border: 2px solid var(--rouge);
