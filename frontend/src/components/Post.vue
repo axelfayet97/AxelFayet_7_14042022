@@ -13,7 +13,15 @@
                     <p id="created-at">{{ post.createdAt }}</p>
                 </div>
             </div>
-            <div class="post-container__header__options">...</div>
+            <div class="post-container__header__options">
+                <a @click="toggleControls"
+                   id="toggle-post-controls"><span>...</span>
+                    <ul id="post-controls">
+                        <li>Modifier</li>
+                        <li>Supprimer</li>
+                    </ul>
+                </a>
+            </div>
         </div>
         <div class="post-container__body">
             <p>{{ post.content }}</p>
@@ -22,7 +30,7 @@
         <div class="post-container__controls">
             <div id="like-post">
                 <a href="#"
-                   @click="likePost">
+                   @click.prevent="likePost(post.id)">
                     <img src="../../public/noun-like-576529.svg"
                          id="like-button" />
                     {{ post.likes.length }}
@@ -115,6 +123,7 @@ export default {
     data() {
         return {
             posts: [],
+            showOptions: false,
             isLiked: 0,
             commentContent: ''
         }
@@ -125,14 +134,18 @@ export default {
         this.posts = posts
     },
     methods: {
-        async likePost() {
+        toggleControls() {
+            this.showOptions = !this.showOptions
+        },
+        async likePost(postId) {
             // Récupérer l'id du post à liker
             const response = await axios.post('likes', {
-                postId: this.posts,
+                postId,
                 isLiked: 1
             })
             const likes = await response.data
             this.isLiked = likes
+            this.$router.go()
         }
     },
     async commentPost() {
@@ -140,7 +153,18 @@ export default {
         const response = await axios.post('comments', {
             content: this.commentContent
         })
-        console.log(response);
-    }
+        // console.log(response);
+    },
+    // async modifyPost() {
+    //     const data = {
+    //         content: this.content,
+    //         imageUrl: this.imageUrl,
+    //     }
+    //     await axios.put(`posts/${this.id}`, data)
+    //     this.$router.go()
+    // },
+    // async deletePost() {
+
+    // }
 }
 </script>
