@@ -19,9 +19,5 @@ export default {
       auth: null
     }
   },
-  mounted:
-    function getAuth() {
-      localStorage.getItem('token') == null ? { auth: null } : { auth: true }
-    }
 }
 </script>
