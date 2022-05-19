@@ -1,8 +1,9 @@
 <template>
-  <h1>Bienvenue sur la home</h1>
+  <h1>Bienvenue sur <span class="span-h">Groupomania</span> !</h1>
   <section id="create-post">
     <div class="form_wrapper">
       <div class="form_wrapper_background">
+        <h2>Partagez vos humeurs !</h2>
         <PostForm />
       </div>
     </div>
