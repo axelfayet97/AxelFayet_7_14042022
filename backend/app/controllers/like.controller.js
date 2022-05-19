@@ -4,7 +4,7 @@ exports.likeState = (req, res) => {
     Like.findAll({
         where: {
             postId: req.body.postId,
-            userId: req.body.userId
+            userId: req.auth.userId
         }
     })
         .then(likes => {
@@ -23,7 +23,7 @@ exports.likeState = (req, res) => {
                 Like.destroy({
                     where: {
                         postId: req.body.postId,
-                        userId: req.body.userId
+                        userId: req.auth.userId
                     }
                 })
                     .then(data => {
