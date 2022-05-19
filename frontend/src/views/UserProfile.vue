@@ -101,11 +101,12 @@ export default {
         },
         async deleteUser() {
             if (confirm('Cette action est irréversible, voulez vous vraiment supprimer votre compte ?')) {
-                await axios.delete(`auth/${this.userId}`, {
-                    headers: {
-                        Authorization: localStorage.getItem('token')
-                    }
-                })
+                await axios.delete(`auth/${this.userId}`)
+                //  {
+                //     headers: {
+                //         Authorization: localStorage.getItem('token')
+                //     }
+                // })
                 console.log('true')
             } else {
                 return
