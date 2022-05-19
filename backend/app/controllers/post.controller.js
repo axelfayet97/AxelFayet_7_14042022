@@ -16,7 +16,7 @@ exports.createPost = (req, res) => {
 }
 // Retrieve all Posts from the database.
 exports.findAllPosts = (req, res) => {
-    return Post.findAll({ include: ['user', 'comments', 'likes'/*, { model: db.comments, as: 'comments', include: 'user' }], order:[ 'createdAt', 'descending' */] }).then(data => {
+    return Post.findAll({ include: ['user', 'comments', 'likes'/*, { model: db.comments, as: 'comments', include: 'user' }],*/], order: [['updatedAt', 'DESC']] }).then(data => {
         console.log(data.comments);
         res.send(data);
     }).catch(error => res.send(error));

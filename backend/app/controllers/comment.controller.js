@@ -34,9 +34,10 @@ exports.findCommentById = (req, res) => {
 };
 exports.getAllComments = (req, res) => {
     // Retrieve all Posts from the database.
-    Comment.findAll(/*{ include: ['user', 'comments',/*, { model: db.comments, as: 'comments', include: 'user' }], order:[ 'createdAt', 'descending' ] }*/).then(comments => {
-        res.status(200).send(comments);
-    }).catch(error => res.send(error));
+    Comment.findAll(/*{ include: ['user', 'comments',/*, { model: db.comments, as: 'comments', include: 'user' }], order:[ 'createdAt', 'descending' ] }*/{ order: [['updatedAt', 'DESC']] })
+        .then(comments => {
+            res.status(200).send(comments);
+        }).catch(error => res.send(error));
 }
 // Delete a comment
 exports.deleteComment = (req, res) => {
