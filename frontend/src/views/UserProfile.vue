@@ -3,7 +3,7 @@
         <h1>Votre profil</h1>
         <div class="container-profil-infos">
             <div class="profile-picture-update">
-                <img src="../../public/Groupomania_Logos/Daco_1182050.png"
+                <img src="/Groupomania_Logos/Daco_1182050.png"
                      alt="Photo de profil" />
                 <input type="file"
                        name="profilePicture"
@@ -107,7 +107,7 @@ export default {
                 //         Authorization: localStorage.getItem('token')
                 //     }
                 // })
-                console.log('true')
+                this.$router.push('/signup')
             } else {
                 return
             }
