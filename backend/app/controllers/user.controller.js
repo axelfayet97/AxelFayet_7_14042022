@@ -9,10 +9,10 @@ const secretToken = process.env.ACCESS_TOKEN_SECRET;
 exports.signup = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
-    // const firstName = req.body.firstName;
-    // const lastName = req.body.lastName;
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
     // Vérification des champs renseignés, TO DO REGEXP SUR CHAMPS
-    if (email == null || password == null/*,firstName == null, lastName == null*/) {
+    if (email == null || password == null, firstName == null, lastName == null) {
         return res.status(400).send({ error: 'Il manque un ou plusieurs champs' })
     };
     // Vérification de la présence de l'utilisateur dans la BDD
@@ -41,7 +41,7 @@ exports.signup = (req, res) => {
     })
         .catch(error => res.status(500).send({ error, message: 'Une erreur est survenue, veuillez réessayer' }))
 };
-// // Connexion
+// Connexion
 exports.login = (req, res) => {
     // Recherche de l'utilisateur en fonction de son email dans la BDD
     User.findOne({
