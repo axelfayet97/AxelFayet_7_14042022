@@ -1,7 +1,8 @@
 <template>
     <article class="post-container"
              v-for="post in posts"
-             :key="post.id">
+             :key="post.id"
+             :id="post.id">
         <div class="post-container__header">
             <div class="post-container__header__user-infos">
                 <div id="author-img">
@@ -13,12 +14,14 @@
                     <p id="created-at">{{ post.createdAt }}</p>
                 </div>
             </div>
-            <div class="post-container__header__options">
-                <a @click="toggleControls"
-                   id="toggle-post-controls"><span>...</span>
-                    <ul id="post-controls">
+            <div class="container__header__options">
+                <a href="#"
+                   @click="toggleControls"
+                   id="toggle-controls"><span>...</span>
+                    <ul id="controls"
+                        v-show="showOptions">
                         <li>Modifier</li>
-                        <li>Supprimer</li>
+                        <li @click="deletePost(post.id)">Supprimer</li>
                     </ul>
                 </a>
             </div>
@@ -27,7 +30,7 @@
             <p>{{ post.content }}</p>
             <p v-if="post.imageUrl != null">{{ post.imageUrl }}</p>
         </div>
-        <div class="post-container__controls">
+        <div class="container__controls">
             <div id="like-post">
                 <a href="#"
                    @click.prevent="likePost(post.id)">
@@ -36,8 +39,9 @@
                     {{ post.likes.length }}
                 </a>
             </div>
+            <Comment />
             <div id="comment-post">
-                <form @submit.prevent="commentPost"
+                <form @submit.prevent="commentPost(post.id)"
                       id="comments-form">
                     <!-- Commentaires -->
                     <img src="/Groupomania_Logos/Daco_1182050.png">
@@ -49,6 +53,7 @@
                     <input type="submit"
                            value="Commenter"
                            id="comment-submit" />
+                    <div id="display-message">{{ this.displayMessage }}</div>
                 </form>
             </div>
         </div>
@@ -116,17 +121,22 @@
 </style>
 
 <script>
+import Comment from '@/components/Comment.vue';
 import axios from 'axios'
 
 export default {
-    name: 'PostTemplate',
+    name: 'Post',
     data() {
         return {
             posts: [],
             showOptions: false,
             isLiked: 0,
-            commentContent: ''
+            commentContent: '',
+            displayMessage: ''
         }
+    },
+    components: {
+        Comment
     },
     async mounted() {
         console.log("Génération des posts");
@@ -139,33 +149,44 @@ export default {
             this.showOptions = !this.showOptions
         },
         async likePost(postId) {
-            // Récupérer l'id du post à liker
             const response = await axios.post('likes', {
                 postId,
                 isLiked: 1
             })
             const likes = await response.data
             this.isLiked = likes
-            this.$router.go()
+            this.$router.go(`/${postId}`)
+        },
+        commentPost(postId) {
+            axios.post('comments', {
+                postId,
+                content: this.commentContent
+            }).then(response => {
+                console.log(response);
+                document.getElementById('display-message').classList.add('successful-connection')
+                this.$router.go(`/${postId}`)
+            })
+                .catch(error => {
+                    return this.displayMessage = 'Une erreur s\'est produite ' + error
+                })
+            // console.log(response);
+        },
+        // async modifyPost() {
+        //     const data = {
+        //         content: this.content,
+        //         imageUrl: this.imageUrl,
+        //     }
+        //     await axios.put(`posts/${this.id}`, data)
+        //     this.$router.go()
+        // },
+        async deletePost(postId) {
+            if (confirm('Voulez-vous vraiment supprimmer ce post ?')) {
+                await axios.delete(`posts/${postId}`)
+                this.$router.go()
+            } else {
+                return
+            }
         }
     },
-    async commentPost() {
-        console.log('submitted');
-        const response = await axios.post('comments', {
-            content: this.commentContent
-        })
-        // console.log(response);
-    },
-    // async modifyPost() {
-    //     const data = {
-    //         content: this.content,
-    //         imageUrl: this.imageUrl,
-    //     }
-    //     await axios.put(`posts/${this.id}`, data)
-    //     this.$router.go()
-    // },
-    // async deletePost() {
-
-    // }
 }
 </script>
