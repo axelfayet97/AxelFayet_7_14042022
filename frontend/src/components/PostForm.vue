@@ -11,13 +11,13 @@
                       v-model="content"
                       required />
         </div>
-        <div class="form_wrapper__field file-upload_wrapper">
+        <!-- <div class="form_wrapper__field file-upload_wrapper">
             <label for="file">Ajoutez une image</label>
             <input type="file"
                    name="image"
                    id="file-upload"
                    v-on:change="imageUrl" />
-        </div>
+        </div> -->
         <div class="form_wrapper__button submit__button">
             <input type="submit"
                    id="submit"
@@ -31,7 +31,7 @@
     min-width: 80%;
     max-width: 80%;
     min-height: 100px;
-    max-height: 20vh;
+    max-height: 10vh;
     border: none;
     border-bottom: 1px solid var(--noir);
     font-family: 'Raleway', sans-serif;
