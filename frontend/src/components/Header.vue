@@ -3,10 +3,10 @@
     <router-link to="/">
       <img src="/Groupomania_Logos/icon-left-font.jpeg" />
     </router-link>
-    <div id="user-controls">
+    <div id="user-controls"
+         v-if="auth">
       <router-link to="/profile">Mon profil</router-link>
-      <router-link v-if="!auth"
-                   @click="logOut"
+      <router-link @click="logOut"
                    to="/login">Deconnexion
       </router-link>
 
@@ -16,16 +16,22 @@
 <script>
 export default {
   name: "Header",
-  props: ['auth'],
   data() {
-    return {}
+    return {
+      auth: null
+    }
   },
   methods: {
     logOut() {
       localStorage.removeItem('token')
       localStorage.removeItem('userId')
-      this.$router.push('/login')
+      this.$router.go('/login')
     }
+  },
+  created() {
+    if (localStorage.getItem('token')) {
+      this.auth = true
+    } else { this.auth = false }
   }
 }
 </script>
