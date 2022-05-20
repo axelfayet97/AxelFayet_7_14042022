@@ -1,4 +1,5 @@
 <template>
+    <div id="display-message">{{ this.displayMessage }}</div>
     <div class="form_wrapper">
         <div class="selection_buttons">
             <router-link to="/signup"
@@ -25,7 +26,7 @@
                            v-model.trim="email"
                            placeholder="Votre adresse mail"
                            required />
-                    <p>{{ errorMessage }}</p>
+                    <!-- <p>{{ errorMessage }}</p> -->
                 </div>
                 <div class="form_wrapper__field password__field">
                     <label for="password">Votre mot de passe</label>
@@ -34,7 +35,7 @@
                            v-model.trim="password"
                            placeholder="Votre mot de passe"
                            required />
-                    <p>{{ errorMessage }}</p>
+                    <!-- <p>{{ errorMessage }}</p> -->
                 </div>
                 <div class="form_wrapper__button submit__button">
                     <input type="submit"
@@ -59,21 +60,31 @@ export default {
         return {
             email: '',
             password: '',
-            errorMessage: '',
-            auth: false,
+            displayMessage: '',
         }
     },
     methods: {
-        async loginFunction() {
-            const response = await axios.post(`auth/login`, {
+        loginFunction() {
+            axios.post(`auth/login`, {
                 email: this.email,
                 password: this.password,
-                auth: true
             })
-            localStorage.setItem('token', response.data.token)
-            localStorage.setItem('userId', response.data.userId)
-            this.$router.push('/')
+                .then(response => {
+                    localStorage.setItem('token', response.data.token)
+                    localStorage.setItem('userId', response.data.userId)
+                    document.getElementById('display-message').classList.add('successful-connection')
+                    this.displayMessage = 'Connexion réussie ! Vous allez être redirigé...'
+                    setTimeout(() => {
+                        this.$router.push('/')
+                    }, 2000);
+                }
+                )
+                .catch(error => {
+                    console.log('false');
+                    document.getElementById('display-message').classList.add('error-message')
+                    return this.displayMessage = 'Une erreur s\'est produite ' + error
+                })
         }
-    }
+    },
 }
 </script>

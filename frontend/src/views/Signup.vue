@@ -1,4 +1,5 @@
 <template>
+    <div id="display-message">{{ this.displayMessage }}</div>
     <div class="form_wrapper">
         <div class="selection_buttons">
             <router-link to="/signup"
@@ -94,7 +95,8 @@ export default {
             lastName: '',
             email: '',
             password: '',
-            passwordConfirm: ''
+            passwordConfirm: '',
+            displayMessage: ''
         }
     },
     methods: {
@@ -105,8 +107,19 @@ export default {
                 email: this.email,
                 password: this.password,
                 passwordConfirm: this.passwordConfirm
-            })
-            this.$router.push('/login')
+            }).then(response => {
+                document.getElementById('display-message').classList.add('successful-connection')
+                this.displayMessage = 'Votre compte à été créé ! Vous allez être redirigé vers la page de connexion'
+                setTimeout(() => {
+                    this.$router.push('/login')
+                }, 2000);
+            }
+            )
+                .catch(error => {
+                    console.log('false');
+                    document.getElementById('display-message').classList.add('error-message')
+                    return this.displayMessage = 'Une erreur s\'est produite ' + error
+                })
         },
         validate: function () {
             // this.password === this.passwordConfirm ? true : false
