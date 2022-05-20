@@ -5,9 +5,9 @@
             <div class="profile-picture-update">
                 <img src="/Groupomania_Logos/Daco_1182050.png"
                      alt="Photo de profil" />
-                <input type="file"
+                <!-- <input type="file"
                        name="profilePicture"
-                       id="profile-pic-input" />
+                       id="profile-pic-input" /> -->
             </div>
             <div class="form-infos">
                 <form @submit.prevent="updateUser">
@@ -43,7 +43,7 @@
                 </form>
             </div>
             <a href="#"
-               @click="deleteUser">Supprimmer mon compte</a>
+               @click="deleteUser">Supprimer mon compte</a>
         </div>
     </section>
 </template>
