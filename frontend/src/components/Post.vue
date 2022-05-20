@@ -5,7 +5,7 @@
         <div class="post-container__header">
             <div class="post-container__header__user-infos">
                 <div id="author-img">
-                    <img src="../../public/Groupomania_Logos/Daco_1182050.png"
+                    <img src="/Groupomania_Logos/Daco_1182050.png"
                          alt="Photo de profil">
                 </div>
                 <div class="author-infos">
@@ -31,7 +31,7 @@
             <div id="like-post">
                 <a href="#"
                    @click.prevent="likePost(post.id)">
-                    <img src="../../public/noun-like-576529.svg"
+                    <img src="/noun-like-576529.svg"
                          id="like-button" />
                     {{ post.likes.length }}
                 </a>
@@ -40,7 +40,7 @@
                 <form @submit.prevent="commentPost"
                       id="comments-form">
                     <!-- Commentaires -->
-                    <img src="../../public/Groupomania_Logos/Daco_1182050.png">
+                    <img src="/Groupomania_Logos/Daco_1182050.png">
                     <input type="text"
                            name="comment"
                            v-model="commentContent"
@@ -129,6 +129,7 @@ export default {
         }
     },
     async mounted() {
+        console.log("Génération des posts");
         const response = await axios.get('posts')
         const posts = await response.data
         this.posts = posts
