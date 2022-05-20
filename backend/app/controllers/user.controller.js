@@ -144,7 +144,7 @@ exports.modifyAccount = (req, res) => {
 };
 exports.deleteAccount = (req, res) => {
     // Vérification auth
-    User.findOne({ where: { id: req.params.id, userId: req.auth.userId } })
+    User.findOne({ where: { id: req.params.id, id: req.auth.userId } })
         .then(user => {
             const filename = user.imageUrl;
             fs.unlink(`images/${filename}`, () => {
