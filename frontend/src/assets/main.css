@@ -48,6 +48,7 @@ h1 {
   font-weight: 700;
   font-size: 30px;
   text-align: center;
+  padding: 20px;
 }
 
 h1 .span-h {
@@ -68,6 +69,27 @@ a:active {
   color: var(--rouge);
 }
 
+/* SUCCESSFUL CONENCTION */
+#display-message {
+  color: #fff;
+  width: auto;
+  height: 0px;
+  transition: height .2s linear;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#display-message.successful-connection {
+  background-color: green !important;
+  height: 50px;
+}
+
+#display-message.error-message {
+  background-color: #ff0000;
+  height: 50px;
+}
+
 /* ===============
 *
 *     HEADER
@@ -79,6 +101,7 @@ header {
   padding: 15px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 @media (min-width: 1024px) {
@@ -108,6 +131,18 @@ header img {
   }
 }
 
+#user-controls a {
+  padding: 20px 40px;
+  align-self: center;
+  font-size: 14px;
+}
+
+@media all and (max-width: 768px) {
+  #user-controls a {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
 /* ===============
 *
 *     FOOTER
