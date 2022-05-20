@@ -70,20 +70,19 @@ export default {
                 password: this.password,
             })
                 .then(response => {
-                    localStorage.setItem('token', response.data.token)
-                    localStorage.setItem('userId', response.data.userId)
                     document.getElementById('display-message').classList.add('successful-connection')
                     this.displayMessage = 'Connexion réussie ! Vous allez être redirigé...'
                     setTimeout(() => {
+                        localStorage.setItem('token', response.data.token)
+                        localStorage.setItem('userId', response.data.userId)
                         this.$router.push('/')
                     }, 2000);
-                }
-                )
+                })
                 .catch(error => {
-                    console.log('false');
                     document.getElementById('display-message').classList.add('error-message')
                     return this.displayMessage = 'Une erreur s\'est produite ' + error
                 })
+
         }
     },
 }
