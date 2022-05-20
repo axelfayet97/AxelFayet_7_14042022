@@ -79,23 +79,23 @@ exports.deletePost = (req, res) => {
             .then(num => {
                 if (num == 1) {
                     res.send({
-                        message: 'Post was deleted successfully!'
+                        message: 'Le post à été correctement supprimé!'
                     });
                 } else {
                     res.send({
-                        message: `Cannot delete Post with id=${postId}. Maybe Post was not found!`
+                        message: `Impossible de supprimer l'id=${postId}.`
                     });
                 }
             })
             .catch(error => {
                 res.status(500).send({
-                    message: 'Could not delete Post with id=' + postId, error
+                    message: 'Impossible de supprimer le post avec l\id' + postId, error
                 });
             });
     })
         .catch(error => {
             res.status(500).send({
-                message: 'Could not find Post with id=' + postId, error
+                message: 'Impossible de trouver le post avec l\'id=' + postId, error
             });
         });
 };
