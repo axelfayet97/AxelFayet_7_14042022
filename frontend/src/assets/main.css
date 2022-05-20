@@ -1,7 +1,8 @@
 /* color palette for Groupomania */
 :root {
   --blanc: #fff;
-  --gris-clair: #888;
+  --gris: #888;
+  --gris-clair: #eee;
   --noir: #101118;
   --rouge: #ff0000;
 }
@@ -143,6 +144,7 @@ header img {
     font-size: 12px;
   }
 }
+
 /* ===============
 *
 *     FOOTER
@@ -336,11 +338,17 @@ footer.footer_wrapper ul li a:active {
   flex-direction: column;
   align-content: space-between;
   max-width: 800px;
-  margin: 100px auto;
+  margin: 50px auto;
   padding: 40px 20px 10px;
   border-radius: 30px;
   box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.16);
   background: #fff;
+}
+
+@media all and (max-width: 768px) {
+  .post-container {
+    max-width: 90%;
+  }
 }
 
 /* HEADER */
@@ -365,20 +373,69 @@ footer.footer_wrapper ul li a:active {
 }
 
 /* CONTROLS */
-.post-container__controls #like-post {
+
+.container__controls #like-post {
   text-align: right;
 }
 
-.post-container__controls #like-button {
+.container__controls #like-button {
   width: 30px;
   margin: 0;
   vertical-align: middle;
 }
 
-.post-container__controls #comment-post {
-  border-top: 1px solid var(--gris-clair);
+.container__controls #comment-post {
+  border-top: 1px solid var(--gris);
   padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.container__header__options a,
+.container__header__options a:visited {
+  cursor: pointer;
+  position: relative;
+  font-size: 30px;
+  font-weight: bold;
+  color: var(--gris);
+}
+
+.container__header__options a:hover,
+.container__header__options a:focus,
+.container__header__options a:active {
+  color: var(--noir)
+}
+
+.container__header__options a #controls {
+  position: absolute;
+  right: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  list-style-type: none;
+  color: var(--noir);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  transition: right .2s linear;
+}
+
+.container__header__options a #controls li {
+  padding: 20px;
+}
+
+@media all and (max-width: 768px) {
+  .container__header__options a #controls {
+    display: block;
+    right: 0;
+    top: 70px;
+    text-align: right;
+  }
+    .container__header__options a #controls li {
+      padding: 10px;
+    }
+}
+
+.container__header__options {
+  padding: 10px;
 }
