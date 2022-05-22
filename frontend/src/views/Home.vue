@@ -1,5 +1,5 @@
 <template>
-  <h1>Bienvenue sur <span class="span-h">Groupomania</span> !</h1>
+  <h1>Bienvenue sur <span class="span-h">Groupomania</span> {{ firstName }} {{ lastName }} !</h1>
   <section id="create-post">
     <div class="form_wrapper">
       <div class="form_wrapper_background">
@@ -17,6 +17,7 @@
 <script>
 import Post from '@/components/Post.vue'
 import PostForm from '@/components/PostForm.vue'
+import axios from 'axios'
 
 export default {
   name: 'Home',
@@ -27,8 +28,16 @@ export default {
   data() {
     return {
       firstName: '',
-      lastName: ''
+      lastName: '',
+      userId: '',
     }
+  },
+  async created() {
+    const userId = localStorage.getItem('userId')
+    this.userId = userId
+    const response = await axios.get(`auth/${this.userId}`)
+    this.firstName = response.data.firstName
+    this.lastName = response.data.lastName
   }
 }
 </script>
