@@ -18,7 +18,8 @@
                     <!-- <p v-if="comment.imageUrl != null">{{ comment.imageUrl }}</p> -->
                 </div>
                 <div class="container__header__options">
-                    <a href="#" @click="toggleControls"
+                    <a href="#"
+                       @click.prevent="toggleControls"
                        id="toggle-controls"><span>...</span>
                         <ul id="controls"
                             v-show="showOptions">
