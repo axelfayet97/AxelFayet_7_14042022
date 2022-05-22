@@ -4,7 +4,6 @@ const db = require('../config/db');
 const User = db.users;
 // MIDDLEWARE D'AUTHENTIFICATION
 module.exports = (req, res, next) => {
-    // TO DO : IMPLEMENTATION IS ADMIN : req.body.isAdmin ? next() : else try catch
     console.log(req.headers.authorization.split(' ')[1]);
     try {
         // On récupère la valeur du token située après le Bearer
@@ -22,7 +21,7 @@ module.exports = (req, res, next) => {
             // Sinon next middleware
             User.findOne({ where: { id: userId } })
                 .then(user => {
-                    req.auth = { isAdmin: user.isAdmin }
+                    req.auth = { userId, isAdmin: user.isAdmin }
                 })
                 .catch(error => { throw error })
             next();
