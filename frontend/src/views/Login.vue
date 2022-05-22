@@ -72,10 +72,13 @@ export default {
                 .then(response => {
                     document.getElementById('display-message').classList.add('successful-connection')
                     this.displayMessage = 'Connexion réussie ! Vous allez être redirigé...'
+                    localStorage.setItem('token', response.data.token)
+                    localStorage.setItem('userId', response.data.userId)
+                    console.log(response.data);
+                    console.log("Token saved");
                     setTimeout(() => {
-                        localStorage.setItem('token', response.data.token)
-                        localStorage.setItem('userId', response.data.userId)
-                        this.$router.push('/')
+                        console.log('redirection');
+                        // this.$router.push('/')
                     }, 2000);
                 })
                 .catch(error => {
