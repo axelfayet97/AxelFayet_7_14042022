@@ -58,14 +58,14 @@ export default {
     data() {
         return {
             content: '',
-            imageUrl: '',
+            // imageUrl: '',
         }
     },
     methods: {
         async sendPost() {
             await axios.post('posts', {
                 content: this.content,
-                imageUrl: this.imageUrl
+                // imageUrl: this.imageUrl
             })
             this.$router.go()
         }
