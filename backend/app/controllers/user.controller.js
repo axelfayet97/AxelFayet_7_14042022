@@ -5,6 +5,16 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 require('dotenv').config();
 const secretToken = process.env.ACCESS_TOKEN_SECRET;
+const complexity = require('complexity')
+const options = {
+    uppercase: 1,
+    lowercase: 1,
+    special: 1,
+    digit: 1,
+    min: 8
+}
+complexity.create(options)
+
 // Inscription
 exports.signup = (req, res) => {
     const email = req.body.email;
@@ -25,12 +35,17 @@ exports.signup = (req, res) => {
             bcrypt.hash(req.body.password, 10)
                 .then(hash => {
                     // Création et sauvegarde dans la base de données d'un nouvel utilisateur
-                    return User.create({
-                        ...req.body,
-                        password: hash
-                    })
-                        .then(data => { res.status(201).send({ message: 'Compte créé !', data }) })
-                        .catch((error) => { res.status(400).send(error) });
+                    if (complexity.check(req.body.password, options)) {
+                        return User.create({
+                            ...req.body,
+                            password: hash
+                        })
+                            .then(data => { res.status(201).send({ message: 'Compte créé !', data }) })
+                            .catch((error) => { res.status(400).send(error) });
+                    }
+                    else {
+                        throw 'Votre mot de passe est trop simple !'
+                    }
                 })
                 .catch((error) => {
                     res.status(500).send(error)
@@ -144,7 +159,10 @@ exports.modifyAccount = (req, res) => {
 };
 exports.deleteAccount = (req, res) => {
     // Vérification auth
-    User.findOne({ where: { id: req.params.id, id: req.auth.userId } })
+    if (req.params.id != req.auth.userId) {
+        return res.status(401).send({ message: "Non autorisé." })
+    }
+    User.findOne({ where: { id: req.params.id } })
         .then(user => {
             const filename = user.imageUrl;
             fs.unlink(`images/${filename}`, () => {
