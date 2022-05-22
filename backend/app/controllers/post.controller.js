@@ -68,6 +68,10 @@ exports.updatePost = (req, res) => {
 // Delete a Post with the specified id in the request
 exports.deletePost = (req, res) => {
     // TO DO : FS MULTER
+    // Vérification auth
+    if (req.params.id != req.auth.userId) {
+        return res.status(401).send({ message: "Non autorisé." })
+    }
     const postId = req.params.id;
     Post.findOne({
         where: {
