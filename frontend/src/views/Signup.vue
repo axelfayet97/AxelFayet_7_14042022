@@ -27,8 +27,8 @@
                            v-model.trim="firstName"
                            placeholder="Votre prénom"
                            required />
-                    <p class="field-alert"
-                       v-if="!firstName">Ce champs est requis !</p>
+                    <!-- <p class="field-alert"
+                       v-if="!firstName">Ce champs est requis !</p> -->
                 </div>
                 <div class="form_wrapper__field lastname__field">
                     <label for="name">Votre nom</label>
@@ -37,8 +37,8 @@
                            v-model.trim="lastName"
                            placeholder="Votre nom"
                            required />
-                    <p class="field-alert"
-                       v-if="!lastName">Ce champs est requis !</p>
+                    <!-- <p class="field-alert"
+                       v-if="!lastName">Ce champs est requis !</p> -->
                 </div>
                 <div class="form_wrapper__field email__field">
                     <label for="email">Votre adresse mail</label>
@@ -47,8 +47,8 @@
                            v-model.trim="email"
                            placeholder="Votre adresse mail"
                            required />
-                    <p class="field-alert"
-                       v-if="!email">Ce champs est requis !</p>
+                    <!-- <p class="field-alert"
+                       v-if="!email">Ce champs est requis !</p> -->
                 </div>
                 <div class="form_wrapper__field password__field">
                     <label for="password">Votre mot de passe</label>
@@ -57,8 +57,8 @@
                            v-model.trim="password"
                            placeholder="Votre mot de passe"
                            required />
-                    <p class="field-alert"
-                       v-if="!password">Ce champs est requis !</p>
+                    <!-- <p class="field-alert"
+                       v-if="!password">Ce champs est requis !</p> -->
                 </div>
                 <div class="form_wrapper__field password_confirmation__field">
                     <label for="password">Confirmez votre mot de passe</label>
