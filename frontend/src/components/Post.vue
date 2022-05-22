@@ -16,7 +16,7 @@
             </div>
             <div class="container__header__options">
                 <a href="#"
-                   @click="toggleControls"
+                   @click.prevent="toggleControls"
                    id="toggle-controls"><span>...</span>
                     <ul id="controls"
                         v-show="showOptions">
@@ -47,7 +47,7 @@
                     <img src="/Groupomania_Logos/Daco_1182050.png">
                     <input type="text"
                            name="comment"
-                           v-model="commentContent"
+                           v-model="commentContent[post.id]"
                            id="comment-text"
                            placeholder="Ajouter un commentaire">
                     <input type="submit"
@@ -153,7 +153,7 @@ export default {
                 postId,
                 isLiked: 1
             })
-            const likes = await response.data
+            const likes = await response.data.data
             this.isLiked = likes
             this.$router.go(`/${postId}`)
         },
