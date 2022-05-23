@@ -27,8 +27,15 @@
             </div>
         </div>
         <div class="post-container__body">
-            <p>{{ post.content }}</p>
-            <p v-if="post.imageUrl != null">{{ post.imageUrl }}</p>
+            <p @click="toggleControls">{{ post.content }}</p>
+            <form @submit.prevent="updatePost(post.id)"
+                  v-show="showOptions">
+                <textarea id="update-message">{{ post.updatedMessage }}</textarea>
+                <input type="submit"
+
+                       value="Modifier">
+            </form>
+            <!-- <p v-if="post.imageUrl != null">{{ post.imageUrl }}</p> -->
         </div>
         <div class="container__controls">
             <div id="like-post">
@@ -132,7 +139,8 @@ export default {
             showOptions: false,
             isLiked: 0,
             commentContent: '',
-            displayMessage: ''
+            displayMessage: '',
+            updatedMessage: ''
         }
     },
     components: {
@@ -143,6 +151,12 @@ export default {
         const response = await axios.get('posts')
         const posts = await response.data
         this.posts = posts
+        posts.forEach(post => {
+            const date = post.createdAt
+            const newDate = date.slice['-']
+
+            console.log(newDate);
+        });
     },
     methods: {
         toggleControls() {
@@ -171,14 +185,15 @@ export default {
                 })
             // console.log(response);
         },
-        // async modifyPost() {
-        //     const data = {
-        //         content: this.content,
-        //         imageUrl: this.imageUrl,
-        //     }
-        //     await axios.put(`posts/${this.id}`, data)
-        //     this.$router.go()
-        // },
+        async updatePost(postId) {
+            const data = {
+                content: this.updatedMessage,
+                // imageUrl: this.imageUrl,
+            }
+            console.log(data);
+            await axios.put(`posts/${postId}`, data)
+            // this.$router.go(`/#${postId}`)
+        },
         async deletePost(postId) {
             if (confirm('Voulez-vous vraiment supprimmer ce post ?')) {
                 await axios.delete(`posts/${postId}`)
