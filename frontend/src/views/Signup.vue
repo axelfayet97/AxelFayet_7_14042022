@@ -13,9 +13,10 @@
             <div class="welcome_message">
                 <img src="/Groupomania_Logos/icon.png"
                      alt="Logo du site Groupomania" />
-                <h1>Bienvenue sur <span class="span-h">Groupomania</span> !</h1>
+                <h1>Bienvenue sur <span class="span-h"><span class="nowrap">Groupomania</span> !</span></h1>
                 <p class="connection_text">Votre plateforme d’entreprise connectée à tous vos collaborateurs</p>
-                <p class="connection_text">C’est la première fois que vous venez ? Inscrivez-vous !</p>
+                <p class="connection_text">C’est la première fois que vous venez ? <span class="nowrap">Inscrivez-vous
+                        !</span></p>
             </div>
             <form method="get"
                   class="connection_form"
@@ -77,7 +78,8 @@
                 </div>
             </form>
             <div id="to-login">
-                <p>Vous avez déjà un compte ? <router-link to="/login">Connectez-vous !</router-link>
+                <p>Vous avez déjà un compte ? <router-link to="/login"><span class="nowrap">Connectez-vous !</span>
+                    </router-link>
                 </p>
             </div>
         </div>
