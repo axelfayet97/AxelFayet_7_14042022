@@ -1,13 +1,10 @@
 const { posts } = require('../config/db');
 const db = require('../config/db');
 const Post = db.posts;
-// const Op = db.Sequelize.Op;
 // Create and Save a new Post
 exports.createPost = (req, res) => {
     // TO DO : FS MULTER
     return Post.create({
-        // content: req.body.content,
-        // imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
         ...req.body,
         userId: req.auth.userId
     })
@@ -68,14 +65,11 @@ exports.updatePost = (req, res) => {
 // Delete a Post with the specified id in the request
 exports.deletePost = (req, res) => {
     // TO DO : FS MULTER
-    // Vérification auth
-    if (req.params.id != req.auth.userId) {
-        return res.status(401).send({ message: "Non autorisé." })
-    }
     const postId = req.params.id;
     Post.findOne({
         where: {
             id: postId,
+            userId: req.auth.userId
         }
     }).then(post => {
         // Condition if user => connecté OU isAdmin == true
