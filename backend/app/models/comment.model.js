@@ -4,6 +4,14 @@ module.exports = (sequelize, Sequelize) => {
         content: {
             type: Sequelize.STRING,
             allowNull: false
+        },
+        createdAt: {
+            allowNull: false,
+            type: Sequelize.DATE,
+            get: function () { // or use get(){ }
+                return this.getDataValue('createdAt')
+                    .toLocaleString('fr-FR', { timeZone: 'UTC' });
+            }
         }
     });
     return Comment;
