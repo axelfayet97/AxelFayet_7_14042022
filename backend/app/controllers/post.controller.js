@@ -4,7 +4,7 @@ const Post = db.posts;
 // Create and Save a new Post
 exports.createPost = (req, res) => {
     // TO DO : FS MULTER
-    return Post.create({
+    Post.create({
         ...req.body,
         userId: req.auth.userId
     })
@@ -13,7 +13,7 @@ exports.createPost = (req, res) => {
 }
 // Retrieve all Posts from the database.
 exports.findAllPosts = (req, res) => {
-    return Post.findAll({ include: ['user', 'comments', 'likes'/*, { model: db.comments, as: 'comments', include: 'user' }],*/], order: [['updatedAt', 'DESC']] }).then(data => {
+    Post.findAll({ include: ['user', 'comments', 'likes'], order: [['updatedAt', 'DESC']] }).then(data => {
         res.send(data);
     }).catch(error => res.send(error));
 };
