@@ -78,7 +78,7 @@ export default {
                     console.log("Token saved");
                     setTimeout(() => {
                         console.log('redirection');
-                        // this.$router.push('/')
+                        this.$router.push('/')
                     }, 2000);
                 })
                 .catch(error => {
