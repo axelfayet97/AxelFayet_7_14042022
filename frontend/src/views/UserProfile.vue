@@ -38,12 +38,17 @@
                                v-bind="password"
                                placeholder="">
                     </div> -->
+                    <div class="bio-input">
+                        <label for="bio">À propos de vous :</label>
+                        <textarea placeholder="{{this.biography}}"
+                                  v-model="biography" />
+                    </div>
                     <input type="submit"
                            value="Sauvegarder mes informations">
                 </form>
             </div>
             <a href="#"
-               @click="deleteUser">Supprimer mon compte</a>
+               @click.prevent="deleteUser">Supprimer mon compte</a>
         </div>
     </section>
 </template>
@@ -77,7 +82,8 @@ export default {
             email: '',
             firstName: '',
             lastName: '',
-            userId: ''
+            userId: '',
+            biography: '',
         }
     },
     created() {
@@ -89,12 +95,14 @@ export default {
         this.email = response.data.email
         this.firstName = response.data.firstName
         this.lastName = response.data.lastName
+        this.biography = response.data.bio
     },
     methods: {
         async updateUser() {
             const data = {
                 firstName: this.firstName,
                 lastName: this.lastName,
+                bio: this.biography
             }
             await axios.put(`auth/${this.userId}`, data)
             this.$router.go()
@@ -107,7 +115,7 @@ export default {
                 //         Authorization: localStorage.getItem('token')
                 //     }
                 // })
-                this.$router.push('/signup')
+                // this.$router.push('/signup')
             } else {
                 return
             }
