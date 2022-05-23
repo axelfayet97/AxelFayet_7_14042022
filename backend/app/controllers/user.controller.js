@@ -159,16 +159,10 @@ exports.modifyAccount = (req, res) => {
 };
 exports.deleteAccount = (req, res) => {
     // Vérification auth
-    if (req.params.id != req.auth.userId) {
-        return res.status(401).send({ message: "Non autorisé." })
-    }
     User.findOne({ where: { id: req.params.id } })
-        .then(user => {
-            const filename = user.imageUrl;
-            fs.unlink(`images/${filename}`, () => {
-                User.destroy({ where: { id: req.params.id } })
-                    .then(res.status(200).send({ message: 'Utilisateur supprimé avec succès' }))
-            })
+        .then(() => {
+            User.destroy({ where: { id: req.params.id } })
+                .then(res.status(200).send({ message: 'Utilisateur supprimé avec succès' }))
         })
         .catch(error => res.status(400).send(error))
 }
