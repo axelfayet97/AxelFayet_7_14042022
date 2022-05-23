@@ -9,11 +9,10 @@
                     <img src="/Groupomania_Logos/Daco_1182050.png"
                          alt="Photo de profil">
                 </div>
-                <div class="author-infos">
-                    <!-- <p id="comment-author"> {{ user.firstName }} {{ user.lastName }}</p>
-                    <p id="created-at">{{ comment.createdAt }}</p> -->
-                </div>
                 <div class="comment-container__body">
+                    <div class="author-infos">
+                        <p id="comment-author"> {{ comment.firstName }} {{ comment.lastName }}</p>
+                    </div>
                     <p>{{ comment.content }}</p>
                     <!-- <p v-if="comment.imageUrl != null">{{ comment.imageUrl }}</p> -->
                 </div>
@@ -55,6 +54,16 @@
 
 .comment-container #author-img img {
     width: 40px;
+    margin-right: 10px;
+}
+
+#comment-author {
+    font-weight: 600;
+}
+
+
+.comment-container .comment-container__body {
+    margin: 0 20px;
 }
 
 .comment-container__body {
@@ -84,7 +93,7 @@ export default {
         const response = await axios.get('comments')
         const comments = await response.data
         this.comments = comments
-        console.log(response);
+        console.log(comments);
     },
     methods: {
         toggleControls() {
