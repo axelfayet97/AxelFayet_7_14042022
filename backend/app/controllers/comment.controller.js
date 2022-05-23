@@ -34,7 +34,7 @@ exports.findCommentById = (req, res) => {
 };
 exports.getAllComments = (req, res) => {
     // Retrieve all Posts from the database.
-    Comment.findAll(/*{ include: ['user', 'comments',/*, { model: db.comments, as: 'comments', include: 'user' }], order:[ 'createdAt', 'descending' ] }*/{ order: [['updatedAt', 'DESC']] })
+    Comment.findAll({ order: [['updatedAt', 'DESC']] })
         .then(comments => {
             res.status(200).send(comments);
         }).catch(error => res.send(error));
@@ -62,7 +62,7 @@ exports.deleteComment = (req, res) => {
         })
         .catch(error => {
             res.status(500).send({
-                message: 'Could not delete Comment with id=' + id, err
+                message: 'Could not delete Comment with id=' + id, error
             });
         });
 }
