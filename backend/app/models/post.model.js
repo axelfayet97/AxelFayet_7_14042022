@@ -8,6 +8,14 @@ module.exports = (sequelize, Sequelize) => {
         imageUrl: {
             type: Sequelize.STRING,
             allowNull: true
+        },
+        createdAt: {
+            allowNull: false,
+            type: Sequelize.DATE,
+            get: function () { // or use get(){ }
+                return this.getDataValue('createdAt')
+                    .toLocaleString('fr-FR', { timeZone: 'UTC' });
+            }
         }
     });
     return Post;
