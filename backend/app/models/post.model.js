@@ -14,7 +14,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.DATE,
             get: function () { // or use get(){ }
                 return this.getDataValue('createdAt')
-                    .toLocaleString('fr-FR', { timeZone: 'UTC' });
+                    .toLocaleString('fr-FR', { timeZone: 'Europe/Paris' });
             }
         }
     });
