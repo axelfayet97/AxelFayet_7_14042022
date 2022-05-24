@@ -39,28 +39,24 @@ exports.findOnePost = (req, res) => {
 // Update a Post by the id in the request
 exports.updatePost = (req, res) => {
     const postId = req.params.id;
-    Post.update(req.body, {
+    Post.findOne({
         where: {
             id: postId,
             userId: req.auth.userId
         }
-    })
-        .then(num => {
-            if (num == 1) {
+    }).then(post => {
+        post.update(req.body)
+            .then(() => {
                 res.send({
-                    message: 'Post was updated successfully.'
+                    message: 'Le post à correctement été modifié.'
                 });
-            } else {
-                res.send({
-                    message: `Cannot update Post with id=${postId}. Maybe Post was not found or req.body is empty!`
+            })
+            .catch(error => {
+                res.status(500).send({
+                    message: 'Une erreur est survenue lors de la modification du post id=' + postId, error
                 });
-            }
-        })
-        .catch(error => {
-            res.status(500).send({
-                message: 'Error updating Post with id=' + postId, error
             });
-        });
+    })
 };
 // Delete a Post with the specified id in the request
 exports.deletePost = (req, res) => {
@@ -72,7 +68,6 @@ exports.deletePost = (req, res) => {
             userId: req.auth.userId
         }
     }).then(post => {
-        // Condition if user => connecté OU isAdmin == true
         post.destroy()
             .then(num => {
                 if (num == 1) {
