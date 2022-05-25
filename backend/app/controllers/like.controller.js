@@ -44,3 +44,10 @@ exports.getLikes = (req, res) => {
         })
         .catch(error => res.status(400).send(error));
 };
+exports.getAllLikes = (req, res) => {
+    // Retrieve all Posts from the database.
+    Like.findAll({ include: ['user'], order: [['updatedAt', 'DESC']] })
+        .then(likes => {
+            res.status(200).send(likes);
+        }).catch(error => res.send(error));
+}
