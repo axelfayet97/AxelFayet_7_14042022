@@ -88,7 +88,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
     name: 'Signup',
@@ -103,22 +102,40 @@ export default {
         }
     },
     methods: {
-        async signupFunction() {
-            await axios.post('auth/signup', {
-                firstName: this.firstName,
-                lastName: this.lastName,
-                email: this.email,
-                password: this.password,
-            }).then(() => {
-                document.getElementById('display-message').classList.add('successful-connection')
-                this.displayMessage = 'Votre compte à été créé ! Vous allez être redirigé vers la page de connexion'
-                setTimeout(() => {
-                    this.$router.push('/login')
-                }, 2000);
-            }
-            )
+        signupFunction() {
+            fetch(`http://localhost:3000/api/auth/signup`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    firstName: this.firstName,
+                    lastName: this.lastName,
+                    email: this.email,
+                    password: this.password,
+                }),
+                headers: {
+                    'Content-type': 'application/json'
+                }
+            })
+                .then(response => {
+                    console.log(response);
+                    if (response.status == 409) {
+                        let error = this.displayMessage = 'Cette adresse mail existe déjà !'
+                        throw error
+                    } else if (response.status == 500) {
+                        let error = this.displayMessage = 'Votre mot de passe est trop simple !'
+                        throw error
+                    } else {
+                        return response.json()
+                    }
+                })
+                .then(() => {
+                    document.getElementById('display-message').classList.add('successful-connection')
+                    this.displayMessage = 'Votre compte à été créé ! Vous allez être redirigé vers la page de connexion'
+                    setTimeout(() => {
+                        this.$router.push('/login')
+                    }, 1500);
+                }
+                )
                 .catch(error => {
-                    console.log('false');
                     document.getElementById('display-message').classList.add('error-message')
                     return this.displayMessage = 'Une erreur s\'est produite ' + error
                 })

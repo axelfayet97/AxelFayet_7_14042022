@@ -10,7 +10,8 @@
                        id="profile-pic-input" /> -->
             </div>
             <div class="form-infos">
-                <form class="form_wrapper" @submit.prevent="updateUser">
+                <form class="form_wrapper"
+                      @submit.prevent="updateUser">
                     <div class="form-input"
                          id="email-input">
                         <label for="email">Email</label>
@@ -76,9 +77,10 @@ section#section-user-account {
 
 @media all and (max-width: 768px) {
     .profile-picture-update img {
-    max-width: 100px;
+        max-width: 100px;
+    }
 }
-}
+
 .container-profil-infos {
     display: flex;
     max-width: 1200px;
@@ -115,7 +117,6 @@ section#section-user-account {
 </style>
 
 <script>
-import axios from 'axios'
 
 export default {
     name: 'UserProfile',
@@ -132,32 +133,74 @@ export default {
         const userId = localStorage.getItem('userId')
         this.userId = userId
     },
-    async beforeMount() {
-        const response = await axios.get(`auth/${this.userId}`)
-        this.email = response.data.email
-        this.firstName = response.data.firstName
-        this.lastName = response.data.lastName
-        this.biography = response.data.bio
+    beforeMount() {
+        fetch(`http://localhost:3000/api/auth/${this.userId}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+        })
+            .then(promise => {
+                console.log(promise);
+                return promise.json()
+            })
+            .then(response => {
+                console.log(response);
+                this.email = response.email
+                this.firstName = response.firstName
+                this.lastName = response.lastName
+                this.biography = response.bio
+            })
+            .catch(error => { console.log(error) })
     },
     methods: {
-        async updateUser() {
+        updateUser() {
             const data = {
                 firstName: this.firstName,
                 lastName: this.lastName,
                 bio: this.biography
             }
-            await axios.put(`auth/${this.userId}`, data)
-            this.$router.go()
+            fetch(`http://localhost:3000/api/auth/${this.userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify(data)
+            })
+                .then(promise => {
+                    return promise.json()
+                })
+                .then(response => {
+                    console.log(response);
+                    this.$router.go()
+                })
+                .catch(error => { console.log(error) })
         },
-        async deleteUser() {
+        deleteUser() {
             if (confirm('Cette action est irréversible, voulez vous vraiment supprimer votre compte ?')) {
-                await axios.delete(`auth/${this.userId}`)
+                fetch(`http://localhost:3000/api/auth/${this.userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                }).then(promise => {
+                    return promise.json()
+                }).then(() => {
+                    localStorage.removeItem('userId')
+                    localStorage.removeItem('token')
+                    this.$router.push('/signup')
+                }).catch(error => { console.log(error) })
                 //  {
                 //     headers: {
                 //         Authorization: localStorage.getItem('token')
                 //     }
                 // })
-                // this.$router.push('/signup')
             } else {
                 return
             }
