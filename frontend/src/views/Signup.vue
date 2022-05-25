@@ -55,7 +55,8 @@
                     <label for="password">Votre mot de passe</label>
                     <input type="password"
                            id="password"
-                           v-model.trim="password"
+                           @keyup="checkPassword"
+                           v-model="password"
                            placeholder="Votre mot de passe"
                            required />
                     <!-- <p class="field-alert"
@@ -65,10 +66,10 @@
                     <label for="password">Confirmez votre mot de passe</label>
                     <input type="password"
                            id="password-confirmation"
-                           v-on:blur="validate"
-                           v-model.trim="passwordConfirm"
+                           @keyup="checkPassword"
                            placeholder="Confirmez votre mot de passe"
                            required />
+                    <p id="alert-password">{{ this.passwordMessage }}</p>
                     <!-- <p v-if="fieldError == true">{{ errorMessage }}</p> -->
                 </div>
                 <div class="form_wrapper__button submit__button">
@@ -97,19 +98,18 @@ export default {
             lastName: '',
             email: '',
             password: '',
-            passwordConfirm: '',
+            passwordMessage: '',
             displayMessage: ''
         }
     },
     methods: {
         async signupFunction() {
-            const response = await axios.post('auth/signup', {
+            await axios.post('auth/signup', {
                 firstName: this.firstName,
                 lastName: this.lastName,
                 email: this.email,
                 password: this.password,
-                passwordConfirm: this.passwordConfirm
-            }).then(response => {
+            }).then(() => {
                 document.getElementById('display-message').classList.add('successful-connection')
                 this.displayMessage = 'Votre compte à été créé ! Vous allez être redirigé vers la page de connexion'
                 setTimeout(() => {
@@ -123,28 +123,21 @@ export default {
                     return this.displayMessage = 'Une erreur s\'est produite ' + error
                 })
         },
-        validate: function () {
-            // this.password === this.passwordConfirm ? true : false
-            console.log(this.password === this.passwordConfirm);
+        checkPassword() {
+            const passwordField = document.getElementById('password').value
+            const confirmPasswordField = document.getElementById('password-confirmation').value
+            const confirmationMessage = document.getElementById('alert-password')
+            const submitBtn = document.getElementById('submit')
+            if (passwordField == confirmPasswordField) {
+                confirmationMessage.style.color = 'green'
+                submitBtn.removeAttribute('disabled')
+                this.passwordMessage = 'Les mots de passent concordent !'
+            } else {
+                submitBtn.setAttribute('disabled', true)
+                confirmationMessage.style.color = '#ff0000'
+                this.passwordMessage = 'Les mots de passe sont différents !'
+            }
         },
-        // checkForm: function () {
-        //     this.errors = [];
-        //     if (!this.firstName) {
-        //         this.errors.push("Champ requis.")
-        //     }
-        //     if (!this.lastName) {
-        //         this.errors.push("Champ requis.")
-        //     }
-        //     if (!this.lastName) {
-        //         this.errors.push("Champ requis.")
-        //     }
-        //     if (!this.email) {
-        //         this.errors.push('Email requis.')
-        //     }
-        //     if (!this.errors.length) {
-        //         return true
-        //     }
-        // },
     }
 }
 </script>
