@@ -4,7 +4,6 @@ const db = require('../config/db');
 const User = db.users;
 // MIDDLEWARE D'AUTHENTIFICATION
 module.exports = (req, res, next) => {
-    console.log(req.headers.authorization.split(' ')[1]);
     try {
         // On récupère la valeur du token située après le Bearer
         const token = req.headers.authorization.split(' ')[1];
