@@ -11,13 +11,6 @@
                       v-model="content"
                       required />
         </div>
-        <!-- <div class="form_wrapper__field file-upload_wrapper">
-            <label for="file">Ajoutez une image</label>
-            <input type="file"
-                   name="image"
-                   id="file-upload"
-                   v-on:change="imageUrl" />
-        </div> -->
         <div class="form_wrapper__button submit__button">
             <input type="submit"
                    id="submit"
@@ -58,14 +51,12 @@ export default {
     data() {
         return {
             content: '',
-            // imageUrl: '',
         }
     },
     methods: {
         async sendPost() {
             await axios.post('posts', {
                 content: this.content,
-                // imageUrl: this.imageUrl
             })
             this.$router.go()
         }
