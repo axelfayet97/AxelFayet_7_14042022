@@ -9,7 +9,7 @@ const routes = [
     {
         requireAuth: true,
         beforeEnter: (to, from, next) => {
-            if (localStorage.getItem('token') == null) {
+            if (localStorage.getItem('token') == null || undefined) {
                 next({ name: 'login' })
             } else {
                 next()
@@ -32,7 +32,7 @@ const routes = [
     {
         requireAuth: true,
         beforeEnter: (to, from, next) => {
-            if (localStorage.getItem('token') == null) {
+            if (localStorage.getItem('token') == null || undefined) {
                 next({ name: 'login' })
             } else {
                 next()
