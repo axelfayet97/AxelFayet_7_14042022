@@ -17,7 +17,6 @@
 <script>
 import Post from '@/components/Post.vue'
 import PostForm from '@/components/PostForm.vue'
-import axios from 'axios'
 
 export default {
   name: 'Home',
@@ -29,15 +28,26 @@ export default {
     return {
       firstName: '',
       lastName: '',
-      userId: '',
+      userId: ''
     }
   },
-  async created() {
+  created() {
     const userId = localStorage.getItem('userId')
     this.userId = userId
-    const response = await axios.get(`auth/${this.userId}`)
-    this.firstName = response.data.firstName
-    this.lastName = response.data.lastName
+    fetch(`http://localhost:3000/api/auth/${this.userId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      }
+    })
+      .then(promise => {
+        return promise.json()
+      }).then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      })
   }
 }
 </script>
