@@ -3,6 +3,7 @@ import Home from '@/views/Home.vue'
 import Login from '@/views/Login.vue'
 import Signup from '@/views/Signup.vue'
 import UserProfile from '@/views/UserProfile.vue'
+import PathNotFound from '@/views/PathNotFound.vue'
 
 const routes = [
     {
@@ -40,12 +41,16 @@ const routes = [
         name: 'profile',
         path: '/profile',
         component: UserProfile
+    }, {
+        name: 'PathNotFound',
+        path: '/:pathMatch(.*)*',
+        component: PathNotFound,
     }
 ]
 
 const router = createRouter({
     history: createWebHistory(),
-    routes
+    routes,
 })
 
 export default router
