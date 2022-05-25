@@ -13,7 +13,7 @@ exports.createPost = (req, res) => {
 }
 // Retrieve all Posts from the database.
 exports.findAllPosts = (req, res) => {
-    Post.findAll({ include: ['user', 'comments', 'likes'], order: [['updatedAt', 'DESC']] })
+    Post.findAll({ include: ['user', 'comments', 'likes', {model: db.comments, as: 'comments', include: 'user'}], order: [['updatedAt', 'DESC']] })
         .then(data => {
             res.send(data);
         })
