@@ -6,7 +6,7 @@ module.exports = app => {
     const rateLimit = require('../middlewares/rateLimit.middleware')
     var router = require('express').Router();
     router.post('/signup', userCtrl.signup);
-    router.post('/login', rateLimit, userCtrl.login);
+    router.post('/login', /*rateLimit,*/ userCtrl.login);
     router.put('/:id', auth, multer, userCtrl.modifyAccount);
     router.get('/', auth, userCtrl.getAccounts);
     router.get('/:id', auth, userCtrl.getOneAccount);
