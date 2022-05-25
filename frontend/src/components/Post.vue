@@ -16,14 +16,13 @@
                 </div>
             </div>
             <div class="container__header__options"
-                 @vnodeMounted="belongsToUser(post.userId)"
-                 v-if="displayOptions">
+                 v-show="userId == post.userId">
                 <a href="#"
-                   @click.prevent="toggleControls"
+                   @click.prevent="toggleControls(post.id)"
                    id="toggle-controls"><i class="bi bi-gear"></i>
                     <ul id="controls"
-                        v-show="showOptions">
-                        <li @click.stop.prevent="editPostControls"><i class="bi bi-pencil"></i></li>
+                        v-show="showOptions == post.id">
+                        <li @click.stop.prevent="editPostControls(post.id)"><i class="bi bi-pencil"></i></li>
                         <li @click.stop.prevent="deletePost(post.id)"><i class="bi bi-trash3"></i></li>
                     </ul>
                 </a>
@@ -32,7 +31,7 @@
         <div class="post-container__body">
             <p>{{ post.content }}</p>
             <form id="update-post"
-                  v-show="editPost"
+                  v-show="editPost == post.id"
                   @submit.prevent="updatePost(post.id)">
                 <textarea v-model="updatedMessage">{{ post.id.content }}</textarea>
                 <input type="submit"
@@ -49,14 +48,14 @@
                 <div id="like-post">
                     <a href="#"
                        @click.prevent="likePost(post.id)">
-                        <!-- <i :class="{ userHasLiked: 'bi bi-hand-thumbs-up-fill', 'bi bi-hand-thumbs-up': !userHasLiked }" </i>-->
-                        <i class="bi bi-hand-thumbs-up"></i>
+                        <i class="bi bi-hand-thumbs-up-fill"></i>
+                        <!-- <i class="bi bi-hand-thumbs-up" v-show="!hasLiked"></i> -->
                         {{ post.likes.length }}
                     </a>
                 </div>
             </div>
             <div class="comments-wrapper">
-                <Comment />
+                <Comment :comments="post.comments" />
             </div>
             <div id="comment-post">
                 <form @submit.prevent="commentPost(post.id)"
@@ -66,7 +65,7 @@
                         <img src="/Groupomania_Logos/Daco_1182050.png">
                         <input type="text"
                                name="comment"
-                               v-model="commentContent"
+                               v-model="this.commentContent"
                                id="comment-text"
                                placeholder="Ajouter un commentaire" />
                     </div>
@@ -161,6 +160,10 @@
     vertical-align: middle;
 }
 
+.container__controls .comments-wrapper {
+    max-height: 300px;
+    overflow: scroll;
+}
 .comment-input-wrapper {
     display: flex;
     width: 100%;
@@ -169,6 +172,7 @@
 #comments-form {
     display: flex;
     width: 100%;
+    padding: 10px;
 }
 
 @media all and (max-width: 768px) {
@@ -251,63 +255,134 @@
 
 <script>
 import Comment from '@/components/Comment.vue';
-import axios from 'axios'
 
 export default {
     name: 'Post',
     data() {
         return {
             posts: [],
-            showOptions: false,
-            displayOptions: true,
+            showOptions: '',
             editPost: false,
             isLiked: '',
             commentContent: '',
             errorMessage: '',
-            updatedMessage: ''
+            updatedMessage: '',
+            userId: null,
+            hasLiked: ''
         }
     },
     components: {
         Comment
     },
-    async created() {
-        const response = await axios.get('posts')
-        const posts = await response.data
-        this.posts = posts
+    created() {
+        fetch(`http://localhost:3000/api/posts`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+        })
+            .then(promise => {
+                return promise.json()
+            })
+            .then(posts => {
+                console.log(posts);
+                this.posts = posts
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        this.userId = localStorage.getItem('userId')
     },
     methods: {
-        toggleControls() {
-            this.showOptions = !this.showOptions
+        toggleControls(postId) {
+            if (this.showOptions == postId) {
+                this.showOptions = null
+            } else {
+                this.showOptions = postId
+            }
         },
-        editPostControls() {
-            this.editPost = !this.editPost
+        editPostControls(postId) {
+            if (this.editPost == postId) {
+                this.editPost = null
+            } else {
+                this.editPost = postId
+            }
         },
-        belongsToUser(userId) {
-            userId == localStorage.getItem('userId') ? this.displayOptions = true : this.displayOptions = false
-        },
-        async likePost(postId) {
-            const response = await axios.post('likes', {
-                postId,
-                isLiked: 1
+        likePost(postId) {
+            // Req likes
+            fetch('http://localhost:3000/api/likes', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ postId, isLiked: 1 })
             })
-            console.log(response);
-            this.$router.go(`/#${postId}`)
-        },
-        async commentPost(postId) {
-            await axios.post('comments', {
-                postId: postId,
-                content: this.commentContent
+                .catch(error => {
+                    console.log(error);
+                })
+            fetch('http://localhost:3000/api/posts', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+            }).then(promise => {
+                return promise.json()
+            }).then(data => {
+                this.posts = data
             })
-            this.$router.go(`/#${postId}`)
+                .catch(error => {
+                    console.log(error);
+                })
         },
-        async updatePost(postId) {
-            await axios.put(`posts/${postId}`, { content: this.updatedMessage, })
-            this.$router.go(`/#${postId}`)
+        commentPost(postId) {
+            fetch('http://localhost:3000/api/comments', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ postId, content: this.commentContent })
+            }).then(promise => {
+                return promise.json()
+            }).then(() => {
+                this.$router.go(`/#${postId}`)
+            })
         },
-        async deletePost(postId) {
-            if (confirm('Voulez-vous vraiment supprimmer ce post ?')) {
-                await axios.delete(`posts/${postId}`)
+         updatePost(postId) {
+            fetch(`http://localhost:3000/api/posts/${postId}`, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ content: this.updatedMessage })
+            }).then(promise => {
+                return promise.json()
+            }).then(() => {
                 this.$router.go()
+            }).catch(error => {
+                console.log(error);
+            })
+        },
+        deletePost(postId) {
+            if (confirm('Voulez-vous vraiment supprimmer ce post ?')) {
+                fetch(`http://localhost:3000/api/posts/${postId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                })
+                    .then(promise => {
+                        return promise.json()
+                    }).then(() => {
+                        this.$router.go()
+                    })
             } else {
                 return
             }
