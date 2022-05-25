@@ -8,14 +8,16 @@ exports.createPost = (req, res) => {
         ...req.body,
         userId: req.auth.userId
     })
-        .then(data => { res.status(201).send({ message: 'Post successfully created !', data }) })
+        .then(data => { res.status(201).send({ message: 'Post créé !', data }) })
         .catch((error) => { res.status(400).send(error) });
 }
 // Retrieve all Posts from the database.
 exports.findAllPosts = (req, res) => {
-    Post.findAll({ include: ['user', 'comments', 'likes'], order: [['updatedAt', 'DESC']] }).then(data => {
-        res.send(data);
-    }).catch(error => res.send(error));
+    Post.findAll({ include: ['user', 'comments', 'likes'], order: [['updatedAt', 'DESC']] })
+        .then(data => {
+            res.send(data);
+        })
+        .catch(error => res.send(error));
 };
 // Find a single Post with an id
 exports.findOnePost = (req, res) => {
@@ -26,13 +28,13 @@ exports.findOnePost = (req, res) => {
                 res.send(data);
             } else {
                 res.status(404).send({
-                    message: `Cannot find Post with id=${id}.`
+                    message: `Impossible de trouver le post à l'id=${id}.`
                 });
             }
         })
         .catch(error => {
             res.status(500).send({
-                message: 'Error retrieving Post with id=' + id, error
+                message: 'Un problème est survenu lors de la récupération du post ' + id, error
             });
         });
 };
@@ -76,7 +78,7 @@ exports.deletePost = (req, res) => {
                     });
                 } else {
                     res.send({
-                        message: `Impossible de supprimer l'id=${postId}.`
+                        message: `Impossible de supprimer le post à l'id=${postId}.`
                     });
                 }
             })
