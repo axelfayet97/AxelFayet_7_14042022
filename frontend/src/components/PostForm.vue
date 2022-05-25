@@ -44,7 +44,6 @@
 }
 </style>
 <script>
-import axios from 'axios'
 
 export default {
     name: 'PostForm',
@@ -54,11 +53,21 @@ export default {
         }
     },
     methods: {
-        async sendPost() {
-            await axios.post('posts', {
-                content: this.content,
+        sendPost() {
+            fetch('http://localhost:3000/api/posts', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ content: this.content })
+            }).then(response => {
+                return response.json()
+            }).then(() => {
+                this.$router.go()
             })
-            this.$router.go()
+                .catch(error => { console.log(error) })
         }
     }
 }
