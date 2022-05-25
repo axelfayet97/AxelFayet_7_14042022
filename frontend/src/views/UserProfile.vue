@@ -1,5 +1,5 @@
 <template>
-    <section>
+    <section id="section-user-account">
         <h1>Votre profil</h1>
         <div class="container-profil-infos">
             <div class="profile-picture-update">
@@ -10,19 +10,24 @@
                        id="profile-pic-input" /> -->
             </div>
             <div class="form-infos">
-                <form @submit.prevent="updateUser">
-                    <div class="email-input">
-                        <label for="email"></label>
+                <form class="form_wrapper" @submit.prevent="updateUser">
+                    <div class="form-input"
+                         id="email-input">
+                        <label for="email">Email</label>
                         <input type="email"
                                placeholder=""
                                disabled
                                v-model="email" />
                     </div>
-                    <div class="names-input">
+                    <div class="form-input"
+                         id="names-input">
                         <label for="firstNameInput">Prénom</label>
                         <input type="text"
                                placeholder=""
                                v-model="firstName">
+                    </div>
+                    <div class="form-input"
+                         id="lastname-input">
                         <label for="lastNameInput">Nom</label>
                         <input type="text"
                                placeholder=""
@@ -38,37 +43,74 @@
                                v-bind="password"
                                placeholder="">
                     </div> -->
-                    <div class="bio-input">
+                    <div class="form-input"
+                         id="bio-input">
                         <label for="bio">À propos de vous :</label>
-                        <textarea placeholder="{{this.biography}}"
+                        <textarea :placeholder="biography"
                                   v-model="biography" />
                     </div>
-                    <input type="submit"
+                    <input id="update-account"
+                           type="submit"
                            value="Sauvegarder mes informations">
                 </form>
             </div>
-            <a href="#"
-               @click.prevent="deleteUser">Supprimer mon compte</a>
         </div>
+        <button id="delete-account"
+                href="#"
+                @click.prevent="deleteUser">Supprimer mon compte</button>
     </section>
 </template>
 
 <style scoped>
-img {
-    width: 200px;
+section#section-user-account {
+    padding: 50px 0;
 }
 
+.profile-picture-update {
+    text-align: center;
+}
+
+.profile-picture-update img {
+    max-width: 200px;
+}
+
+@media all and (max-width: 768px) {
+    .profile-picture-update img {
+    max-width: 100px;
+}
+}
 .container-profil-infos {
     display: flex;
-    justify-content: center;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.container-profil-infos div {
+    width: 100%;
 }
 
 .profile-picture-update {
     width: 30%;
 }
 
-.form-infos {
-    width: auto;
+
+.form-infos .form-input input,
+.form-infos .form-input textarea {
+    margin: 10px 0;
+    width: 100%;
+    max-width: 300px;
+    min-width: min-content;
+    min-height: 25px;
+    max-height: 200px;
+}
+
+.form-infos .form-input label {
+    display: block;
+}
+
+#delete-account {
+    display: block;
+    margin: auto;
 }
 </style>
 
