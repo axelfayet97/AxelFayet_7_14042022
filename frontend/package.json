@@ -11,7 +11,6 @@
     "@vitejs/plugin-vue": "^2.3.3",
     "@vuelidate/core": "^2.0.0-alpha.41",
     "@vuelidate/validators": "^2.0.0-alpha.29",
-    "axios": "^0.27.2",
     "bootstrap-icons": "^1.8.2",
     "vue": "^3.2.33",
     "vue-router": "^4.0.15"
