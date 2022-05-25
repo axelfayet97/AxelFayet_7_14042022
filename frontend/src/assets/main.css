@@ -153,9 +153,26 @@ header img {
   width: 200px;
 }
 
+header svg {
+  max-width: 30px;
+  transition: all .2s linear;
+  vertical-align: middle;
+  text-align: center;
+}
+
+header svg:hover,
+header svg:focus,
+header svg:active {
+  fill: red
+}
+
 @media all and (max-width: 1024px) {
   header img {
     width: 150px
+  }
+
+  header svg {
+    max-width: 15px;
   }
 }
 
@@ -187,9 +204,11 @@ footer.footer_wrapper {
   justify-content: center;
   align-items: center;
 }
+
 footer.footer_wrapper ul {
   padding: 0;
 }
+
 footer.footer_wrapper ul li {
   display: inline-block;
   width: auto;
