@@ -6,13 +6,9 @@
     </router-link>
     <div id="user-controls"
          v-if="auth">
-      <router-link to="/profile"><img src="../../public/noun-user-4584119.svg"
-             class="pictos-header"
-             alt="profil" /></router-link>
+      <router-link to="/profile"><i class="bi bi-person"></i></router-link>
       <router-link @click="logOut"
-                   to="/login"><img src="../../public/noun-power-714772.svg"
-             class="pictos-header"
-             alt="Déconnexion" />
+                   to="/login"><i class="bi bi-power"></i>
       </router-link>
 
     </div>
