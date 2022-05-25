@@ -1,5 +1,5 @@
 <template>
-  <Header />
+  <Header :key="$route.fullPath" />
   <router-view />
   <Footer />
 </template>
@@ -13,10 +13,6 @@ export default {
   components: {
     Header,
     Footer
-  },
-  data() {
-    return {
-    }
   },
 }
 </script>
