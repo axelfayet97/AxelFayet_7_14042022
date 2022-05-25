@@ -11,26 +11,27 @@
                 </div>
                 <div class="comment-container__body">
                     <div class="author-infos">
-                        <p id="comment-author"> {{ comment.user.firstName }} {{ comment.user.lastName }} <span class="span-time-comment"><time id="created-at"
-                          :dateTime="comment.createdAt">{{ comment.createdAt }}</time></span> </p>
+                        <p id="comment-author"> {{ comment.user.firstName }} {{ comment.user.lastName }} <span
+                                  class="span-time-comment"><time id="created-at"
+                                      :dateTime="comment.createdAt">{{ comment.createdAt }}</time></span> </p>
                     </div>
                     <p>{{ comment.content }}</p>
                     <div class="container__header__options"
                          @vnodeMounted="belongsToUser(comment.userId)"
                          v-if="displayOptions">
                         <a href="#"
-                           @click.prevent="toggleControls"
+                           @click.prevent="toggleControls(comment.id)"
                            id="toggle-controls"><i class="bi bi-gear"></i>
                             <ul id="controls"
                                 v-show="showOptions">
-                                <li><i @click.stop.prevent="editCommentControls"
+                                <li><i @click.stop.prevent="editCommentControls(comment.id)"
                                        class="bi bi-pencil"></i></li>
                                 <li @click="deleteComment(comment.id)"><i class="bi bi-trash3"></i></li>
                             </ul>
                         </a>
                     </div>
                     <form id="update-comment"
-                          v-show="editComment"
+                          v-show="editComment == comment.id"
                           @submit.prevent="updateComment(comment.id)">
                         <textarea v-model="updatedMessage">{{ comment.content }}</textarea>
                         <input type="submit"
@@ -99,7 +100,7 @@
     box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.16);
     padding: 10px 20px;
     border-radius: 30px;
-    width: 100%
+    width: 100%;
 }
 
 .comment-container__body .container__header__options a {
@@ -114,62 +115,135 @@
 .comment-container__body .container__header__options a #controls li {
     padding: 5px;
 }
-#update-post textarea {
+
+#update-comment textarea {
     min-width: 100%;
     max-width: 100%;
-    min-height: 100px;
-    max-height: 250px;
+    min-height: 60px;
+    max-height: 60px;
     font-family: 'Raleway', sans-serif;
-    padding: 10px;
 }
 
-#update-post input[type="submit"] {
+#update-comment input[type="submit"] {
     display: block;
     margin-left: auto;
     margin-top: 10px !important;
+    background: #FF0000;
+    border-radius: 40px;
+    border: 2px solid transparent;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    transition: all .2s linear;
+}
+
+@media all and (max-width: 768px) {
+    #update-comment input[type="submit"] {
+        margin: 20px 0 20px auto !important;
+        max-width: 200px;
+    }
+}
+
+#update-comment input[type="submit"] {
+    margin: 0 0 0 20px;
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
+#update-comment input[type="submit"]:hover,
+#update-comment input[type="submit"]:focus,
+#update-comment input[type="submit"]:active {
+    background-color: #fff;
+    color: var(--rouge);
+    border: 2px solid var(--rouge);
+    cursor: pointer;
 }
 </style>
 
 <script>
-import axios from 'axios'
 
 export default {
     name: 'Comment',
+    props: ['comments'],
     data() {
         return {
-            comments: [],
-            showOptions: false,
+            showOptions: '',
             displayOptions: true,
-            editComment: false,
+            editComment: '',
             commentContent: '',
             displayMessage: '',
             updatedMessage: ''
         }
     },
-    async mounted() {
-        console.log("Génération des comments");
-        const response = await axios.get('comments')
-        const comments = await response.data
-        this.comments = comments
+    mounted() {
+        fetch(`http://localhost:3000/api/comments`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+        }).then(promise => {
+            return promise.json()
+        })
+            .then(comments => {
+                console.log(comments);
+            })
+            .catch(error => {
+                console.log(error)
+            })
     },
     methods: {
-        toggleControls() {
-            this.showOptions = !this.showOptions
+        toggleControls(commentId) {
+            if (this.showOptions == commentId) {
+                this.showOptions = null
+            } else {
+                this.showOptions = commentId
+            }
         },
-        editCommentControls() {
-            this.editComment = !this.editComment
+        editCommentControls(commentId) {
+            if (this.editComment == commentId) {
+                this.editComment = null
+            } else {
+                this.editComment = commentId
+            }
         },
         belongsToUser(userId) {
             userId == localStorage.getItem('userId') ? this.displayOptions = true : this.displayOptions = false
         },
-        async updateComment(commentId) {
-            await axios.put(`comments/${commentId}`, { content: this.updatedMessage, })
-            this.$router.go(`/#${commentId}`)
-        },
-        async deleteComment(commentId) {
-            if (confirm('Voulez-vous vraiment supprimmer ce commentaire ?')) {
-                await axios.delete(`comments/${commentId}`)
+        updateComment(commentId) {
+            fetch(`http://localhost:3000/api/comments/${commentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ content: this.updatedMessage })
+            }).then(promise => {
+                return promise.json()
+            }).then(() => {
                 this.$router.go()
+            }).catch(error => {
+                console.log(error);
+            })
+        },
+        deleteComment(commentId) {
+            if (confirm('Voulez-vous vraiment supprimmer ce commentaire ?')) {
+                fetch(`http://localhost:3000/api/comments/${commentId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    }
+                }).then(promise => {
+                    return promise.json()
+                }).then(() => {
+                    this.$router.go()
+                }).catch(error => {
+                    console.log(error);
+                })
             } else {
                 return
             }
