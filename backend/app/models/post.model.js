@@ -5,10 +5,6 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.TEXT,
             allowNull: false
         },
-        imageUrl: {
-            type: Sequelize.STRING,
-            allowNull: true
-        },
         createdAt: {
             allowNull: false,
             type: Sequelize.DATE,
