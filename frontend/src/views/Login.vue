@@ -44,7 +44,8 @@
                 </div>
             </form>
             <div id="to-signup">
-                <p>C'est votre première visite ? <router-link to="/signup"><span class="nowrap">Inscrivez-vous !</span></router-link>
+                <p>C'est votre première visite ? <router-link to="/signup"><span class="nowrap">Inscrivez-vous !</span>
+                    </router-link>
                 </p>
             </div>
         </div>
@@ -52,8 +53,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
     name: 'Login',
     data() {
@@ -65,27 +64,32 @@ export default {
     },
     methods: {
         loginFunction() {
-            axios.post(`auth/login`, {
-                email: this.email,
-                password: this.password,
+            fetch(`http://localhost:3000/api/auth/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: this.email,
+                    password: this.password,
+                }),
+            }).then(promise => {
+                return promise.json()
             })
-                .then(response => {
+                .then((response) => {
+                    if (response.error) {
+                        throw new Error('Veuillez vérifier vos informations.');
+                    }
                     document.getElementById('display-message').classList.add('successful-connection')
                     this.displayMessage = 'Connexion réussie ! Vous allez être redirigé...'
-                    localStorage.setItem('token', response.data.token)
-                    localStorage.setItem('userId', response.data.userId)
-                    console.log(response.data);
-                    console.log("Token saved");
+                    localStorage.setItem('token', response.token)
+                    localStorage.setItem('userId', response.userId)
                     setTimeout(() => {
-                        console.log('redirection');
                         this.$router.push('/')
-                    }, 2000);
+                    }, 1500);
                 })
                 .catch(error => {
                     document.getElementById('display-message').classList.add('error-message')
-                    return this.displayMessage = 'Une erreur s\'est produite ' + error
+                    return this.displayMessage = error
                 })
-
         }
     },
 }
