@@ -9,7 +9,7 @@ const app = express();
 const db = require('./app/config/db');
 // Définition des propriétés CORS
 var corsOptions = {
-    origin: '*'
+    origin: 'http://localhost:8080'
 };
 app.use(cors(corsOptions));
 // Parse les requêtes de application/json
