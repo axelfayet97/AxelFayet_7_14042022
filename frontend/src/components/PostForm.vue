@@ -18,7 +18,6 @@
         </div>
     </form>
 </template>
-
 <style scoped>
 #textarea {
     min-width: 80%;
@@ -44,7 +43,6 @@
 }
 </style>
 <script>
-
 export default {
     name: 'PostForm',
     data() {
@@ -62,12 +60,11 @@ export default {
                     'Authorization': 'Bearer ' + localStorage.getItem('token')
                 },
                 body: JSON.stringify({ content: this.content })
-            }).then(response => {
-                return response.json()
+            }).then(promise => {
+                return promise.json()
             }).then(() => {
                 this.$router.go()
-            })
-                .catch(error => { console.log(error) })
+            }).catch(error => { console.log(error) })
         }
     }
 }
