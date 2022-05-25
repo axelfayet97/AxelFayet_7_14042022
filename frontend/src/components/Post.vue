@@ -15,23 +15,26 @@
                           :dateTime="post.createdAt">{{ post.createdAt }}</time>
                 </div>
             </div>
-            <div class="container__header__options">
+            <div class="container__header__options"
+                 @vnodeMounted="belongsToUser(post.userId)"
+                 v-if="displayOptions">
                 <a href="#"
                    @click.prevent="toggleControls"
-                   id="toggle-controls"><span>...</span>
+                   id="toggle-controls"><i class="bi bi-gear"></i>
                     <ul id="controls"
                         v-show="showOptions">
-                        <li>Modifier</li>
-                        <li @click="deletePost(post.id)">Supprimer</li>
+                        <li @click.stop.prevent="editPostControls"><i class="bi bi-pencil"></i></li>
+                        <li @click.stop.prevent="deletePost(post.id)"><i class="bi bi-trash3"></i></li>
                     </ul>
                 </a>
             </div>
         </div>
         <div class="post-container__body">
-            <p @click="toggleControls">{{ post.content }}</p>
-            <form @submit.prevent="updatePost(post.id)"
-                  v-show="showOptions">
-                <textarea id="update-message">{{ post.updatedMessage }}</textarea>
+            <p>{{ post.content }}</p>
+            <form id="update-post"
+                  v-show="editPost"
+                  @submit.prevent="updatePost(post.id)">
+                <textarea v-model="updatedMessage">{{ post.id.content }}</textarea>
                 <input type="submit"
                        value="Modifier">
             </form>
@@ -40,35 +43,37 @@
         <div class="container__controls">
             <div class="controls-buttons">
                 <div id="comment-button">
-                    <img src="../../public/noun-comment-1935575.svg"
-                         alt="Bouton commentaire">
+                    <i class="bi bi-chat-left-text"></i>
                     {{ post.comments.length }}
                 </div>
                 <div id="like-post">
                     <a href="#"
                        @click.prevent="likePost(post.id)">
-                        <img src="/noun-like-576529.svg"
-                             id="like-button"
-                             alt="Bouton like" />
+                        <!-- <i :class="{ userHasLiked: 'bi bi-hand-thumbs-up-fill', 'bi bi-hand-thumbs-up': !userHasLiked }" </i>-->
+                        <i class="bi bi-hand-thumbs-up"></i>
                         {{ post.likes.length }}
                     </a>
                 </div>
             </div>
-            <Comment />
+            <div class="comments-wrapper">
+                <Comment />
+            </div>
             <div id="comment-post">
                 <form @submit.prevent="commentPost(post.id)"
                       id="comments-form">
                     <!-- Commentaires -->
-                    <img src="/Groupomania_Logos/Daco_1182050.png">
-                    <input type="text"
-                           name="comment"
-                           v-model="commentContent[post.id]"
-                           id="comment-text"
-                           placeholder="Ajouter un commentaire">
+                    <div class="comment-input-wrapper">
+                        <img src="/Groupomania_Logos/Daco_1182050.png">
+                        <input type="text"
+                               name="comment"
+                               v-model="commentContent"
+                               id="comment-text"
+                               placeholder="Ajouter un commentaire" />
+                    </div>
+                    <div id="error-message">{{ this.errorMessage }}</div>
                     <input type="submit"
                            value="Commenter"
                            id="comment-submit" />
-                    <div id="error-message">{{ this.errorMessage }}</div>
                 </form>
             </div>
         </div>
@@ -92,62 +97,10 @@
     }
 }
 
-/* HEADER */
-
-.post-container__header {
-    display: flex;
-    justify-content: space-between;
-}
-
-.container__header__options a,
-.container__header__options a:visited {
-    cursor: pointer;
-    position: relative;
-    font-size: 30px;
-    font-weight: bold;
-    color: var(--gris);
-}
-
-.container__header__options a:hover,
-.container__header__options a:focus,
-.container__header__options a:active {
-    color: var(--noir)
-}
-
-.container__header__options a #controls {
-    position: absolute;
-    right: 50px;
-    top: 50%;
-    transform: translateY(-50%);
-    list-style-type: none;
-    color: var(--noir);
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    transition: right .2s linear;
-}
-
-.container__header__options a #controls li {
-    padding: 20px;
-}
-
-@media all and (max-width: 768px) {
-    .container__header__options a #controls {
-        display: block;
-        right: 0;
-        top: 70px;
-        text-align: right;
-    }
-
-    .container__header__options a #controls li {
-        padding: 10px;
-    }
-}
-
-
 #post-author {
     font-weight: 800;
 }
+
 .post-container #author-img img,
 .post-container #comment-post img {
     max-width: 50px;
@@ -164,6 +117,21 @@
     line-break: anywhere;
 }
 
+#update-post textarea {
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 100px;
+    max-height: 250px;
+    font-family: 'Raleway', sans-serif;
+    padding: 10px;
+}
+
+#update-post input[type="submit"] {
+    display: block;
+    margin-left: auto;
+    margin-top: 10px !important;
+}
+
 /* CONTROLS */
 
 .container__controls .controls-buttons {
@@ -174,6 +142,7 @@
 
 .container__controls .controls-buttons div {
     margin: 0 10px;
+    font-size: 25px;
 }
 
 .container__controls .controls-buttons #comment-button {
@@ -192,18 +161,29 @@
     vertical-align: middle;
 }
 
+.comment-input-wrapper {
+    display: flex;
+    width: 100%;
+}
+
 #comments-form {
     display: flex;
     width: 100%;
 }
 
 @media all and (max-width: 768px) {
+    #comments-form {
+        flex-direction: column;
+    }
+
     #comments-form img {
         width: 40px;
         height: 40px;
     }
 }
+
 #comment-post input[type="text"] {
+    font-family: 'Raleway', sans-serif;
     border: none;
     border-bottom: 1px solid var(--noir);
     background: transparent;
@@ -229,7 +209,8 @@
     border-color: var(--rouge);
 }
 
-#comment-post #comment-submit {
+#comment-post #comment-submit,
+#update-post input[type="submit"] {
     background: #FF0000;
     border-radius: 40px;
     border: 2px solid transparent;
@@ -241,7 +222,15 @@
     transition: all .2s linear;
 }
 
-#comment-post #comment-submit {
+@media all and (max-width: 768px) {
+    #comment-submit {
+        margin: 20px 0 20px auto !important;
+        max-width: 200px;
+    }
+}
+
+#comment-post #comment-submit,
+#update-post input[type="submit"] {
     margin: 0 0 0 20px;
     padding: 10px 20px;
     font-size: 14px;
@@ -249,7 +238,10 @@
 
 #comment-post #comment-submit:hover,
 #comment-post #comment-submit:focus,
-#comment-post #comment-submit:active {
+#comment-post #comment-submit:active,
+#update-post input[type="submit"]:hover,
+#update-post input[type="submit"]:focus,
+#update-post input[type="submit"]:active {
     background-color: #fff;
     color: var(--rouge);
     border: 2px solid var(--rouge);
@@ -267,7 +259,9 @@ export default {
         return {
             posts: [],
             showOptions: false,
-            isLiked: 0,
+            displayOptions: true,
+            editPost: false,
+            isLiked: '',
             commentContent: '',
             errorMessage: '',
             updatedMessage: ''
@@ -276,8 +270,7 @@ export default {
     components: {
         Comment
     },
-    async mounted() {
-        console.log("Génération des posts");
+    async created() {
         const response = await axios.get('posts')
         const posts = await response.data
         this.posts = posts
@@ -286,28 +279,29 @@ export default {
         toggleControls() {
             this.showOptions = !this.showOptions
         },
+        editPostControls() {
+            this.editPost = !this.editPost
+        },
+        belongsToUser(userId) {
+            userId == localStorage.getItem('userId') ? this.displayOptions = true : this.displayOptions = false
+        },
         async likePost(postId) {
             const response = await axios.post('likes', {
                 postId,
                 isLiked: 1
             })
-            const likes = await response.data.data
-            this.isLiked = likes
-            // this.$router.go(`/#${postId}`)
+            console.log(response);
+            this.$router.go(`/#${postId}`)
         },
         async commentPost(postId) {
-            const response = await axios.post('comments', {
+            await axios.post('comments', {
                 postId: postId,
                 content: this.commentContent
             })
-            console.log('Comment response = ', response, postId);
+            this.$router.go(`/#${postId}`)
         },
         async updatePost(postId) {
-            const data = {
-                content: this.updatedMessage,
-                // imageUrl: this.imageUrl,
-            }
-            await axios.put(`posts/${postId}`, data)
+            await axios.put(`posts/${postId}`, { content: this.updatedMessage, })
             this.$router.go(`/#${postId}`)
         },
         async deletePost(postId) {
