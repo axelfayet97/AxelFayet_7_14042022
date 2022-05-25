@@ -110,27 +110,6 @@ exports.getOneAccount = (req, res) => {
             });
         });
 };
-// exports.modifyPassword = (req, res) => {
-//     if (req.params.id != req.auth.userId) {
-//         return res.status(401).send({ message: "Unauthorized." })
-//     }
-//     // Création et sauvegarde dans la base de données d'un nouvel utilisateur
-//     // To do : methode modif mdp par bcrypt
-//     bcrypt.hash(req.body.password, 10)
-//         .then(hash => {
-//             console.log(hash);
-//             User.update({ password: hash }, {
-//                 where: {
-//                     id: req.params.id
-//                 }
-//             })
-//         })
-//         .catch(error => {
-//             res.status(500).send({
-//                 message: 'Error updating password for user with id=' + req.params.id, error
-//             });
-//         });
-// };
 exports.modifyAccount = (req, res) => {
     // Vérification auth
     if (req.params.id != req.auth.userId) {
