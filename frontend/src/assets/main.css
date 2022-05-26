@@ -90,7 +90,7 @@ a:active {
 }
 
 /* SUCCESSFUL CONNECTION */
-#display-message {
+#alert-message {
   color: #fff;
   width: auto;
   height: 0px;
@@ -100,14 +100,18 @@ a:active {
   align-items: center;
 }
 
-#display-message.successful-connection {
+#alert-message.successful-connection {
   background-color: green !important;
   height: 50px;
 }
 
-#display-message.error-message {
+#alert-message.error-message {
   background-color: #ff0000;
   height: 50px;
+}
+#alert-message.error-message-light {
+  color: red !important;
+  background-color: transparent;
 }
 
 /* ===============
