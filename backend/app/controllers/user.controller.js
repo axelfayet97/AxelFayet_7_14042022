@@ -39,22 +39,22 @@ exports.signup = (req, res) => {
                         return User.create({
                             ...req.body,
                             password: hash
-                        })
-                            .then(data => { res.status(201).send({ message: 'Compte créé !', data }) })
-                            .catch((error) => { res.status(400).send(error) });
+                        }).then(data => {
+                            res.status(201).send({ message: 'Compte créé !', data })
+                        }).catch((error) => {
+                            res.status(400).send(error)
+                        });
                     }
                     else {
                         throw 'Votre mot de passe est trop simple !'
                     }
-                })
-                .catch((error) => {
+                }).catch((error) => {
                     res.status(500).send(error)
                 });
         } else {
             return res.status(409).send({ error: 'Cet utilisateur existe déjà !' });
         };
-    })
-        .catch(error => res.status(500).send({ error, message: 'Une erreur est survenue, veuillez réessayer' }))
+    }).catch(error => res.status(500).send({ error, message: 'Une erreur est survenue, veuillez réessayer' }))
 };
 // Connexion
 exports.login = (req, res) => {
@@ -87,8 +87,9 @@ exports.login = (req, res) => {
 // Get all accounts
 exports.getAccounts = (req, res) => {
     User.findAll()
-        .then(data => { res.send(data) })
-        .catch(error => res.send(error));
+        .then(data => {
+            res.send(data)
+        }).catch(error => res.send(error));
 };
 // Find a single Account with an id
 exports.getOneAccount = (req, res) => {
@@ -116,11 +117,9 @@ exports.modifyAccount = (req, res) => {
     const firstname = req.body.firstName;
     const lastname = req.body.lastName;
     // Vérification des champs
-    // TO DO : VERIF REGEXP
     if (!firstname || !lastname) {
         return res.status(400).send({ 'error': "Les champs 'nom' et 'prénom' doivent être remplis " });
     }
-    // TO DO : Ajout / Modif image utilisateur
     const userObject = req.file ?
         {
             ...req.body.user,
@@ -131,8 +130,8 @@ exports.modifyAccount = (req, res) => {
         return res.status(400).send({ message: 'Le mot de passe doit être modifié par une autre méthode' })
     }
     User.update({ ...userObject, id: req.params.id }, { where: { id: req.params.id } })
-        .then(() => res.status(200).send({ message: 'Utilisateur modifié !' }))
-        .catch(error => res.status(400).send({ error }));
+        .then(() => res.status(200).send({ message: 'Utilisateur modifié !' }
+        )).catch(error => res.status(400).send({ error }));
 };
 exports.deleteAccount = (req, res) => {
     // Vérification auth
@@ -141,8 +140,7 @@ exports.deleteAccount = (req, res) => {
             .then(() => {
                 User.destroy({ where: { id: req.params.id, userId: req.auth.userId } })
                     .then(res.status(200).send({ message: 'Utilisateur supprimé avec succès' }))
-            })
-            .catch(error => res.status(400).send(error))
+            }).catch(error => res.status(400).send(error))
     } else {
         return res.status(401).send({ message: "Non autorisé." })
     }

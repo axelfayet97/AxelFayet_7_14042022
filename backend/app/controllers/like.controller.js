@@ -6,48 +6,41 @@ exports.likeState = (req, res) => {
             postId: req.body.postId,
             userId: req.auth.userId
         }
-    })
-        .then(likes => {
-            if (likes.length === 0) {
-                const like = new Like({
-                    ...req.body,
+    }).then(likes => {
+        if (likes.length === 0) {
+            const like = new Like({
+                ...req.body,
+                userId: req.auth.userId
+            });
+            // Enregistrement de l'objet like dans la base de données
+            like.save()
+                .then(data => {
+                    res.status(200).send({ data, message: "like créé" })
+                }).catch(error => res.status(400).send(error));
+        } else {
+            Like.destroy({
+                where: {
+                    postId: req.body.postId,
                     userId: req.auth.userId
-                });
-                // Enregistrement de l'objet like dans la base de données
-                like.save()
-                    .then(data => {
-                        res.status(200).send({ data, message: "like créé" })
-                    })
-                    .catch(error => res.status(400).send(error));
-            } else {
-                Like.destroy({
-                    where: {
-                        postId: req.body.postId,
-                        userId: req.auth.userId
-                    }
-                })
-                    .then(data => {
-                        res.status(200).send({ data, message: "like retiré" })
-                    })
-                    .catch(error => res.status(400).send(error));
-            }
-        })
+                }
+            }).then(() => {
+                res.status(200).send({ message: "like retiré" })
+            }).catch(error => res.status(400).send(error));
+        }
+    })
 };
 exports.getLikes = (req, res) => {
     Like.findAll({
         where: {
             postId: req.params.id
         }
-    })
-        .then(likes => {
-            res.status(200).send({ data: likes });
-        })
-        .catch(error => res.status(400).send(error));
+    }).then(likes => {
+        res.status(200).send({ data: likes });
+    }).catch(error => res.status(400).send(error));
 };
 exports.getAllLikes = (req, res) => {
     // Retrieve all Posts from the database.
-    Like.findAll({ include: ['user'], order: [['updatedAt', 'DESC']] })
-        .then(likes => {
-            res.status(200).send(likes);
-        }).catch(error => res.send(error));
+    Like.findAll({ include: ['user'], order: [['updatedAt', 'DESC']] }).then(likes => {
+        res.status(200).send(likes);
+    }).catch(error => res.send(error));
 }

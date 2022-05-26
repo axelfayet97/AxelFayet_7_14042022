@@ -6,17 +6,16 @@ exports.createPost = (req, res) => {
     Post.create({
         ...req.body,
         userId: req.auth.userId
-    })
-        .then(data => { res.status(201).send({ message: 'Post créé !', data }) })
-        .catch((error) => { res.status(400).send(error) });
+    }).then(data => {
+        res.status(201).send({ message: 'Post créé !', data })
+    }).catch((error) => { res.status(400).send(error) });
 }
 // Retrieve all Posts from the database.
 exports.findAllPosts = (req, res) => {
     Post.findAll({ include: ['user', 'comments', 'likes', { model: db.comments, as: 'comments', include: 'user' }], order: [['updatedAt', 'DESC']] })
         .then(data => {
             res.send(data);
-        })
-        .catch(error => res.send(error));
+        }).catch(error => res.send(error));
 };
 // Find a single Post with an id
 exports.findOnePost = (req, res) => {
@@ -30,8 +29,7 @@ exports.findOnePost = (req, res) => {
                     message: `Impossible de trouver le post à l'id=${id}.`
                 });
             }
-        })
-        .catch(error => {
+        }).catch(error => {
             res.status(500).send({
                 message: 'Un problème est survenu lors de la récupération du post ' + id, error
             });
@@ -54,8 +52,7 @@ exports.updatePost = (req, res) => {
                 res.send({
                     message: 'Le post à correctement été modifié.'
                 });
-            })
-            .catch(error => {
+            }).catch(error => {
                 res.status(500).send({
                     message: 'Une erreur est survenue lors de la modification du post id=' + postId, error
                 });

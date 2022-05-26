@@ -18,20 +18,19 @@ exports.createComment = (req, res) => {
             Comment.findAll({
                 where: { postId },
                 include: ['user']
+            }).then((comments) => {
+                res.status(200).send(comments);
             })
-                .then((comments) => {
-                    res.status(200).send(comments);
-                })
-        })
-        .catch(error => res.status(400).send({ error }));
+        }).catch(error => res.status(400).send({ error }));
 };
 // Get comments for given post id
 exports.findCommentById = (req, res) => {
     Comment.findByPk(req.params.id, { where: { postId: req.params.postId } })
         .then((comment) => {
             res.status(200).send(comment);
-        })
-        .catch((error) => { res.status(400).send({ error: 'Une erreur est survenue au chargement de ce commentaire.', error }) });
+        }).catch((error) => {
+            res.status(400).send({ error: 'Une erreur est survenue au chargement de ce commentaire.', error })
+        });
 };
 exports.getAllComments = (req, res) => {
     // Retrieve all Posts from the database.
@@ -54,12 +53,11 @@ exports.updateComment = (req, res) => {
                 res.send({
                     message: 'Le comment à correctement été modifié.'
                 });
-            })
-            .catch(error => {
+            }).catch(error => {
                 res.status(500).send({
                     message: 'Une erreur est survenue lors de la modification du comment id=' + commentId, error
                 });
-            });
+            })
     })
 };
 // Delete a comment
