@@ -1,4 +1,5 @@
 <template>
+    <div id="alert-message">{{ alertMessage }}</div>
     <section id="section-user-account">
         <h1>Votre profil</h1>
         <div class="container-profil-infos">
@@ -87,6 +88,12 @@ section#section-user-account {
     margin: auto;
 }
 
+@media all and (max-width: 768px) {
+    .container-profil-infos {
+        flex-direction: column;
+    }
+}
+
 .container-profil-infos div {
     width: 100%;
 }
@@ -95,19 +102,49 @@ section#section-user-account {
     width: 30%;
 }
 
+.form-infos {
+    padding: 20px;
+}
 
-.form-infos .form-input input,
-.form-infos .form-input textarea {
-    margin: 10px 0;
-    width: 100%;
-    max-width: 300px;
-    min-width: min-content;
-    min-height: 25px;
-    max-height: 200px;
+@media all and (max-width: 768px) {
+    .form-infos form {
+        text-align: center;
+    }
+}
+
+.form-infos .form_wrapper {
+    margin: 20px auto;
 }
 
 .form-infos .form-input label {
     display: block;
+}
+
+#bio-input {
+    margin: 20px auto;
+}
+
+input,
+textarea {
+    margin: 10px 0;
+    width: 100%;
+    min-width: min-content;
+    min-height: 20px;
+    max-height: 200px;
+}
+
+textarea {
+    border: 1px solid var(--noir);
+    transition: all .2s linear;
+    min-height: 100px;
+    padding: 5px;
+    font-family: 'Raleway', sans-serif;
+}
+
+textarea:hover,
+textarea:focus,
+textarea:active {
+    border-color: var(--rouge);
 }
 
 #delete-account {
@@ -117,7 +154,6 @@ section#section-user-account {
 </style>
 
 <script>
-
 export default {
     name: 'UserProfile',
     data() {
@@ -127,6 +163,7 @@ export default {
             lastName: '',
             userId: '',
             biography: '',
+            alertMessage: ''
         }
     },
     created() {
@@ -141,19 +178,18 @@ export default {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
+        }).then(promise => {
+            return promise.json()
+        }).then(response => {
+            this.email = response.email
+            this.firstName = response.firstName
+            this.lastName = response.lastName
+            this.biography = response.bio
+        }).catch(error => {
+            document.getElementById('alert-message').classList.add('error-message')
+            console.log(error);
+            return this.alertMessage = 'Une erreur s\'est produite ' + error
         })
-            .then(promise => {
-                console.log(promise);
-                return promise.json()
-            })
-            .then(response => {
-                console.log(response);
-                this.email = response.email
-                this.firstName = response.firstName
-                this.lastName = response.lastName
-                this.biography = response.bio
-            })
-            .catch(error => { console.log(error) })
     },
     methods: {
         updateUser() {
@@ -170,15 +206,15 @@ export default {
                     'Authorization': 'Bearer ' + localStorage.getItem('token')
                 },
                 body: JSON.stringify(data)
+            }).then(promise => {
+                return promise.json()
+            }).then(response => {
+                console.log(response);
+                this.$router.go()
+            }).catch(error => {
+                document.getElementById('alert-message').classList.add('error-message')
+                return this.alertMessage = 'Une erreur s\'est produite ' + error
             })
-                .then(promise => {
-                    return promise.json()
-                })
-                .then(response => {
-                    console.log(response);
-                    this.$router.go()
-                })
-                .catch(error => { console.log(error) })
         },
         deleteUser() {
             if (confirm('Cette action est irréversible, voulez vous vraiment supprimer votre compte ?')) {
@@ -195,16 +231,13 @@ export default {
                     localStorage.removeItem('userId')
                     localStorage.removeItem('token')
                     this.$router.push('/signup')
-                }).catch(error => { console.log(error) })
-                //  {
-                //     headers: {
-                //         Authorization: localStorage.getItem('token')
-                //     }
-                // })
+                }).catch(error => {
+                    document.getElementById('alert-message').classList.add('error-message')
+                    return this.alertMessage = 'Une erreur s\'est produite ' + error
+                })
             } else {
                 return
             }
-
         }
     }
 }
