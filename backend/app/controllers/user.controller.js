@@ -63,32 +63,31 @@ exports.login = (req, res) => {
         where: {
             email: req.body.email
         }
-    })
-        .then(user => {
-            if (!user) {
-                return res.status(401).json({ error: 'Utilisateur non trouvé !' })
-            }
-            // On compare les hash des mots de passe de la requête et de la BDD
-            if (bcrypt.compareSync(req.body.password, user.password)) {
-                res.status(200).send({
-                    userId: user.id,
-                    token: jwt.sign(
-                        { userId: user.id },
-                        secretToken,
-                        { expiresIn: '24h' }
-                    ),
-                    message: 'Connexion réussie'
-                })
-            } else {
-                return res.status(401).json({ error: 'Mot de passe incorrect !' })
-            }
-        })
-        .catch(error => res.status(500).json(error));
+    }).then(user => {
+        if (!user) {
+            return res.status(401).json({ error: 'Utilisateur non trouvé !' })
+        }
+        // On compare les hash des mots de passe de la requête et de la BDD
+        if (bcrypt.compareSync(req.body.password, user.password)) {
+            res.status(200).send({
+                userId: user.id,
+                isAdmin: user.isAdmin,
+                token: jwt.sign(
+                    { userId: user.id, isAdmin: user.isAdmin },
+                    secretToken,
+                    { expiresIn: '24h' }
+                ),
+                message: 'Connexion réussie'
+            })
+        } else {
+            return res.status(401).json({ error: 'Mot de passe incorrect !' })
+        }
+    }).catch(error => res.status(500).json(error));
 };
 // Get all accounts
 exports.getAccounts = (req, res) => {
-    return User.findAll()
-        .then(res.send(data))
+    User.findAll()
+        .then(data => { res.send(data) })
         .catch(error => res.send(error));
 };
 // Find a single Account with an id
@@ -103,8 +102,7 @@ exports.getOneAccount = (req, res) => {
                     message: `Impossible de trouve l'utilisateur avec l'id=${id}.`
                 });
             }
-        })
-        .catch(error => {
+        }).catch(error => {
             res.status(500).send({
                 message: 'Impossible de récupérer les informations de l\'utilisateur possédant l\id=' + id, error
             });
@@ -138,10 +136,14 @@ exports.modifyAccount = (req, res) => {
 };
 exports.deleteAccount = (req, res) => {
     // Vérification auth
-    User.findOne({ where: { id: req.params.id } })
-        .then(() => {
-            User.destroy({ where: { id: req.params.id } })
-                .then(res.status(200).send({ message: 'Utilisateur supprimé avec succès' }))
-        })
-        .catch(error => res.status(400).send(error))
+    if (req.auth.isAdmin == true || req.params.id == req.auth.userId) {
+        User.findOne({ where: { id: req.params.id } })
+            .then(() => {
+                User.destroy({ where: { id: req.params.id, userId: req.auth.userId } })
+                    .then(res.status(200).send({ message: 'Utilisateur supprimé avec succès' }))
+            })
+            .catch(error => res.status(400).send(error))
+    } else {
+        return res.status(401).send({ message: "Non autorisé." })
+    }
 }

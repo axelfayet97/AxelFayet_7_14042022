@@ -40,6 +40,9 @@ exports.findOnePost = (req, res) => {
 // Update a Post by the id in the request
 exports.updatePost = (req, res) => {
     const postId = req.params.id;
+    if (postId != req.auth.userId) {
+        return res.status(401).send({ message: "Non autorisé." })
+    }
     Post.findOne({
         where: {
             id: postId,
@@ -62,34 +65,31 @@ exports.updatePost = (req, res) => {
 // Delete a Post with the specified id in the request
 exports.deletePost = (req, res) => {
     // TO DO : FS MULTER
-    const postId = req.params.id;
-    Post.findOne({
-        where: {
-            id: postId,
-            userId: req.auth.userId
-        }
-    }).then(post => {
-        post.destroy()
-            .then(num => {
-                if (num == 1) {
-                    res.send({
-                        message: 'Le post à été correctement supprimé!'
-                    });
-                } else {
-                    res.send({
-                        message: `Impossible de supprimer le post à l'id=${postId}.`
-                    });
+    const id = req.params.id;
+    if (req.auth.isAdmin == true || req.params.id == req.auth.userId) {
+        Post.findOne({
+            where: { id }
+        }).then(post => {
+            post.destroy({
+                where: {
+                    id,
+                    userId: req.auth.userId
                 }
-            })
-            .catch(error => {
-                res.status(500).send({
-                    message: 'Impossible de supprimer le post avec l\id' + postId, error
+            }).then(() => {
+                res.send({
+                    message: 'Le post à été correctement supprimé!'
                 });
-            });
-    })
-        .catch(error => {
+            }).catch(error => {
+                res.status(500).send({
+                    message: 'Impossible de supprimer le post avec l\'id ' + id, error
+                });
+            })
+        }).catch(error => {
             res.status(500).send({
-                message: 'Impossible de trouver le post avec l\'id=' + postId, error
+                message: 'Impossible de trouver le post avec l\'id ' + id, error
             });
-        });
+        })
+    } else {
+        return res.status(401).send({ message: "Non autorisé." })
+    }
 };

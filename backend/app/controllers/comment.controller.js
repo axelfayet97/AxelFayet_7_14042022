@@ -66,26 +66,30 @@ exports.updateComment = (req, res) => {
 exports.deleteComment = (req, res) => {
     // TO DO : FS MULTER
     const id = req.params.id;
-    Comment.destroy({
-        where: {
-            id,
-            userId: req.auth.userId
-        }
-    })
-        .then(num => {
-            if (num == 1) {
+    if (req.auth.isAdmin == true || req.params.id == req.auth.userId) {
+        Comment.findOne({
+            where: { id }
+        }).then(comment => {
+            comment.destroy({
+                where: {
+                    id,
+                    userId: req.auth.userId
+                }
+            }).then(() => {
                 res.send({
                     message: 'Le commentaire à été supprimé!'
                 });
-            } else {
-                res.send({
-                    message: `Impossible de trouver le post à l'id=${id}.`
+            }).catch(error => {
+                res.status(500).send({
+                    message: 'Impossible de supprimmer le commentaire à l\'id ' + id, error
                 });
-            }
-        })
-        .catch(error => {
-            res.status(500).send({
-                message: 'Impossible de supprimmer le post à l\'id=' + id, error
             });
-        });
+        }).catch(error => {
+            res.status(500).send({
+                message: 'Impossible de trouver le commentaire avec l\'id ' + id, error
+            });
+        })
+    } else {
+        return res.status(401).send({ message: "Non autorisé." })
+    }
 }
