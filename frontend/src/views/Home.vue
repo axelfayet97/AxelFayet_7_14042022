@@ -1,11 +1,10 @@
 <template>
   <div id="alert-message">{{ alertMessage }}</div>
-  <h1>Bienvenue sur <span class="span-h">Groupomania</span> {{ firstName }} {{ lastName }} !</h1>
+  <h1>Bienvenue sur <span class="span-h">Groupomania </span><span class="nowrap">{{ firstName }} {{ lastName }} !</span>
+  </h1>
   <section id="create-post">
-    <div class="form_wrapper">
-      <div class="form_wrapper_background">
-        <NewPost />
-      </div>
+    <div class="form_wrapper form_wrapper_background">
+      <NewPost />
     </div>
   </section>
   <section class="posts"
