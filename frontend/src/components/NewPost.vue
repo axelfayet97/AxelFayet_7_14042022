@@ -21,8 +21,8 @@
 </template>
 <style scoped>
 #textarea {
-    min-width: 80%;
-    max-width: 80%;
+    min-width: 100%;
+    max-width: 300px;
     min-height: 100px;
     max-height: 10vh;
     border: none;
