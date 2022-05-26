@@ -1,5 +1,5 @@
 <template>
-    <div id="display-message">{{ this.displayMessage }}</div>
+    <div id="alert-message">{{ alertMessage }}</div>
     <div class="form_wrapper">
         <div class="selection_buttons">
             <router-link to="/signup"
@@ -98,7 +98,7 @@ export default {
             email: '',
             password: '',
             passwordMessage: '',
-            displayMessage: ''
+            alertMessage: ''
         }
     },
     methods: {
@@ -118,26 +118,26 @@ export default {
                 .then(response => {
                     console.log(response);
                     if (response.status == 409) {
-                        let error = this.displayMessage = 'Cette adresse mail existe déjà !'
+                        let error = this.alertMessage = 'Cette adresse mail existe déjà !'
                         throw error
                     } else if (response.status == 500) {
-                        let error = this.displayMessage = 'Votre mot de passe est trop simple !'
+                        let error = this.alertMessage = 'Votre mot de passe est trop simple !'
                         throw error
                     } else {
                         return response.json()
                     }
                 })
                 .then(() => {
-                    document.getElementById('display-message').classList.add('successful-connection')
-                    this.displayMessage = 'Votre compte à été créé ! Vous allez être redirigé vers la page de connexion'
+                    document.getElementById('alert-message').classList.add('successful-connection')
+                    this.alertMessage = 'Votre compte à été créé ! Vous allez être redirigé vers la page de connexion'
                     setTimeout(() => {
                         this.$router.push('/login')
                     }, 1500);
                 }
                 )
                 .catch(error => {
-                    document.getElementById('display-message').classList.add('error-message')
-                    return this.displayMessage = 'Une erreur s\'est produite ' + error
+                    document.getElementById('alert-message').classList.add('error-message')
+                    return this.alertMessage = 'Une erreur s\'est produite ' + error
                 })
         },
         checkPassword() {

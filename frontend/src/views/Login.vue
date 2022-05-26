@@ -1,5 +1,5 @@
 <template>
-    <div id="display-message">{{ this.displayMessage }}</div>
+    <div id="alert-message">{{ alertMessage }}</div>
     <div class="form_wrapper">
         <div class="selection_buttons">
             <router-link to="/signup"
@@ -59,7 +59,8 @@ export default {
         return {
             email: '',
             password: '',
-            displayMessage: '',
+            alertMessage: '',
+            isAdmin: ''
         }
     },
     methods: {
@@ -75,20 +76,24 @@ export default {
                 return promise.json()
             })
                 .then((response) => {
+                    console.log(response);
                     if (response.error) {
                         throw new Error('Veuillez vérifier vos informations.');
                     }
-                    document.getElementById('display-message').classList.add('successful-connection')
-                    this.displayMessage = 'Connexion réussie ! Vous allez être redirigé...'
+                    document.getElementById('alert-message').classList.add('successful-connection')
+                    this.alertMessage = 'Connexion réussie ! Vous allez être redirigé...'
                     localStorage.setItem('token', response.token)
                     localStorage.setItem('userId', response.userId)
+                    if (response.isAdmin == true) {
+                        localStorage.setItem('isAdmin', response.isAdmin)
+                    }
                     setTimeout(() => {
                         this.$router.push('/')
                     }, 1500);
                 })
                 .catch(error => {
-                    document.getElementById('display-message').classList.add('error-message')
-                    return this.displayMessage = error
+                    document.getElementById('alert-message').classList.add('error-message')
+                    return this.alertMessage = error
                 })
         }
     },
