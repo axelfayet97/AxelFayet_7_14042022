@@ -1,10 +1,10 @@
 <template>
+  <div id="alert-message">{{ alertMessage }}</div>
   <h1>Bienvenue sur <span class="span-h">Groupomania</span> {{ firstName }} {{ lastName }} !</h1>
   <section id="create-post">
     <div class="form_wrapper">
       <div class="form_wrapper_background">
-        <h2>Partagez vos humeurs !</h2>
-        <PostForm />
+        <NewPost />
       </div>
     </div>
   </section>
@@ -16,19 +16,20 @@
 
 <script>
 import Post from '@/components/Post.vue'
-import PostForm from '@/components/PostForm.vue'
+import NewPost from '@/components/NewPost.vue'
 
 export default {
   name: 'Home',
   components: {
     Post,
-    PostForm
+    NewPost
   },
   data() {
     return {
       firstName: '',
       lastName: '',
-      userId: ''
+      userId: '',
+      alertMessage: ''
     }
   },
   created() {
@@ -43,10 +44,13 @@ export default {
       .then(promise => {
         return promise.json()
       }).then(response => {
-        console.log(response);
+        this.firstName = response.firstName
+        this.lastName = response.lastName
       })
       .catch(error => {
+        document.getElementById('alert-message').classList.add('error-message')
         console.log(error);
+        return this.alertMessage = 'Une erreur s\'est produite ' + error
       })
   }
 }
