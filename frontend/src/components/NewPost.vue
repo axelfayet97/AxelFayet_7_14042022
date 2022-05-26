@@ -1,6 +1,7 @@
 <template>
     <form class="connection_form"
           @submit.prevent="sendPost">
+        <h2>Partagez vos humeurs !</h2>
         <div class="form_wrapper__field textarea_wrapper">
             <label for="textarea">Rédigez un post</label>
             <textarea name="textarea"
@@ -8,9 +9,9 @@
                       cols="30"
                       rows="10"
                       placeholder="À quoi pensez-vous ?"
-                      v-model="content"
-                      required />
+                      v-model="content" />
         </div>
+            <div id="alert-message" class="error-message-light">{{ alertMessage }}</div>
         <div class="form_wrapper__button submit__button">
             <input type="submit"
                    id="submit"
@@ -36,18 +37,14 @@
 #textarea:active {
     border-color: var(--rouge);
 }
-
-#file-upload {
-    font-family: 'Raleway', sans-serif;
-    border: none;
-}
 </style>
 <script>
 export default {
-    name: 'PostForm',
+    name: 'NewPost',
     data() {
         return {
-            content: '',
+            content: null,
+            alertMessage: ''
         }
     },
     methods: {
@@ -63,8 +60,17 @@ export default {
             }).then(promise => {
                 return promise.json()
             }).then(() => {
-                this.$router.go()
-            }).catch(error => { console.log(error) })
+                if (this.content == null || '') {
+                    document.getElementById('alert-message')
+                    return this.alertMessage = 'Le contenu ne peut pas être vide !'
+                } else {
+                    this.$router.go()
+                }
+            }).catch(error => {
+                document.getElementById('alert-message')
+                console.log(error);
+                return this.alertMessage = 'Une erreur s\'est produite ' + error
+            })
         }
     }
 }
