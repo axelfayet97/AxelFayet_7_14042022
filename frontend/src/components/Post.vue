@@ -3,6 +3,8 @@
              v-for="post in posts"
              :key="post.id"
              :id="post.id">
+        <div id="alert-message"
+             class="error-message-light">{{ alertMessage }}</div>
         <div class="post-container__header">
             <div class="post-container__header__user-infos">
                 <div id="author-img">
@@ -16,13 +18,15 @@
                 </div>
             </div>
             <div class="container__header__options"
-                 v-show="userId == post.userId">
+                 v-show="userId == post.userId || isAdmin">
                 <a href="#"
                    @click.prevent="toggleControls(post.id)"
                    id="toggle-controls"><i class="bi bi-gear"></i>
                     <ul id="controls"
                         v-show="showOptions == post.id">
-                        <li @click.stop.prevent="editPostControls(post.id)"><i class="bi bi-pencil"></i></li>
+                        <li v-if="!isAdmin || post.user.id == userId"
+                            @click.stop.prevent="editPostControls(post.content, post.id)"><i class="bi bi-pencil"></i>
+                        </li>
                         <li @click.stop.prevent="deletePost(post.id)"><i class="bi bi-trash3"></i></li>
                     </ul>
                 </a>
@@ -33,7 +37,8 @@
             <form id="update-post"
                   v-show="editPost == post.id"
                   @submit.prevent="updatePost(post.id)">
-                <textarea v-model="updatedMessage">{{ post.id.content }}</textarea>
+                <textarea v-model="updatedMessage"
+                          required>{{ post.id.content }}</textarea>
                 <input type="submit"
                        value="Modifier">
             </form>
@@ -55,25 +60,27 @@
                 </div>
             </div>
             <div class="comments-wrapper">
-                <Comment :comments="post.comments" />
+                <Comment :comments="post.comments"
+                         :userId="userId"
+                         :isAdmin="isAdmin" />
             </div>
             <div id="comment-post">
                 <form @submit.prevent="commentPost(post.id)"
                       id="comments-form">
-                    <!-- Commentaires -->
                     <div class="comment-input-wrapper">
                         <img src="/Groupomania_Logos/Daco_1182050.png">
                         <input type="text"
                                name="comment"
-                               v-model="this.commentContent"
+                               v-model="commentContent"
                                id="comment-text"
-                               placeholder="Ajouter un commentaire" />
+                               placeholder="Ajouter un commentaire"
+                               required />
                     </div>
-                    <div id="error-message">{{ this.errorMessage }}</div>
                     <input type="submit"
                            value="Commenter"
                            id="comment-submit" />
                 </form>
+                <div id="error-message">{{ this.errorMessage }}</div>
             </div>
         </div>
     </article>
@@ -93,6 +100,7 @@
 @media all and (max-width: 768px) {
     .post-container {
         max-width: 90%;
+        padding: 20px;
     }
 }
 
@@ -116,19 +124,29 @@
     line-break: anywhere;
 }
 
-#update-post textarea {
+textarea {
     min-width: 100%;
     max-width: 100%;
     min-height: 100px;
     max-height: 250px;
     font-family: 'Raleway', sans-serif;
-    padding: 10px;
+    padding: 5px;
+    background: transparent;
+    border: 1px solid var(--noir);
+    transition: all .2s linear;
 }
 
-#update-post input[type="submit"] {
+textarea:hover,
+textarea:focus,
+textarea:active {
+    border-color: var(--rouge);
+}
+
+input[type="submit"] {
     display: block;
     margin-left: auto;
     margin-top: 10px !important;
+    max-width: 200px;
 }
 
 /* CONTROLS */
@@ -164,6 +182,7 @@
     max-height: 300px;
     overflow: scroll;
 }
+
 .comment-input-wrapper {
     display: flex;
     width: 100%;
@@ -194,12 +213,12 @@
     text-align: center;
     padding: 10px;
     transition: all .2s linear;
-    width: 100%;
     text-overflow: ellipsis;
 }
 
 #comment-post #comment-text {
     text-align: left;
+    max-width: none;
     width: 100%;
 }
 
@@ -214,8 +233,8 @@
 }
 
 #comment-post #comment-submit,
-#update-post input[type="submit"] {
-    background: #FF0000;
+input[type="submit"] {
+    background: var(--rouge);
     border-radius: 40px;
     border: 2px solid transparent;
     font-family: 'Raleway', sans-serif;
@@ -231,6 +250,12 @@
         margin: 20px 0 20px auto !important;
         max-width: 200px;
     }
+}
+
+#update-post {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
 }
 
 #comment-post #comment-submit,
@@ -251,6 +276,11 @@
     border: 2px solid var(--rouge);
     cursor: pointer;
 }
+
+#error-message.error-message-light {
+    color: var(--rouge);
+    text-align: center;
+}
 </style>
 
 <script>
@@ -264,11 +294,13 @@ export default {
             showOptions: '',
             editPost: false,
             isLiked: '',
-            commentContent: '',
+            commentContent: null,
             errorMessage: '',
-            updatedMessage: '',
+            updatedMessage: null,
             userId: null,
-            hasLiked: ''
+            hasLiked: '',
+            alertMessage: '',
+            isAdmin: null
         }
     },
     components: {
@@ -285,13 +317,14 @@ export default {
                 return promise.json()
             })
             .then(posts => {
-                console.log(posts);
                 this.posts = posts
             })
             .catch(error => {
-                console.log(error)
+                document.getElementById('alert-message').classList.add('error-message-light')
+                return this.alertMessage = 'Une erreur s\'est produite ' + error
             })
         this.userId = localStorage.getItem('userId')
+        this.isAdmin = localStorage.getItem('isAdmin')
     },
     methods: {
         toggleControls(postId) {
@@ -301,7 +334,8 @@ export default {
                 this.showOptions = postId
             }
         },
-        editPostControls(postId) {
+        editPostControls(postContent, postId) {
+            this.updatedMessage = postContent
             if (this.editPost == postId) {
                 this.editPost = null
             } else {
@@ -318,10 +352,10 @@ export default {
                     'Authorization': 'Bearer ' + localStorage.getItem('token')
                 },
                 body: JSON.stringify({ postId, isLiked: 1 })
+            }).catch(error => {
+                document.getElementById('alert-message').classList.add('error-message-light')
+                return this.alertMessage = 'Une erreur s\'est produite ' + error
             })
-                .catch(error => {
-                    console.log(error);
-                })
             fetch('http://localhost:3000/api/posts', {
                 method: 'GET',
                 headers: {
@@ -333,10 +367,10 @@ export default {
                 return promise.json()
             }).then(data => {
                 this.posts = data
+            }).catch(error => {
+                document.getElementById('alert-message').classList.add('error-message-light')
+                return this.alertMessage = 'Une erreur s\'est produite ' + error
             })
-                .catch(error => {
-                    console.log(error);
-                })
         },
         commentPost(postId) {
             fetch('http://localhost:3000/api/comments', {
@@ -353,7 +387,7 @@ export default {
                 this.$router.go(`/#${postId}`)
             })
         },
-         updatePost(postId) {
+        updatePost(postId) {
             fetch(`http://localhost:3000/api/posts/${postId}`, {
                 method: 'PUT',
                 headers: {
@@ -367,7 +401,8 @@ export default {
             }).then(() => {
                 this.$router.go()
             }).catch(error => {
-                console.log(error);
+                document.getElementById('alert-message').classList.add('error-message-light')
+                return this.alertMessage = 'Une erreur s\'est produite ' + error
             })
         },
         deletePost(postId) {
@@ -377,12 +412,14 @@ export default {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     },
+                }).then(promise => {
+                    return promise.json()
+                }).then(() => {
+                    this.$router.go()
+                }).catch(error => {
+                    document.getElementById('alert-message').classList.add('error-message-light')
+                    return this.alertMessage = 'Une erreur s\'est produite ' + error
                 })
-                    .then(promise => {
-                        return promise.json()
-                    }).then(() => {
-                        this.$router.go()
-                    })
             } else {
                 return
             }
