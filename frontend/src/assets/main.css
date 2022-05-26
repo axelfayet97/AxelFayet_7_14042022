@@ -129,6 +129,10 @@ header {
   align-items: center;
 }
 
+header #user-controls {
+  width: 100%;
+}
+
 .pictos-header {
   max-width: 5%;
   transition: all .2s linear;
