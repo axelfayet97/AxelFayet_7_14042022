@@ -114,31 +114,26 @@ export default {
                 headers: {
                     'Content-type': 'application/json'
                 }
-            })
-                .then(response => {
-                    console.log(response);
-                    if (response.status == 409) {
-                        let error = this.alertMessage = 'Cette adresse mail existe déjà !'
-                        throw error
-                    } else if (response.status == 500) {
-                        let error = this.alertMessage = 'Votre mot de passe est trop simple !'
-                        throw error
-                    } else {
-                        return response.json()
-                    }
-                })
-                .then(() => {
-                    document.getElementById('alert-message').classList.add('successful-connection')
-                    this.alertMessage = 'Votre compte à été créé ! Vous allez être redirigé vers la page de connexion'
-                    setTimeout(() => {
-                        this.$router.push('/login')
-                    }, 1500);
+            }).then(response => {
+                if (response.status == 409) {
+                    let error = this.alertMessage = 'Cette adresse mail existe déjà !'
+                    throw error
+                } else if (response.status == 500) {
+                    let error = this.alertMessage = 'Votre mot de passe est trop simple !'
+                    throw error
+                } else {
+                    return response.json()
                 }
-                )
-                .catch(error => {
-                    document.getElementById('alert-message').classList.add('error-message')
-                    return this.alertMessage = 'Une erreur s\'est produite ' + error
-                })
+            }).then(() => {
+                document.getElementById('alert-message').classList.add('successful-connection')
+                this.alertMessage = 'Votre compte à été créé ! Vous allez être redirigé vers la page de connexion'
+                setTimeout(() => {
+                    this.$router.push('/login')
+                }, 1500);
+            }).catch(error => {
+                document.getElementById('alert-message').classList.add('error-message')
+                return this.alertMessage = 'Une erreur s\'est produite ' + error
+            })
         },
         checkPassword() {
             const passwordField = document.getElementById('password').value
