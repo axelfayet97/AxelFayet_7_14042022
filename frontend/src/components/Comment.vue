@@ -17,14 +17,14 @@
                     </div>
                     <p>{{ comment.content }}</p>
                     <div class="container__header__options"
-                         @vnodeMounted="belongsToUser(comment.userId)"
-                         v-if="displayOptions">
+                         v-show="userId == comment.userId || isAdmin">
                         <a href="#"
                            @click.prevent="toggleControls(comment.id)"
                            id="toggle-controls"><i class="bi bi-gear"></i>
                             <ul id="controls"
-                                v-show="showOptions">
-                                <li><i @click.stop.prevent="editCommentControls(comment.id)"
+                                v-show="showOptions == comment.id">
+                                <li v-if="!isAdmin || comment.user.id == userId"
+                                    @click.stop.prevent="editCommentControls(comment.content, comment.id)"><i
                                        class="bi bi-pencil"></i></li>
                                 <li @click="deleteComment(comment.id)"><i class="bi bi-trash3"></i></li>
                             </ul>
@@ -33,7 +33,8 @@
                     <form id="update-comment"
                           v-show="editComment == comment.id"
                           @submit.prevent="updateComment(comment.id)">
-                        <textarea v-model="updatedMessage">{{ comment.content }}</textarea>
+                        <textarea v-model="updatedMessage"
+                                  required>{{ comment.content }}</textarea>
                         <input type="submit"
                                value="Modifier">
                     </form>
@@ -48,6 +49,12 @@
     width: 100%;
     border-top: 1px solid var(--gris);
     padding: 20px;
+}
+
+@media all and (max-width: 768px) {
+    .comment-container {
+        padding: 10px;
+    }
 }
 
 .comment-container__header {
@@ -116,18 +123,27 @@
     padding: 5px;
 }
 
-#update-comment textarea {
+textarea {
     min-width: 100%;
     max-width: 100%;
     min-height: 60px;
     max-height: 60px;
     font-family: 'Raleway', sans-serif;
+    padding: 5px;
+    background: transparent;
+    border: 1px solid var(--noir);
+    transition: all .2s linear;
 }
 
-#update-comment input[type="submit"] {
+textarea:hover,
+textarea:focus,
+textarea:active {
+    border-color: var(--rouge);
+}
+
+input[type="submit"] {
     display: block;
-    margin-left: auto;
-    margin-top: 10px !important;
+    max-width: 150px;
     background: #FF0000;
     border-radius: 40px;
     border: 2px solid transparent;
@@ -139,6 +155,13 @@
     transition: all .2s linear;
 }
 
+
+#update-comment {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
 @media all and (max-width: 768px) {
     #update-comment input[type="submit"] {
         margin: 20px 0 20px auto !important;
@@ -147,7 +170,7 @@
 }
 
 #update-comment input[type="submit"] {
-    margin: 0 0 0 20px;
+    margin: 10px 0 0 20px;
     padding: 10px 20px;
     font-size: 14px;
 }
@@ -166,18 +189,18 @@
 
 export default {
     name: 'Comment',
-    props: ['comments'],
+    props: ['comments', 'userId', 'isAdmin'],
     data() {
         return {
             showOptions: '',
             displayOptions: true,
             editComment: '',
-            commentContent: '',
             displayMessage: '',
-            updatedMessage: ''
+            updatedMessage: null,
+            alertMessage: ''
         }
     },
-    mounted() {
+    created() {
         fetch(`http://localhost:3000/api/comments`, {
             method: 'GET',
             headers: {
@@ -185,13 +208,10 @@ export default {
             },
         }).then(promise => {
             return promise.json()
+        }).catch(error => {
+            document.getElementById('alert-message').classList.add('error-message-light')
+            return this.alertMessage = 'Une erreur s\'est produite ' + error
         })
-            .then(comments => {
-                console.log(comments);
-            })
-            .catch(error => {
-                console.log(error)
-            })
     },
     methods: {
         toggleControls(commentId) {
@@ -201,15 +221,13 @@ export default {
                 this.showOptions = commentId
             }
         },
-        editCommentControls(commentId) {
+        editCommentControls(commentContent, commentId) {
+            this.updatedMessage = commentContent
             if (this.editComment == commentId) {
                 this.editComment = null
             } else {
                 this.editComment = commentId
             }
-        },
-        belongsToUser(userId) {
-            userId == localStorage.getItem('userId') ? this.displayOptions = true : this.displayOptions = false
         },
         updateComment(commentId) {
             fetch(`http://localhost:3000/api/comments/${commentId}`, {
@@ -225,7 +243,8 @@ export default {
             }).then(() => {
                 this.$router.go()
             }).catch(error => {
-                console.log(error);
+                document.getElementById('alert-message').classList.add('error-message-light')
+                return this.alertMessage = 'Une erreur s\'est produite ' + error
             })
         },
         deleteComment(commentId) {
