@@ -11,8 +11,9 @@ module.exports = (req, res, next) => {
         const decodedToken = jwt.verify(token, secretToken);
         // On récupère et on stocke l'ID de l'utilisateur
         const userId = decodedToken.userId;
+        const isAdmin = decodedToken.isAdmin;
         // Protection des routes DELETE et UPDATE via intervention tierce
-        req.auth = { userId };
+        req.auth = { userId, isAdmin };
         // Si l'ID du token est différent de celui dans le corps de la requête
         if (req.body.userId && req.body.userId !== userId) {
             throw 'User ID non valable !';
@@ -20,7 +21,7 @@ module.exports = (req, res, next) => {
             // Sinon next middleware
             User.findOne({ where: { id: userId } })
                 .then(user => {
-                    req.auth = { userId, isAdmin: user.isAdmin }
+                    req.auth = { userId: user.id, isAdmin: user.isAdmin }
                 })
                 .catch(error => { throw error })
             next();
