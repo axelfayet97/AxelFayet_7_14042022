@@ -109,6 +109,7 @@ a:active {
   background-color: #ff0000;
   height: 50px;
 }
+
 #alert-message.error-message-light {
   color: red !important;
   background-color: transparent;
@@ -170,13 +171,13 @@ header svg:active {
   fill: red
 }
 
-@media all and (max-width: 1024px) {
+@media all and (max-width: 768px) {
   header img {
     width: 150px
   }
 
   header svg {
-    max-width: 15px;
+    max-width: 20px;
   }
 }
 
@@ -193,7 +194,7 @@ header svg:active {
 @media all and (max-width: 768px) {
   #user-controls a {
     padding: 5px 10px;
-    font-size: 15px;
+    font-size: 25px;
   }
 }
 
@@ -345,11 +346,11 @@ footer.footer_wrapper ul li a:active {
   margin: 30px auto;
 }
 
-.form_wrapper .form_wrapper__field label {
+label {
   display: none;
 }
 
-.form_wrapper .form_wrapper__field input {
+input {
   border: none;
   border-bottom: 1px solid var(--noir);
   background: transparent;
@@ -361,17 +362,18 @@ footer.footer_wrapper ul li a:active {
   text-overflow: ellipsis;
 }
 
-.form_wrapper .form_wrapper__field input::placeholder {
+input::placeholder {
   font-family: "Raleway", sans-serif;
 }
 
-.form_wrapper .form_wrapper__field input:hover,
-.form_wrapper .form_wrapper__field input:focus,
-.form_wrapper .form_wrapper__field input:active {
+input:hover,
+input:focus,
+input:active {
   border-color: var(--rouge);
 }
 
-.form_wrapper .form_wrapper__button input[type="submit"] {
+input[type="submit"],
+button#delete-account {
   background: #FF0000;
   border-radius: 40px;
   margin: 30px;
@@ -386,16 +388,21 @@ footer.footer_wrapper ul li a:active {
 }
 
 @media all and (max-width: 768px) {
-  .form_wrapper .form_wrapper__button input[type="submit"] {
+
+  input[type="submit"],
+  button#delete-account {
     margin: 10px auto;
     font-size: 12px;
     padding: 10px 20px;
   }
 }
 
-.form_wrapper .form_wrapper__button input[type="submit"]:hover,
-.form_wrapper .form_wrapper__button input[type="submit"]:focus,
-.form_wrapper .form_wrapper__button input[type="submit"]:active {
+input[type="submit"]:hover,
+input[type="submit"]:focus,
+input[type="submit"]:active,
+button#delete-account:hover,
+button#delete-account:focus,
+button#delete-account:active {
   background-color: #fff;
   color: var(--rouge);
   border: 2px solid var(--rouge);
