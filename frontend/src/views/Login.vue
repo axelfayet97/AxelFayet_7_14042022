@@ -74,9 +74,7 @@ export default {
                 }),
             }).then(promise => {
                 return promise.json()
-            })
-                .then((response) => {
-                    console.log(response);
+            }).then((response) => {
                     if (response.error) {
                         throw new Error('Veuillez vérifier vos informations.');
                     }
@@ -90,8 +88,7 @@ export default {
                     setTimeout(() => {
                         this.$router.push('/')
                     }, 1500);
-                })
-                .catch(error => {
+                }).catch(error => {
                     document.getElementById('alert-message').classList.add('error-message')
                     return this.alertMessage = error
                 })
