@@ -42,7 +42,6 @@
                 <input type="submit"
                        value="Modifier">
             </form>
-            <!-- <p v-if="post.imageUrl != null">{{ post.imageUrl }}</p> -->
         </div>
         <div class="container__controls">
             <div class="controls-buttons">
@@ -51,11 +50,12 @@
                     {{ post.comments.length }}
                 </div>
                 <div id="like-post">
-                    <a href="#"
-                       @click.prevent="likePost(post.id)">
-                        <i class="bi bi-hand-thumbs-up-fill"></i>
-                        <!-- <i class="bi bi-hand-thumbs-up" v-show="!hasLiked"></i> -->
+                    <a id="like-button"
+                       href="#"
+                       @click.prevent="likePost(post)">
+                        <i class="bi bi bi-hand-thumbs-up"></i>
                         {{ post.likes.length }}
+                        {{ post.likes }}
                     </a>
                 </div>
             </div>
@@ -173,14 +173,23 @@ input[type="submit"] {
     color: var(--rouge)
 }
 
-.container__controls .controls-buttons img {
-    width: 30px;
-    vertical-align: middle;
+.container__controls .controls-buttons #like-post a {
+    font-size: 25px;
+}
+
+@media all and (max-width: 768px) {
+
+    .container__controls .controls-buttons a,
+    .container__controls .controls-buttons i {
+        font-size: 20px !important;
+    }
 }
 
 .container__controls .comments-wrapper {
     max-height: 300px;
-    overflow: scroll;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column-reverse;
 }
 
 .comment-input-wrapper {
@@ -294,39 +303,56 @@ export default {
             showOptions: '',
             editPost: false,
             isLiked: '',
-            commentContent: null,
+            commentContent: '',
             errorMessage: '',
             updatedMessage: null,
             userId: null,
-            hasLiked: '',
+            likes: [],
+            isLikes: '',
             alertMessage: '',
-            isAdmin: null
+            isAdmin: null,
         }
     },
     components: {
         Comment
     },
     created() {
-        fetch(`http://localhost:3000/api/posts`, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-        })
-            .then(promise => {
-                return promise.json()
-            })
-            .then(posts => {
-                this.posts = posts
-            })
-            .catch(error => {
-                document.getElementById('alert-message').classList.add('error-message-light')
-                return this.alertMessage = 'Une erreur s\'est produite ' + error
-            })
+        this.getAllPosts()
+        this.getAllLikes()
         this.userId = localStorage.getItem('userId')
         this.isAdmin = localStorage.getItem('isAdmin')
     },
     methods: {
+        getAllPosts() {
+            fetch(`http://localhost:3000/api/posts`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            }).then(promise => {
+                return promise.json()
+            }).then(posts => {
+                this.posts = posts
+            }).catch(error => {
+                document.getElementById('alert-message').classList.add('error-message-light')
+                return this.alertMessage = 'Une erreur s\'est produite ' + error
+            })
+        },
+        getAllLikes() {
+            fetch(`http://localhost:3000/api/likes`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            }).then(promise => {
+                return promise.json()
+            }).then(likes => {
+                this.likes = likes
+            }).catch(error => {
+                document.getElementById('alert-message').classList.add('error-message-light')
+                return this.alertMessage = 'Une erreur s\'est produite ' + error
+            })
+        },
         toggleControls(postId) {
             if (this.showOptions == postId) {
                 this.showOptions = null
@@ -342,36 +368,6 @@ export default {
                 this.editPost = postId
             }
         },
-        likePost(postId) {
-            // Req likes
-            fetch('http://localhost:3000/api/likes', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-                body: JSON.stringify({ postId, isLiked: 1 })
-            }).catch(error => {
-                document.getElementById('alert-message').classList.add('error-message-light')
-                return this.alertMessage = 'Une erreur s\'est produite ' + error
-            })
-            fetch('http://localhost:3000/api/posts', {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-            }).then(promise => {
-                return promise.json()
-            }).then(data => {
-                this.posts = data
-            }).catch(error => {
-                document.getElementById('alert-message').classList.add('error-message-light')
-                return this.alertMessage = 'Une erreur s\'est produite ' + error
-            })
-        },
         commentPost(postId) {
             fetch('http://localhost:3000/api/comments', {
                 method: 'POST',
@@ -384,7 +380,7 @@ export default {
             }).then(promise => {
                 return promise.json()
             }).then(() => {
-                this.$router.go(`/#${postId}`)
+                this.getAllPosts()
             })
         },
         updatePost(postId) {
@@ -399,7 +395,7 @@ export default {
             }).then(promise => {
                 return promise.json()
             }).then(() => {
-                this.$router.go()
+                this.getAllPosts()
             }).catch(error => {
                 document.getElementById('alert-message').classList.add('error-message-light')
                 return this.alertMessage = 'Une erreur s\'est produite ' + error
@@ -415,7 +411,7 @@ export default {
                 }).then(promise => {
                     return promise.json()
                 }).then(() => {
-                    this.$router.go()
+                    this.getAllPosts()
                 }).catch(error => {
                     document.getElementById('alert-message').classList.add('error-message-light')
                     return this.alertMessage = 'Une erreur s\'est produite ' + error
@@ -423,7 +419,28 @@ export default {
             } else {
                 return
             }
-        }
+        },
+        likePost(post) {
+            // Req likes
+            fetch('http://localhost:3000/api/likes', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ postId: post.id, isLiked: 1 })
+            }).then(promise => {
+                return promise.json()
+            }).then(response => {
+                // Reload
+                this.getAllPosts()
+                this.getAllLikes()
+            }).catch(error => {
+                document.getElementById('alert-message').classList.add('error-message-light')
+                return this.alertMessage = 'Une erreur s\'est produite ' + error
+            })
+        },
     },
 }
 </script>
