@@ -59,8 +59,6 @@
                            v-model="password"
                            placeholder="Votre mot de passe"
                            required />
-                    <!-- <p class="field-alert"
-                       v-if="!password">Ce champs est requis !</p> -->
                 </div>
                 <div class="form_wrapper__field password_confirmation__field">
                     <label for="password">Confirmez votre mot de passe</label>
@@ -70,7 +68,6 @@
                            placeholder="Confirmez votre mot de passe"
                            required />
                     <p id="alert-password">{{ this.passwordMessage }}</p>
-                    <!-- <p v-if="fieldError == true">{{ errorMessage }}</p> -->
                 </div>
                 <div class="form_wrapper__button submit__button">
                     <input type="submit"
@@ -97,15 +94,15 @@ export default {
     name: 'Signup',
     data() {
         return {
-            firstName: '',
-            lastName: '',
-            email: '',
-            password: '',
             passwordMessage: '',
             alertMessage: '',
             alertName: '',
             alertLastName: '',
             alertEmail: '',
+            email: '',
+            firstName: '',
+            lastName: '',
+            password: ''
         }
     },
     methods: {
@@ -121,18 +118,18 @@ export default {
                 headers: {
                     'Content-type': 'application/json'
                 }
-            }).then(response => {
-                if (response.status == 409) {
+            }).then(promise => {
+                if (promise.status == 409) {
                     const error = this.alertMessage = 'Cette adresse mail existe déjà !'
                     throw error
-                } else if (response.status == 400) {
+                } else if (promise.status == 400) {
                     const error = this.alertMessage = 'Veuillez vérifier vos entrées.'
                     throw error
-                } else if (response.status == 500) {
+                } else if (promise.status == 500) {
                     const error = this.alertMessage = 'Un problème est survenu ! Veuillez réessayer'
                     throw error
                 } else {
-                    return response.json()
+                    return promise.json()
                 }
             }).then(() => {
                 document.getElementById('alert-message').classList.add('successful-connection')
