@@ -1,5 +1,5 @@
 # AxelFayet_7_14042022
-<h1>README EN COURS D'EDITION !</h1>
+<em>README EN COURS D'EDITION !</em>
 <h1>P7 GROUPOMANIA</h1>
   <p>Bienvenue sur le repo contenant l'application du réseau social déstiné à Groupomania !</p>
 <h2>Pré-requis et technologies utilisées</h2>
