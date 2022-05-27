@@ -1,3 +1,7 @@
+# AxelFayet_7_14042022
+<h1>Projet 7 - Groupomania - Frontend</h1>
+
+(default)
 # groupomania-project
 This template should help get you started developing with Vue 3 in Vite.
 ## Recommended IDE Setup
