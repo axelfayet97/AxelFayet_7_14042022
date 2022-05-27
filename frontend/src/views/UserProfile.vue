@@ -6,9 +6,6 @@
             <div class="profile-picture-update">
                 <img src="/Groupomania_Logos/Daco_1182050.png"
                      alt="Photo de profil" />
-                <!-- <input type="file"
-                       name="profilePicture"
-                       id="profile-pic-input" /> -->
             </div>
             <div class="form-infos">
                 <form class="form_wrapper"
@@ -35,16 +32,6 @@
                                placeholder=""
                                v-model="lastName" />
                     </div>
-                    <!-- <div class="password-input">
-                        <label for="password">Mot de passe</label>
-                        <input type="password"
-                               value=""
-                               placeholder="">
-                        <label for="confirmPassword">Confirmez le mot de passe</label>
-                        <input type="password"
-                               v-bind="password"
-                               placeholder="">
-                    </div> -->
                     <div class="form-input"
                          id="bio-input">
                         <label for="bio">À propos de vous :</label>
@@ -187,7 +174,6 @@ export default {
             this.biography = response.bio
         }).catch(error => {
             document.getElementById('alert-message').classList.add('error-message')
-            console.log(error);
             return this.alertMessage = 'Une erreur s\'est produite ' + error
         })
     },
@@ -208,8 +194,7 @@ export default {
                 body: JSON.stringify(data)
             }).then(promise => {
                 return promise.json()
-            }).then(response => {
-                console.log(response);
+            }).then(() => {
                 this.$router.go()
             }).catch(error => {
                 document.getElementById('alert-message').classList.add('error-message')
