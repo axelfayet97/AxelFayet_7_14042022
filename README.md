@@ -30,4 +30,10 @@
 	<strong><em>Lors de l'installation des dépendances, la console peut vous signaler des vulnérabilités. Il est recommander de lancer la commande <code>npm audit fix</code> afin d'assurer le bon fonctionnement des dépendances</em>.</strong>
 <br>
 <br>
+<h3>Erreurs connues</h3>
+<p>Il existe à ce jour encore quelques fonctionnalité demandant un travail approfondi</p>
+<ul>
+  <li>Les input des commentaires et les messages d'erreur sur les posts sont liés, aucun impact sur le fonctionnement de l'application mais sur l'esthétique de celle-ci</li>
+  <li>Les images ne sont pas implémentées pour le moment</li>
+</ul>
 <p>Pour toutes questions, vous pouvez me contacter dirctement via mon adresse <a href="mailto:axel.fayet97@gmail.com">mail</a>.</p>
