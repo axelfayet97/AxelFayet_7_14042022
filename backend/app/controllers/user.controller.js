@@ -116,13 +116,13 @@ exports.getOneAccount = (req, res) => {
 exports.modifyAccount = (req, res) => {
     // Vérification auth
     if (req.params.id != req.auth.userId) {
-        return res.status(401).send({ message: "Non autorisé." })
+        return res.status(401).send({ message: 'Non autorisé.' })
     }
     const firstname = req.body.firstName;
     const lastname = req.body.lastName;
     // Vérification des champs
     if (!firstname || !lastname) {
-        return res.status(400).send({ 'error': "Les champs 'nom' et 'prénom' doivent être remplis " });
+        return res.status(400).send({ 'error': `Les champs 'nom' et 'prénom' doivent être remplis ` });
     }
     const userObject = req.file ?
         {
@@ -142,10 +142,10 @@ exports.deleteAccount = (req, res) => {
     User.findOne({ where: { id: req.params.id } })
         .then(user => {
             if (req.auth.isAdmin == true || user.id == req.auth.userId) {
-                User.destroy({ where: { id: req.params.id, userId: req.auth.userId } })
+                User.destroy({ where: { id: req.auth.userId } })
                     .then(res.status(200).send({ message: 'Utilisateur supprimé avec succès' }))
             } else {
-                return res.status(401).send({ message: "Non autorisé." })
+                return res.status(401).send({ message: 'Non autorisé.' })
             }
         }).catch(error => res.status(400).send(error))
 }

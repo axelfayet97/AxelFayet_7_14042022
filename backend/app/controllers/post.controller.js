@@ -1,7 +1,7 @@
 const { posts } = require('../config/db');
 const db = require('../config/db');
 const Post = db.posts;
-const contentRegex = new RegExp(/\s/)
+const contentRegex = new RegExp(/^\s/)
 // Create and Save a new Post
 exports.createPost = (req, res) => {
     if (contentRegex.test(req.body.content) == true) {
@@ -45,9 +45,6 @@ exports.updatePost = (req, res) => {
         return res.status(400).send({ message: 'Votre post doit au moins comporter quelques caractères !' })
     }
     const postId = req.params.id;
-    if (postId != req.auth.userId) {
-        return res.status(401).send({ message: "Non autorisé." })
-    }
     Post.findOne({
         where: {
             id: postId,
@@ -88,9 +85,9 @@ exports.deletePost = (req, res) => {
         } else {
             return res.status(401).send({ message: "Non autorisé." })
         }
-        }).catch(error => {
-            res.status(500).send({
-                message: 'Impossible de trouver le post avec l\'id ' + id, error
-            });
-        })
+    }).catch(error => {
+        res.status(500).send({
+            message: 'Impossible de trouver le post avec l\'id ' + id, error
+        });
+    })
 };

@@ -1,15 +1,15 @@
 const db = require('../config/db');
 const Comment = db.comments;
-const contentRegex = new RegExp(/\s/)
+const contentRegex = new RegExp(/^\s/)
 // Create & save comments
 exports.createComment = (req, res) => {
     if (contentRegex.test(req.body.content) == true) {
-        return res.status(400).send({ message: 'Votre post doit au moins comporter quelques caractères !' })
+        return res.status(400).send({ message: 'Votre commentaire doit au moins comporter quelques caractères !' })
     }
     // Création d'un nouvel objet commentaire
     const postId = req.body.postId;
     if (!postId) {
-        return res.status(404).send({ message: 'Aucun post ne correspond à cet ID.' })
+        return res.status(404).send({ message: 'Aucun commentaire ne correspond à cet ID.' })
     }
     const comment = new Comment({
         ...req.body,
@@ -45,7 +45,7 @@ exports.getAllComments = (req, res) => {
 // Update a comment 
 exports.updateComment = (req, res) => {
     if (contentRegex.test(req.body.content) == true) {
-        return res.status(400).send({ message: 'Votre post doit au moins comporter quelques caractères !' })
+        return res.status(400).send({ message: 'Votre commentaire doit au moins comporter quelques caractères !' })
     }
     const commentId = req.params.id;
     Comment.findOne({
