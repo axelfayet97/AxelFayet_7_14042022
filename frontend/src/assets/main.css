@@ -111,6 +111,7 @@ a:active {
 }
 
 #alert-message.error-message-light {
+  height: 50px;
   color: red !important;
   background-color: transparent;
 }
