@@ -27,9 +27,9 @@
                            id="firstname"
                            v-model.trim="firstName"
                            placeholder="Votre prénom"
+                           @keyup="checkName()"
                            required />
-                    <!-- <p class="field-alert"
-                       v-if="!firstName">Ce champs est requis !</p> -->
+                    <p class="field-alert">{{ alertName }}</p>
                 </div>
                 <div class="form_wrapper__field lastname__field">
                     <label for="name">Votre nom</label>
@@ -37,19 +37,19 @@
                            id="lastname"
                            v-model.trim="lastName"
                            placeholder="Votre nom"
+                           @keyup="checkLastName()"
                            required />
-                    <!-- <p class="field-alert"
-                       v-if="!lastName">Ce champs est requis !</p> -->
+                    <p class="field-alert">{{ alertLastName }}</p>
                 </div>
                 <div class="form_wrapper__field email__field">
                     <label for="email">Votre adresse mail</label>
                     <input type="email"
                            id="email"
                            v-model.trim="email"
+                           @keyup="checkEmail()"
                            placeholder="Votre adresse mail"
                            required />
-                    <!-- <p class="field-alert"
-                       v-if="!email">Ce champs est requis !</p> -->
+                    <p class="field-alert">{{ alertEmail }}</p>
                 </div>
                 <div class="form_wrapper__field password__field">
                     <label for="password">Votre mot de passe</label>
@@ -86,7 +86,11 @@
         </div>
     </div>
 </template>
-
+<style scoped>
+.field-alert {
+    color: var(--rouge)
+}
+</style>
 <script>
 
 export default {
@@ -98,7 +102,10 @@ export default {
             email: '',
             password: '',
             passwordMessage: '',
-            alertMessage: ''
+            alertMessage: '',
+            alertName: '',
+            alertLastName: '',
+            alertEmail: '',
         }
     },
     methods: {
@@ -116,10 +123,13 @@ export default {
                 }
             }).then(response => {
                 if (response.status == 409) {
-                    let error = this.alertMessage = 'Cette adresse mail existe déjà !'
+                    const error = this.alertMessage = 'Cette adresse mail existe déjà !'
+                    throw error
+                } else if (response.status == 400) {
+                    const error = this.alertMessage = 'Veuillez vérifier vos entrées.'
                     throw error
                 } else if (response.status == 500) {
-                    let error = this.alertMessage = 'Votre mot de passe est trop simple !'
+                    const error = this.alertMessage = 'Un problème est survenu ! Veuillez réessayer'
                     throw error
                 } else {
                     return response.json()
@@ -147,9 +157,34 @@ export default {
             } else {
                 submitBtn.setAttribute('disabled', true)
                 confirmationMessage.style.color = '#ff0000'
-                this.passwordMessage = 'Les mots de passe sont différents !'
+                const error = this.passwordMessage = 'Le mot de passe doit contenir une majuscule, une minuscule et un caractère spécial. Au moins 8 caractères sont requis.'
+                throw error
             }
         },
+        checkName() {
+            const nameRegexp = new RegExp(/^[A-Za-zÀ-Ÿá-ÿ][A-Za-zÀ-Ÿá-ÿ-' ]+$/);
+            if (nameRegexp.test(this.firstName) == false) {
+                this.alertName = 'Format du prénom invalide'
+            } else {
+                this.alertName = ''
+            }
+        },
+        checkLastName() {
+            const nameRegexp = new RegExp(/^[A-Za-zÀ-Ÿá-ÿ][A-Za-zÀ-Ÿá-ÿ-' ]+$/);
+            if (nameRegexp.test(this.lastName) == false) {
+                this.alertLastName = 'Format du nom invalide'
+            } else {
+                this.alertLastName = ''
+            }
+        },
+        checkEmail() {
+            const mailRegexp = new RegExp(/^([a-z0-9.-_]+)@([\da-z\.-]+)([a-z]{2,})$/)
+            if (mailRegexp.test(this.email) == false) {
+                this.alertEmail = 'Format de l\'email invalide'
+            } else {
+                this.alertEmail = ''
+            }
+        }
     }
 }
 </script>
