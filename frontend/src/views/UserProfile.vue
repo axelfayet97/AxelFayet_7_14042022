@@ -215,6 +215,7 @@ export default {
                 }).then(() => {
                     localStorage.removeItem('userId')
                     localStorage.removeItem('token')
+                    localStorage.removeItem('isAdmin')
                     this.$router.push('/signup')
                 }).catch(error => {
                     document.getElementById('alert-message').classList.add('error-message')
