@@ -48,7 +48,6 @@ export default {
       })
       .catch(error => {
         document.getElementById('alert-message').classList.add('error-message')
-        console.log(error);
         return this.alertMessage = 'Une erreur s\'est produite ' + error
       })
   }
