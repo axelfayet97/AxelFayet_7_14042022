@@ -55,7 +55,6 @@
                        @click.prevent="likePost(post)">
                         <i class="bi bi bi-hand-thumbs-up"></i>
                         {{ post.likes.length }}
-                        {{ post.likes }}
                     </a>
                 </div>
             </div>
@@ -378,7 +377,12 @@ export default {
                 },
                 body: JSON.stringify({ postId, content: this.commentContent })
             }).then(promise => {
-                return promise.json()
+                if (promise.status == 400) {
+                    const error = this.alertMessage = 'Veuillez vérifier le contenu de votre commentaire !'
+                    throw error
+                } else {
+                    return promise.json()
+                }
             }).then(() => {
                 this.getAllPosts()
             })
@@ -393,7 +397,12 @@ export default {
                 },
                 body: JSON.stringify({ content: this.updatedMessage })
             }).then(promise => {
-                return promise.json()
+                 if (promise.status == 400) {
+                    const error = this.alertMessage = 'Veuillez vérifier le contenu de votre post !'
+                    throw error
+                } else {
+                    return promise.json()
+                }
             }).then(() => {
                 this.getAllPosts()
             }).catch(error => {
