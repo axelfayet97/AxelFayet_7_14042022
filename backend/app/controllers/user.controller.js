@@ -10,13 +10,14 @@ const options = {
     uppercase: 1,
     lowercase: 1,
     special: 1,
-    digit: 1,
     min: 8
 }
 complexity.create(options)
 
 // Inscription
 exports.signup = (req, res) => {
+    const nameRegexp = new RegExp(/^[A-Za-zÀ-Ÿá-ÿ][A-Za-zÀ-Ÿá-ÿ-' ]+$/);
+    const mailRegexp = new RegExp(/^([a-z0-9.-_]+)@([\da-z\.-]+)([a-z]{2,})$/);
     const email = req.body.email;
     const password = req.body.password;
     const firstName = req.body.firstName;
@@ -25,6 +26,9 @@ exports.signup = (req, res) => {
     if (email == null || password == null, firstName == null, lastName == null) {
         return res.status(400).send({ error: 'Il manque un ou plusieurs champs' })
     };
+    if (nameRegexp.test(firstName) == false || nameRegexp.test(lastName) == false || mailRegexp.test(email) == false) {
+        return res.status(400).send({ error: 'Il manque un ou plusieurs champs' })
+    }
     // Vérification de la présence de l'utilisateur dans la BDD
     User.findOne({
         attribute: ['email'],
@@ -135,13 +139,13 @@ exports.modifyAccount = (req, res) => {
 };
 exports.deleteAccount = (req, res) => {
     // Vérification auth
-    if (req.auth.isAdmin == true || req.params.id == req.auth.userId) {
-        User.findOne({ where: { id: req.params.id } })
-            .then(() => {
+    User.findOne({ where: { id: req.params.id } })
+        .then(user => {
+            if (req.auth.isAdmin == true || user.id == req.auth.userId) {
                 User.destroy({ where: { id: req.params.id, userId: req.auth.userId } })
                     .then(res.status(200).send({ message: 'Utilisateur supprimé avec succès' }))
-            }).catch(error => res.status(400).send(error))
-    } else {
-        return res.status(401).send({ message: "Non autorisé." })
-    }
+            } else {
+                return res.status(401).send({ message: "Non autorisé." })
+            }
+        }).catch(error => res.status(400).send(error))
 }

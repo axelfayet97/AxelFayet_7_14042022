@@ -1,8 +1,11 @@
 const db = require('../config/db');
 const Comment = db.comments;
+const contentRegex = new RegExp(/\s/)
 // Create & save comments
 exports.createComment = (req, res) => {
-    // TO DO : FS MULTER
+    if (contentRegex.test(req.body.content) == true) {
+        return res.status(400).send({ message: 'Votre post doit au moins comporter quelques caractères !' })
+    }
     // Création d'un nouvel objet commentaire
     const postId = req.body.postId;
     if (!postId) {
@@ -41,6 +44,9 @@ exports.getAllComments = (req, res) => {
 }
 // Update a comment 
 exports.updateComment = (req, res) => {
+    if (contentRegex.test(req.body.content) == true) {
+        return res.status(400).send({ message: 'Votre post doit au moins comporter quelques caractères !' })
+    }
     const commentId = req.params.id;
     Comment.findOne({
         where: {
@@ -64,10 +70,10 @@ exports.updateComment = (req, res) => {
 exports.deleteComment = (req, res) => {
     // TO DO : FS MULTER
     const id = req.params.id;
-    if (req.auth.isAdmin == true || req.params.id == req.auth.userId) {
-        Comment.findOne({
-            where: { id }
-        }).then(comment => {
+    Comment.findOne({
+        where: { id }
+    }).then(comment => {
+        if (req.auth.isAdmin == true || comment.userId == req.auth.userId) {
             comment.destroy({
                 where: {
                     id,
@@ -82,12 +88,12 @@ exports.deleteComment = (req, res) => {
                     message: 'Impossible de supprimmer le commentaire à l\'id ' + id, error
                 });
             });
-        }).catch(error => {
-            res.status(500).send({
-                message: 'Impossible de trouver le commentaire avec l\'id ' + id, error
-            });
-        })
-    } else {
-        return res.status(401).send({ message: "Non autorisé." })
-    }
+        } else {
+            return res.status(401).send({ message: "Non autorisé." })
+        }
+    }).catch(error => {
+        res.status(500).send({
+            message: 'Impossible de trouver le commentaire avec l\'id ' + id, error
+        });
+    })
 }
