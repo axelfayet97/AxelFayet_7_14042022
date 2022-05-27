@@ -44,8 +44,8 @@ export default {
     name: 'NewPost',
     data() {
         return {
-            content: null,
-            alertMessage: ''
+            alertMessage: '',
+            content: null
         }
     },
     methods: {

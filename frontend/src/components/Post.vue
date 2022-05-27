@@ -79,7 +79,7 @@
                            value="Commenter"
                            id="comment-submit" />
                 </form>
-                <div id="error-message">{{ this.errorMessage }}</div>
+                <div id="error-message-light">{{ this.errorMessage }}</div>
             </div>
         </div>
     </article>
@@ -153,6 +153,7 @@ input[type="submit"] {
 .container__controls .controls-buttons {
     display: flex;
     justify-content: flex-end;
+    align-items: end;
     margin: 10px auto;
 }
 
@@ -179,7 +180,7 @@ input[type="submit"] {
 @media all and (max-width: 768px) {
 
     .container__controls .controls-buttons a,
-    .container__controls .controls-buttons i {
+    .container__controls .controls-buttons #comment-button {
         font-size: 20px !important;
     }
 }
@@ -298,18 +299,17 @@ export default {
     name: 'Post',
     data() {
         return {
+            alertMessage: '',
+            commentContent: '',
+            editPost: false,
+            errorMessage: '',
+            isAdmin: null,
+            isLiked: '',
+            likes: [],
             posts: [],
             showOptions: '',
-            editPost: false,
-            isLiked: '',
-            commentContent: '',
-            errorMessage: '',
             updatedMessage: null,
             userId: null,
-            likes: [],
-            isLikes: '',
-            alertMessage: '',
-            isAdmin: null,
         }
     },
     components: {
@@ -406,8 +406,8 @@ export default {
             }).then(() => {
                 this.getAllPosts()
             }).catch(error => {
-                document.getElementById('alert-message').classList.add('error-message-light')
-                return this.alertMessage = 'Une erreur s\'est produite ' + error
+                document.getElementById('alert-message')
+                return this.errorMessage = 'Une erreur s\'est produite ' + error
             })
         },
         deletePost(postId) {
