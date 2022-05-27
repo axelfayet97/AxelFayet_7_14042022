@@ -59,7 +59,12 @@ export default {
                 },
                 body: JSON.stringify({ content: this.content })
             }).then(promise => {
-                return promise.json()
+                if (promise.status == 400) {
+                    const error = this.alertMessage = 'Veuillez vérifier le contenu de votre post !'
+                    throw error
+                } else {
+                    return promise.json()
+                }
             }).then(() => {
                 if (this.content == null || '') {
                     document.getElementById('alert-message')
