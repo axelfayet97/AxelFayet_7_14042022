@@ -42,6 +42,8 @@
             </div>
         </div>
     </article>
+    <div id="error-message"
+         class="error-message-light">{{ this.errorMessage }}</div>
 </template>
 <style scoped>
 .comment-container {
@@ -183,6 +185,12 @@ input[type="submit"] {
     border: 2px solid var(--rouge);
     cursor: pointer;
 }
+
+#error-message.error-message-light {
+    margin-top: 10px;
+    color: var(--rouge);
+    text-align: center;
+}
 </style>
 
 <script>
@@ -197,23 +205,26 @@ export default {
             editComment: '',
             displayMessage: '',
             updatedMessage: null,
-            alertMessage: ''
+            errorMessage: ''
         }
     },
     created() {
-        fetch(`http://localhost:3000/api/comments`, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            },
-        }).then(promise => {
-            return promise.json()
-        }).catch(error => {
-            document.getElementById('alert-message').classList.add('error-message-light')
-            return this.alertMessage = 'Une erreur s\'est produite ' + error
-        })
+        this.getAllComments()
     },
     methods: {
+        getAllComments() {
+            fetch(`http://localhost:3000/api/comments`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+            }).then(promise => {
+                return promise.json()
+            }).catch(error => {
+                document.getElementById('error-message')
+                return this.errorMessage = 'Une erreur s\'est produite ' + error
+            })
+        },
         toggleControls(commentId) {
             if (this.showOptions == commentId) {
                 this.showOptions = null
@@ -243,8 +254,8 @@ export default {
             }).then(() => {
                 this.$router.go()
             }).catch(error => {
-                document.getElementById('alert-message').classList.add('error-message-light')
-                return this.alertMessage = 'Une erreur s\'est produite ' + error
+                document.getElementById('error-message')
+                return this.errorMessage = 'Une erreur s\'est produite ' + error
             })
         },
         deleteComment(commentId) {
@@ -261,7 +272,8 @@ export default {
                 }).then(() => {
                     this.$router.go()
                 }).catch(error => {
-                    console.log(error);
+                    document.getElementById('error-message')
+                    return this.errorMessage = 'Une erreur s\'est produite ' + error
                 })
             } else {
                 return
