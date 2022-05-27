@@ -200,12 +200,12 @@ export default {
     props: ['comments', 'userId', 'isAdmin'],
     data() {
         return {
-            showOptions: '',
+            displayMessage: '',
             displayOptions: true,
             editComment: '',
-            displayMessage: '',
-            updatedMessage: null,
-            errorMessage: ''
+            errorMessage: '',
+            showOptions: '',
+            updatedMessage: null
         }
     },
     created() {
@@ -251,7 +251,7 @@ export default {
                 body: JSON.stringify({ content: this.updatedMessage })
             }).then(promise => {
                 if (promise.status == 400) {
-                    const error = this.alertMessage = 'Veuillez vérifier le contenu de votre commentaire !'
+                    const error = this.errorMessage = 'Veuillez vérifier le contenu de votre commentaire !'
                     throw error
                 } else {
                     return promise.json()
