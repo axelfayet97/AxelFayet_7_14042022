@@ -73,25 +73,30 @@ export default {
                     password: this.password,
                 }),
             }).then(promise => {
-                return promise.json()
+                if (promise.status == 429) {
+                    const error = this.alertMessage = 'Trop de tentatives de connexion, veuillez réessayer dans 5 minutes.'
+                    throw error
+                } else {
+                    return promise.json()
+                }
             }).then((response) => {
-                    if (response.error) {
-                        throw new Error('Veuillez vérifier vos informations.');
-                    }
-                    document.getElementById('alert-message').classList.add('successful-connection')
-                    this.alertMessage = 'Connexion réussie ! Vous allez être redirigé...'
-                    localStorage.setItem('token', response.token)
-                    localStorage.setItem('userId', response.userId)
-                    if (response.isAdmin == true) {
-                        localStorage.setItem('isAdmin', response.isAdmin)
-                    }
-                    setTimeout(() => {
-                        this.$router.push('/')
-                    }, 1500);
-                }).catch(error => {
-                    document.getElementById('alert-message').classList.add('error-message')
-                    return this.alertMessage = error
-                })
+                if (response.error) {
+                    throw new Error('Veuillez vérifier vos informations.');
+                }
+                document.getElementById('alert-message').classList.add('successful-connection')
+                this.alertMessage = 'Connexion réussie ! Vous allez être redirigé...'
+                localStorage.setItem('token', response.token)
+                localStorage.setItem('userId', response.userId)
+                if (response.isAdmin == true) {
+                    localStorage.setItem('isAdmin', response.isAdmin)
+                }
+                setTimeout(() => {
+                    this.$router.push('/')
+                }, 1500);
+            }).catch(error => {
+                document.getElementById('alert-message').classList.add('error-message')
+                return this.alertMessage = error
+            })
         }
     },
 }
