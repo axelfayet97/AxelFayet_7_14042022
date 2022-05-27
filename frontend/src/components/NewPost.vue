@@ -11,7 +11,8 @@
                       placeholder="À quoi pensez-vous ?"
                       v-model="content" />
         </div>
-            <div id="alert-message" class="error-message-light">{{ alertMessage }}</div>
+        <div id="alert-message"
+             class="error-message-light">{{ alertMessage }}</div>
         <div class="form_wrapper__button submit__button">
             <input type="submit"
                    id="submit"
@@ -68,7 +69,6 @@ export default {
                 }
             }).catch(error => {
                 document.getElementById('alert-message')
-                console.log(error);
                 return this.alertMessage = 'Une erreur s\'est produite ' + error
             })
         }
