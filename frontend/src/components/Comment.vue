@@ -250,7 +250,12 @@ export default {
                 },
                 body: JSON.stringify({ content: this.updatedMessage })
             }).then(promise => {
-                return promise.json()
+                if (promise.status == 400) {
+                    const error = this.alertMessage = 'Veuillez vérifier le contenu de votre commentaire !'
+                    throw error
+                } else {
+                    return promise.json()
+                }
             }).then(() => {
                 this.$router.go()
             }).catch(error => {
